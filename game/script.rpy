@@ -8,8 +8,10 @@ default nutrition = 100
 default physical_activity = 100
 default valence = 100  # Emotional positivity
 default arousal = 100  # Energy/alertness
-default practical_skill = 50
-default writing_skill = 50
+default practical_xp = 0
+default writing_xp = 0
+default practical_level = 1
+default writing_level = 1
 default max_stat = 100
 
 # Variable to track if detailed stats window is shown
@@ -72,6 +74,30 @@ init python:
 
     def format_time():
         return "{:02d}:{:02d}".format(current_hour, current_minute)
+
+# Level system functions
+init python:
+    def get_level_from_xp(xp):
+        level = 1
+        cumulative = 0
+        while True:
+            required = level * 100
+            if xp < cumulative + required:
+                return level
+            cumulative += required
+            level += 1
+    
+    def get_xp_in_level(xp, level):
+        cumulative = sum(i * 100 for i in range(1, level))
+        return xp - cumulative
+    
+    def get_required_for_level(level):
+        return level * 100
+    
+    def update_levels():
+        global practical_level, writing_level
+        practical_level = get_level_from_xp(practical_xp)
+        writing_level = get_level_from_xp(writing_xp)
 
 # Main stats display (always visible)
 screen main_stats():
@@ -391,22 +417,28 @@ screen detailed_stats_window():
                         spacing 20
                         vbox:
                             spacing 5
-                            text "Practical Skill" size 16 color "#ffffff"
-                            bar value practical_skill range max_stat xsize 200 ysize 18 left_bar "#16a085" right_bar "#2c3e50"
-                            text "[practical_skill]/[max_stat]" size 14 color "#bdc3c7"
+                            $ practical_level = get_level_from_xp(practical_xp)
+                            $ xp_in_level = get_xp_in_level(practical_xp, practical_level)
+                            $ required = get_required_for_level(practical_level)
+                            text "Practical Skill Level [practical_level]" size 16 color "#ffffff"
+                            bar value xp_in_level range required xsize 200 ysize 18 left_bar "#16a085" right_bar "#2c3e50"
+                            text "[xp_in_level]/[required] XP" size 14 color "#bdc3c7"
                         
                         vbox:
                             spacing 5
-                            text "Writing Skill" size 16 color "#ffffff"
-                            bar value writing_skill range max_stat xsize 200 ysize 18 left_bar "#27ae60" right_bar "#2c3e50"
-                            text "[writing_skill]/[max_stat]" size 14 color "#bdc3c7"
+                            $ writing_level = get_level_from_xp(writing_xp)
+                            $ xp_in_level = get_xp_in_level(writing_xp, writing_level)
+                            $ required = get_required_for_level(writing_level)
+                            text "Writing Skill Level [writing_level]" size 16 color "#ffffff"
+                            bar value xp_in_level range required xsize 200 ysize 18 left_bar "#27ae60" right_bar "#2c3e50"
+                            text "[xp_in_level]/[required] XP" size 14 color "#bdc3c7"
 
 # Python function to calculate motivation and progress
 init python:
     def update_motivation_and_progress():
         global motivation, thesis_progress, autonomy, competence, relatedness
         global nutrition, physical_activity, valence, arousal
-        global practical_skill, writing_skill
+        global practical_level, writing_level
         
         # Calculate motivation based on psychological needs and emotional state
         psychological_avg = (autonomy + competence + relatedness) / 3
@@ -426,10 +458,10 @@ init python:
         motivation = target_motivation
         
         # Thesis progress increases when motivation and skills are high
-        # if motivation > 50:
-        #     skill_avg = (practical_skill + writing_skill) / 2
-        #     progress_rate = (motivation / 100) * (skill_avg / 100) * 0.05
-        #     thesis_progress = min(100, thesis_progress + progress_rate)
+        if motivation > 50:
+            skill_avg = min(100, (practical_level + writing_level) / 2 * 10)
+            progress_rate = (motivation / 100) * (skill_avg / 100) * 0.05
+            thesis_progress = min(100, thesis_progress + progress_rate)
         
         # Check for burnout
         if motivation <= 0 or (autonomy <= 10 and competence <= 10):
@@ -463,7 +495,9 @@ label main_gameplay:
             if motivation > 30:
                 $ thesis_progress = min(100, thesis_progress + 2)
                 $ competence = min(max_stat, competence + 1)
-                $ writing_skill = min(max_stat, writing_skill + 0.5)
+                $ writing_xp += 10
+                $ practical_xp += 5
+                $ update_levels()
                 $ arousal = max(0, arousal - 5)
                 $ nutrition = max(0, nutrition - 3)
                 $ update_motivation_and_progress()
@@ -488,7 +522,8 @@ label main_gameplay:
             $ autonomy = min(max_stat, autonomy + 15)
             $ competence = min(max_stat, competence + 10)
             $ relatedness = min(max_stat, relatedness + 20)
-            $ practical_skill = min(max_stat, practical_skill + 1)
+            $ practical_xp += 5
+            $ update_levels()
             $ update_motivation_and_progress()
             "You met with your advisor. You gained clarity and direction!"
         
@@ -505,8 +540,9 @@ label main_gameplay:
             "You took a nap. You feel more alert now!"
         
         "Attend a workshop / Learn new skills":
-            $ practical_skill = min(max_stat, practical_skill + 3)
-            $ writing_skill = min(max_stat, writing_skill + 2)
+            $ practical_xp += 15
+            $ writing_xp += 10
+            $ update_levels()
             $ competence = min(max_stat, competence + 10)
             $ arousal = max(0, arousal - 10)
             $ update_motivation_and_progress()
@@ -514,7 +550,8 @@ label main_gameplay:
         
         "Practice self-directed learning":
             $ autonomy = min(max_stat, autonomy + 20)
-            $ writing_skill = min(max_stat, writing_skill + 1.5)
+            $ writing_xp += 8
+            $ update_levels()
             $ update_motivation_and_progress()
             "You studied independently. You feel more in control!"
         
@@ -554,8 +591,10 @@ label burnout:
             $ physical_activity = 100
             $ valence = 100
             $ arousal = 100
-            $ practical_skill = 50
-            $ writing_skill = 50
+            $ practical_xp = 0
+            $ writing_xp = 0
+            $ practical_level = 1
+            $ writing_level = 1
             jump start
         
         "No, quit":
@@ -576,8 +615,8 @@ label thesis_complete:
     centered "Through managing your wellbeing and developing your skills,\nyou've achieved your academic goal!"
     
     "Final Stats:"
-    "Practical Skill: [practical_skill]"
-    "Writing Skill: [writing_skill]"
+    "Practical Skill Level: [practical_level]"
+    "Writing Skill Level: [writing_level]"
     "Final Motivation: [motivation]"
     
     menu:
@@ -593,8 +632,10 @@ label thesis_complete:
             $ physical_activity = 100
             $ valence = 100
             $ arousal = 100
-            $ practical_skill = 50
-            $ writing_skill = 50
+            $ practical_xp = 0
+            $ writing_xp = 0
+            $ practical_level = 1
+            $ writing_level = 1
             jump start
         
         "No":

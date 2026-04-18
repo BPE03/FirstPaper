@@ -1,0 +1,8 @@
+# Logs
+log.txt
+tracebcak.txt
+errors.txt
+
+# Game generated files
+/game/saves
+/game/cache
