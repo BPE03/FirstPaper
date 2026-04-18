@@ -6,8 +6,8 @@ default competence = 100
 default relatedness = 100
 default nutrition = 100
 default physical_activity = 100
-default valence = 100  # Emotional positivity
-default arousal = 100  # Energy/alertness
+default valence = 50  # Emotional positivity
+default arousal = 50  # Energy/alertness
 default practical_xp = 0
 default writing_xp = 0
 default practical_level = 1
@@ -99,13 +99,86 @@ init python:
         practical_level = get_level_from_xp(practical_xp)
         writing_level = get_level_from_xp(writing_xp)
 
+# Emotion system based on (valence, arousal)
+init python:
+    # Emotion coordinates in (valence, arousal) space
+    emotions_data = {
+        "excited": {"valence": 81.3, "arousal": 83.4, "color": "#ff6b9d", "description": "Energized and enthusiastic"},
+        "happy": {"valence": 90.1, "arousal": 68.6, "color": "#ffd93d", "description": "Content and joyful"},
+        "satisfied": {"valence": 86.8, "arousal": 49.3, "color": "#6bcf7f", "description": "Pleased and content"},
+        "relaxed": {"valence": 75.0, "arousal": 17.4, "color": "#4a90e2", "description": "Calm and peaceful"},
+        "bored": {"valence": 24.4, "arousal": 22.9, "color": "#95a5a6", "description": "Unengaged and listless"},
+        "depressed": {"valence": 10.4, "arousal": 46.5, "color": "#34495e", "description": "Sad and fatigued"},
+        "sad": {"valence": 5.4, "arousal": 38.6, "color": "#2c3e50", "description": "Melancholic and withdrawn"},
+        "upset": {"valence": 12.5, "arousal": 60.8, "color": "#e74c3c", "description": "Angry and agitated"},
+        "stressed": {"valence": 12.5, "arousal": 80.9, "color": "#c0392b", "description": "Anxious and overwhelmed"},
+        "nervous": {"valence": 28.6, "arousal": 69.9, "color": "#e67e22", "description": "Anxious and alert"},
+        "tense": {"valence": 32.0, "arousal": 69.1, "color": "#d35400", "description": "Tense and activated"},
+        "neutral": {"valence": 50.0, "arousal": 50.0, "color": "#7f8c8d", "description": "Neutral and balanced"}
+    }
+    
+    def get_emotion_distance(v1, a1, v2, a2):
+        """Calculate Euclidean distance between two (valence, arousal) points."""
+        return ((v1 - v2) ** 2 + (a1 - a2) ** 2) ** 0.5
+    
+    def get_current_emotion():
+        """Find the emotion closest to current valence and arousal values."""
+        min_distance = float('inf')
+        closest_emotion = "neutral"
+        
+        for emotion_name, emotion_data in emotions_data.items():
+            distance = get_emotion_distance(
+                valence, arousal,
+                emotion_data["valence"],
+                emotion_data["arousal"]
+            )
+            if distance < min_distance:
+                min_distance = distance
+                closest_emotion = emotion_name
+        
+        return closest_emotion
+    
+    def get_emotion_info(emotion_name):
+        """Get information about a specific emotion."""
+        if emotion_name in emotions_data:
+            info = emotions_data[emotion_name].copy()
+            info["name"] = emotion_name
+            return info
+        return None
+    
+    def get_all_emotions():
+        """Get list of all available emotions."""
+        return list(emotions_data.keys())
+    
+    def set_emotion(emotion_name):
+        """Set valence and arousal to match a specific emotion."""
+        global valence, arousal
+        if emotion_name in emotions_data:
+            emotion = emotions_data[emotion_name]
+            valence = emotion["valence"]
+            arousal = emotion["arousal"]
+            return True
+        return False
+    
+    def decrease_stats():
+        """Decrease stats over time without going negative."""
+        global autonomy, competence, relatedness, nutrition, physical_activity, valence, arousal
+        
+        autonomy = max(0, autonomy - 0.3)
+        competence = max(0, competence - 0.2)
+        relatedness = max(0, relatedness - 0.4)
+        nutrition = max(0, nutrition - 0.8)
+        physical_activity = max(0, physical_activity - 0.6)
+        valence = max(0, valence - 0.3)
+        arousal = max(0, arousal - 0.7)
+
 # Main stats display (always visible)
 screen main_stats():
     frame:
         xalign 0.05
         yalign 0.05
         xsize 280
-        ysize 280
+        ysize 350
         background "#2c3e50cc"
         padding (15, 15)
         
@@ -113,6 +186,10 @@ screen main_stats():
             spacing 15
             
             text "Thesis Journey" size 24 color "#ecf0f1" bold True
+            
+            # Current emotion display
+            $ current_emotion = get_current_emotion()
+            $ emotion_info = get_emotion_info(current_emotion)
             
             # Motivation stat
             text "Motivation" size 18 color "#ffffff"
@@ -135,6 +212,18 @@ screen main_stats():
                 left_bar "#2ecc71"
                 right_bar "#34495e"
             text "[thesis_progress]%" size 14 color "#bdc3c7"
+
+            frame:
+                xsize 250
+                ysize 50
+                background emotion_info["color"]
+                padding (10, 10)
+                
+                vbox:
+                    spacing 3
+                    text "Emotion" size 12 color "#ffffff"
+                    text "[current_emotion.upper()]" size 16 color "#ffffff" bold True
+                    text "[emotion_info['description']]" size 11 color "#ffffff"
     
             null height 30
             # Button to show detailed stats
@@ -142,14 +231,7 @@ screen main_stats():
     
     # Timer that affects stats every second
     timer 1.0 repeat True action [
-        #If(motivation > 0, SetVariable("motivation", motivation - 0.5), NullAction()),
-        If(autonomy > 0, SetVariable("autonomy", autonomy - 0.3), NullAction()),
-        If(competence > 0, SetVariable("competence", competence - 0.2), NullAction()),
-        If(relatedness > 0, SetVariable("relatedness", relatedness - 0.4), NullAction()),
-        If(nutrition > 0, SetVariable("nutrition", nutrition - 0.8), NullAction()),
-        If(physical_activity > 0, SetVariable("physical_activity", physical_activity - 0.6), NullAction()),
-        If(valence > 0, SetVariable("valence", valence - 0.3), NullAction()),
-        If(arousal > 0, SetVariable("arousal", arousal - 0.7), NullAction()),
+        Function(decrease_stats),
         Function(update_motivation_and_progress)
     ]
 
@@ -442,11 +524,10 @@ init python:
         
         # Calculate motivation based on psychological needs and emotional state
         psychological_avg = (autonomy + competence + relatedness) / 3
-        emotional_avg = (valence + arousal) / 2
         physical_avg = (nutrition + physical_activity) / 2
         
         # Motivation is influenced by all factors
-        target_motivation = (psychological_avg * 0.4 + emotional_avg * 0.3 + physical_avg * 0.3)
+        target_motivation = (psychological_avg * 0.6 + physical_avg * 0.4)
         
         # Gradually adjust motivation towards target
         # if motivation < target_motivation:
@@ -456,12 +537,6 @@ init python:
 
         # Instantly adjust motivation
         motivation = target_motivation
-        
-        # Thesis progress increases when motivation and skills are high
-        if motivation > 50:
-            skill_avg = min(100, (practical_level + writing_level) / 2 * 10)
-            progress_rate = (motivation / 100) * (skill_avg / 100) * 0.05
-            thesis_progress = min(100, thesis_progress + progress_rate)
         
         # Check for burnout
         if motivation <= 0 or (autonomy <= 10 and competence <= 10):
@@ -473,16 +548,16 @@ init python:
 
 # Label to start the game
 label start:
+    "Welcome to the Thesis Writing Simulator!"
+    "You are a graduate student working on your thesis."
+    "Manage your wellbeing, skills, and motivation to complete your thesis successfully!"
+    "Click on interactive areas or the button to perform activities."
+
     # Show all screens
     show screen main_stats
     show screen detailed_stats_window
     show screen calendar_now
     show screen calendar_window
-    
-    "Welcome to the Thesis Writing Simulator!"
-    "You are a graduate student working on your thesis."
-    "Manage your wellbeing, skills, and motivation to complete your thesis successfully!"
-    "Click on interactive areas or the button to perform activities."
     
     call screen interactive_room
 
@@ -630,8 +705,8 @@ label thesis_complete:
             $ relatedness = 100
             $ nutrition = 100
             $ physical_activity = 100
-            $ valence = 100
-            $ arousal = 100
+            $ valence = 50
+            $ arousal = 50
             $ practical_xp = 0
             $ writing_xp = 0
             $ practical_level = 1
