@@ -20,6 +20,8 @@ default show_detailed_stats = False
 default show_activity_menu = False
 # Variable to track if calendar window is shown
 default show_calendar = False
+# Variable to track if it's a cutscene or interactive gameplay
+default in_cutscene = False
 
 # Date and time variables
 default current_day = 17
@@ -28,8 +30,48 @@ default current_year = 2025
 default current_hour = 9
 default current_minute = 0
 
+# Python function to calculate motivation and progress
+init python:
+    def update_motivation_and_progress():
+        global motivation, thesis_progress, autonomy, competence, relatedness
+        global nutrition, physical_activity, valence, arousal
+        global practical_level, writing_level
+        
+        # Calculate motivation based on psychological needs and emotional state
+        psychological_avg = (autonomy + competence + relatedness) / 3
+        physical_avg = (nutrition + physical_activity) / 2
+        
+        # Motivation is influenced by all factors
+        target_motivation = (psychological_avg * 0.6 + physical_avg * 0.4)
+        
+        # Gradually adjust motivation towards target
+        # if motivation < target_motivation:
+        #     motivation = min(max_stat, motivation + 0.2)
+        # elif motivation > target_motivation:
+        #     motivation = max(0, motivation - 0.2)
+
+        # Instantly adjust motivation
+        motivation = target_motivation
+        
+        # Check for burnout
+        if motivation <= 0 or (autonomy <= 10 and competence <= 10):
+            renpy.jump("burnout")
+        
+        # Check for completion
+        if thesis_progress >= 100:
+            renpy.jump("thesis_complete")
+
+    # Hide all screens during cutscenes, show during interactive gameplay
+    def set_cutscene_mode(is_cutscene):
+        global in_cutscene
+        in_cutscene = is_cutscene
+        show_calendar = False  # Ensure calendar is hidden during cutscenes
+        show_detailed_stats = False  # Ensure detailed stats are hidden during cutscenes
+        renpy.retain_after_load()  # Ensure this state persists after loading
+
 # Dictionary for month names
 init python:
+    import datetime
     month_names = {
         1: "January", 2: "February", 3: "March", 4: "April",
         5: "May", 6: "June", 7: "July", 8: "August",
@@ -162,98 +204,102 @@ init python:
     
     def decrease_stats():
         """Decrease stats over time without going negative."""
-        global autonomy, competence, relatedness, nutrition, physical_activity, valence, arousal
         
-        autonomy = max(0, autonomy - 0.3)
-        competence = max(0, competence - 0.2)
-        relatedness = max(0, relatedness - 0.4)
-        nutrition = max(0, nutrition - 0.8)
-        physical_activity = max(0, physical_activity - 0.6)
-        valence = max(0, valence - 0.3)
-        arousal = max(0, arousal - 0.7)
+        store.autonomy = max(0, store.autonomy - 0.3)
+        store.competence = max(0, store.competence - 0.2)
+        store.relatedness = max(0, store.relatedness - 0.4)
+        store.nutrition = max(0, store.nutrition - 0.8)
+        store.physical_activity = max(0, store.physical_activity - 0.6)
+        store.valence = max(0, store.valence - 0.3)
+        store.arousal = max(0, store.arousal - 0.7)
+        renpy.retain_after_load()
 
 # Main stats display (always visible)
 screen main_stats():
-    frame:
-        xalign 0.05
-        yalign 0.05
-        xsize 280
-        ysize 350
-        background "#2c3e50cc"
-        padding (15, 15)
-        
-        vbox:
-            spacing 15
+    showif not in_cutscene:  # Hide during cutscenes, show during interactive gameplay
+        frame:
+            xalign 0.05
+            yalign 0.05
+            xsize 280
+            ysize 350
+            background "#2c3e50cc"
+            padding (15, 15)
             
-            text "Thesis Journey" size 24 color "#ecf0f1" bold True
-            
-            # Current emotion display
-            $ current_emotion = get_current_emotion()
-            $ emotion_info = get_emotion_info(current_emotion)
-            
-            # Motivation stat
-            text "Motivation" size 18 color "#ffffff"
-            bar:
-                value motivation
-                range max_stat
-                xsize 250
-                ysize 22
-                left_bar "#e74c3c"
-                right_bar "#34495e"
-            text "[motivation:.02f]/[max_stat]" size 14 color "#bdc3c7"
-            
-            # Thesis Progress
-            text "Thesis Progress" size 18 color "#ffffff"
-            bar:
-                value thesis_progress
-                range max_stat
-                xsize 250
-                ysize 22
-                left_bar "#2ecc71"
-                right_bar "#34495e"
-            text "[thesis_progress]%" size 14 color "#bdc3c7"
-
-            frame:
-                xsize 250
-                ysize 50
-                background emotion_info["color"]
-                padding (10, 10)
+            vbox:
+                spacing 15
                 
-                vbox:
-                    spacing 3
-                    text "Emotion" size 12 color "#ffffff"
-                    text "[current_emotion.upper()]" size 16 color "#ffffff" bold True
-                    text "[emotion_info['description']]" size 11 color "#ffffff"
-    
-            null height 30
-            # Button to show detailed stats
-            textbutton "View Detailed Stats" action ToggleVariable("show_detailed_stats") xsize 250 ysize 75
-    
-    # Timer that affects stats every second
-    timer 1.0 repeat True action [
-        Function(decrease_stats),
-        Function(update_motivation_and_progress)
-    ]
+                text "Thesis Journey" size 24 color "#ecf0f1" bold True
+                
+                # Current emotion display
+                $ current_emotion = get_current_emotion()
+                $ emotion_info = get_emotion_info(current_emotion)
+                
+                # Motivation stat
+                text "Motivation" size 18 color "#ffffff"
+                bar:
+                    value motivation
+                    range max_stat
+                    xsize 250
+                    ysize 22
+                    left_bar "#e74c3c"
+                    right_bar "#34495e"
+                text "[motivation:.02f]/[max_stat]" size 14 color "#bdc3c7"
+                
+                # Thesis Progress
+                text "Thesis Progress" size 18 color "#ffffff"
+                bar:
+                    value thesis_progress
+                    range max_stat
+                    xsize 250
+                    ysize 22
+                    left_bar "#2ecc71"
+                    right_bar "#34495e"
+                text "[thesis_progress]%" size 14 color "#bdc3c7"
+
+                frame:
+                    xsize 250
+                    ysize 50
+                    background emotion_info["color"]
+                    padding (10, 10)
+                    
+                    vbox:
+                        spacing 3
+                        text "Emotion" size 12 color "#ffffff"
+                        text "[current_emotion.upper()]" size 16 color "#ffffff" bold True
+                        text "[emotion_info['description']]" size 11 color "#ffffff"
+        
+                null height 30
+                # Button to show detailed stats
+                textbutton "View Detailed Stats" action ToggleVariable("show_detailed_stats") xsize 250 ysize 75
+        
+        # Timer that affects stats every second
+        if not in_cutscene:
+            timer 1.0 repeat True action [
+                Function(decrease_stats),
+                Function(update_motivation_and_progress)
+            ]
 
 screen calendar_now():
-    frame:
-        xalign 0.95
-        yalign 0.05
-        xsize 280
-        ysize 120
-        background "#2c3e50cc"
-        padding (15, 15)
-        
-        vbox:
-            spacing 15
+    showif not in_cutscene:  # Hide during cutscenes, show during interactive gameplay
+        frame:
+            xalign 0.95
+            yalign 0.05
+            xsize 280
+            ysize 120
+            background "#2c3e50cc"
+            padding (15, 15)
             
-            text "[current_day]/[current_month]/[current_year]" size 28 color "#ffffff"
-            text "[format_time()]" size 28 color "#ffffff"
-            textbutton "{size=24}View Calendar" action ToggleVariable("show_calendar") xsize 200 ysize 75
-    # Timer that affects stats every second
-    timer 1.0 repeat True action [
-        Function(advance_time, 1)
-    ]
+            vbox:
+                spacing 15
+                
+                text "[current_day]/[current_month]/[current_year]" size 28 color "#ffffff"
+                text "[format_time()]" size 28 color "#ffffff"
+                textbutton "{size=24}View Calendar" action ToggleVariable("show_calendar") xsize 200 ysize 75
+        # Timer that affects stats every second
+        if not in_cutscene:
+            timer 1.0 repeat True action [
+                Function(advance_time, 1)
+            ]
 
 # Imagemap for interactive areas (always visible)
 screen interactive_room():
@@ -366,7 +412,6 @@ screen calendar_window():
                     python:
                         days_in_month = get_days_in_month(current_month, current_year)
                         # Calculate first day of month (simplified - starts on Sunday for demo)
-                        import datetime
                         first_day = datetime.date(current_year, current_month, 1).weekday()
                         first_day = (first_day + 1) % 7  # Adjust so Sunday = 0
                     
@@ -514,37 +559,6 @@ screen detailed_stats_window():
                             text "Writing Skill Level [writing_level]" size 16 color "#ffffff"
                             bar value xp_in_level range required xsize 200 ysize 18 left_bar "#27ae60" right_bar "#2c3e50"
                             text "[xp_in_level]/[required] XP" size 14 color "#bdc3c7"
-
-# Python function to calculate motivation and progress
-init python:
-    def update_motivation_and_progress():
-        global motivation, thesis_progress, autonomy, competence, relatedness
-        global nutrition, physical_activity, valence, arousal
-        global practical_level, writing_level
-        
-        # Calculate motivation based on psychological needs and emotional state
-        psychological_avg = (autonomy + competence + relatedness) / 3
-        physical_avg = (nutrition + physical_activity) / 2
-        
-        # Motivation is influenced by all factors
-        target_motivation = (psychological_avg * 0.6 + physical_avg * 0.4)
-        
-        # Gradually adjust motivation towards target
-        # if motivation < target_motivation:
-        #     motivation = min(max_stat, motivation + 0.2)
-        # elif motivation > target_motivation:
-        #     motivation = max(0, motivation - 0.2)
-
-        # Instantly adjust motivation
-        motivation = target_motivation
-        
-        # Check for burnout
-        if motivation <= 0 or (autonomy <= 10 and competence <= 10):
-            renpy.jump("burnout")
-        
-        # Check for completion
-        if thesis_progress >= 100:
-            renpy.jump("thesis_complete")
 
 # Label to start the game
 label start:
