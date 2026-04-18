@@ -6,3 +6,4 @@ errors.txt
 # Game generated files
 /game/saves
 /game/cache
+*.rpyc
