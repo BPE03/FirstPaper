@@ -1,9 +1,107 @@
 ﻿# Label to start the game
 label start:
-    "Welcome to the Thesis Writing Simulator!"
-    "You are a graduate student working on your thesis."
-    "Manage your wellbeing, skills, and motivation to complete your thesis successfully!"
-    "Click on interactive areas or the button to perform activities."
+    "Jumat, 12 Desember 2025."
+    scene kelas with fade
+    p "Huft, akhirnya kelar juga EAS terakhir ini."
+    p "Mana susah-susah lagi, moga lulus semua aja dah."
+    p "Si Joko gimana tuh EAS-nya kira-kira?"
+    show joko with fade
+    p "Oi Jok!"
+    j "Lah, Paijo. EAS lu gimana?"
+    p "....."
+    p "Kita balas di semester depan bos."
+    j "Walah wkwkwk yang bener aja jo."
+    p "Yaudah lah yah, moga nilai tugas-tugas yang lain bisa bantu angkat lah."
+    p "Lu gimana?"
+    j "Gua positif aman sih, cuma ada beberapa soal yang gua ragu-ragu, tapi ya semoga bisa dapet A lah."
+    p "Amiin.. mantap-mantap."
+    j "Lu habis ini ada rencana apa?"
+    p "Ga ada sih, paling pulang terus tidur, capek banget."
+    j "Wkwkwk, gua juga sih, paling pulang terus main game, capek banget."
+    p "Wkwkwk, yaudah lah ya. Gua balik duluan yak."
+    j "Oke oke, tiati di jalan Jo."
+    p "Yoi."
+    scene black with fade
+    "Dengan hati yang lega, Paijo pun balik ke kosnya untuk mendapatkan hadiah dari kerja kerasnya."
+    "Kerja keras?"
+    "Hadiah?"
+    "Paijo tidak memedulikan detail kecil yang tiba-tiba muncul di benaknya."
+    "Yang ia tahu sekarang adalah, dia ingin menggunakan waktunya untuk bersenang-senang setelah menyelesaikan EAS."
+    p "Hmm kayak ada sesuatu yang ngeganjel, tapi apa yak?"
+    p "....."
+    p "....."
+    p "Ah ga tau lah, paling karena capek aja sih."
+    scene kos with fade
+    p "Hai istana, rajamu telah kembali."
+    "Pause"
+    p "Habis ngerjain EAS gini emang paling bener langsung tidur sih."
+    "Paijo pun bergegas mengganti bajunya dan langsung melakukan aktivitas yang sangat ia dambakan yaitu rebahan."
+    p "Hadeh tapi lagi kaga ngantuk gua."
+    "Paijo mengambil handphone-nya dan mulai membuka media sosial untuk menghabiskan waktu."
+    "Scrolling-scrolling...."
+    scene kos with fade
+    "Postingan demi postingan..."
+    scene kos with fade
+    "Reels demi reels..."
+    scene kos with fade
+    "Hal tersebut tanpa sadar sudah menghabiskan waktu selama 2 jam lamanya."
+    p "Wkwkwk lah bisa gitu raut mukanya."
+    "Notif.sfx"
+    "Semua kesenangan itu berubah ketika ada notifikasi masuk di handphone Paijo."
+    "Semua tawa yang ia keluarkan sebelumnya langsung menghilang seketika."
+    "Di dalam benak Paijo, dia tahu telah melupakan sesuatu yang besar."
+    "Namun dia tidak tahu apa itu."
+    "Perasaan itu selalu mengganjal di Paijo tetapi dia tidak terlalu memikirkannya."
+    "Namun notifikasi yang datang itu akhirnya menjelaskan sesuatu yang mengganjal tersebut."
+    j "\"Jo, proposal lu gimana? udah sebulan lagi seminar proposal nih.\""
+    p "....."
+    p "....."
+    "udah sebulan lagi seminar proposal nih."
+    "Sebulan?"
+    "Tentu saja."
+    "Proposal merupakan mata kuliah di semester ini, sehingga deadline seminar proposal seharusnya tidak jauh dari setelah EAS."
+    p "\"Ahh... proposal mah gampang, tinggal sat set diacc dosen kelar.\""
+    j "\"Hah, seriusan lu?\""
+    j "\"Lu tau kan ini udah tinggal sebulan lagi seminar proposal, berarti tinggal sebulan lagi buat ngerjain proposalnya?\""
+    p "....."
+    "Paijo tidak bisa berkata-kata."
+    "Ia membayangkan dirinya yang harus mengerjakan proposal dalam waktu sebulan ke depan, dan itu membuatnya merasa sangat tertekan."
+    j "\"Apalagi lu belum ada topik yang jelas, yakin ada topik langsung acc?\""
+    j "\"Mending langsung lu kerjain dah.\""
+    p "....."
+    p "Ahh...."
+    "Paijo memikirkan kembali momen-momen di mana dia menunda mengerjakan proposalnya."
+    "\"Ah masih lama... ntar aja lah lagi banyak tugas juga.\""
+    "\"Hmm lagi gak mood sih... paling besok atau kapan-kapan lah.\""
+    "Bro berpikir dia karakter utama."
+    "Tentu saja kemewahan itu tidak bisa berlangsung selamanya."
+    p "\"Aman lah, masih lama kok.\""
+    j "\"Lahh... serah lu dah.\""
+    j "\"Awas aja lu sampe ga sempro bulan depan.\""
+    j "\"Lama-lama dosen juga sungkem duluan sama lu.\""
+    p "\"Iya dah gua kerjain nih.\""
+    "Setelah itu juga Paijo tidak bisa menunda lagi."
+    "Dia bergegas membuka laptopnya dan mulai mencari-cari referensi untuk digunakan sebagai topik proposalnya."
+    "Namun, dia merasa sangat kesulitan untuk menemukan topik yang menarik dan sesuai dengan minatnya."
+    "Dia merasa sangat tertekan karena deadline seminar proposal semakin dekat, tetapi dia belum menemukan topik yang tepat."
+    "Ditambah dengan lelahnya setelah menyelesaikan EAS, dia merasa sangat kesulitan untuk mendapatkan ide."
+    p "Duh, ga nemu-nemu topik yang menarik."
+    p "Mana capek banget lagi."
+    p "Mending lanjut cari referensi atau lanjut besok aja ya?"
+    menu:
+        "Lanjutkan cari referensi?"
+        "Ayolah":
+            call prologue_lanjut
+        "Lanjut besok aja":
+            call prologue_lanjut_besok
+    show text "First Paper"
+    $ renpy.pause(5.0, hard=True) # Matches the transition time
+    show text "Dikembangkan oleh: Bimantara Putra Ernandra" with fade
+    $ renpy.pause(5.0, hard=True) # Matches the transition time
+    scene kos with fade
+    "Sabtu, 13 Desember 2025."
+    "Hari ini adalah hari di mana Paijo memulai perjalanannya untuk menyelesaikan proposalnya."
+    "Bantu Paijo kelola waktunya dengan baik, jaga kesehatan fisik dan mentalnya, dan kembangkan keterampilannya agar dia bisa menyelesaikan proposalnya tepat waktu!"
 
     # Show all screens
     show screen main_stats
@@ -12,6 +110,33 @@ label start:
     show screen calendar_window
     
     call screen interactive_room
+
+label prologue_lanjut:
+    "Paijo pun memutuskan untuk terus mencari referensi untuk proposalnya."
+    p "Cari terus lah, waktu tinggal dikit juga."
+    p "Inget kata-kata seorang youtuber."
+    p "Ngga dapet topik, ngga tidur."
+    "Paijo terus mencari referensi topik yang dapat ia pahami."
+    "Namun, semakin ia mencari, semakin ia merasa kelelahan dan kehilangan motivasi."
+    scene kos with fade
+    "Keesokan paginya, Paijo merasa sangat lelah dan tidak memiliki energi untuk melanjutkan pencarian referensi untuk proposalnya."
+    "Sehingga dengan berat hati, dia memutuskan untuk berhenti dan tidur."
+    $ valence = 20
+    $ arousal = 80
+    $ physical_activity = 20
+    $ nutrition = 15
+    $ autonomy = 20
+    $ competence = 20
+    $ current_hour = 12
+    scene black with fade
+    return
+
+label prologue_lanjut_besok:
+    "Paijo memutuskan untuk istirahat dan melanjutkan pencarian referensi untuk proposalnya besok."
+    "Tentu saja hal ini tidak membuatnya merasa lebih baik, karena dia tahu bahwa deadline seminar proposal semakin dekat."
+    "Namun, dia merasa bahwa dia tidak bisa memaksakan dirinya untuk terus mencari referensi ketika dia sudah sangat lelah."
+    scene black with fade
+    return
 
 # Main gameplay loop
 label main_gameplay:

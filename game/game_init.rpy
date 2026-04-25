@@ -1,11 +1,15 @@
+# Define characters
+define p = Character("Paijo", color="#77ff77")
+define j = Character("Joko", color="#c9982f")
+
 # Define your stats
-default motivation = 100
+default motivation = 50
 default thesis_progress = 0
-default autonomy = 100
-default competence = 100
-default relatedness = 100
-default nutrition = 100
-default physical_activity = 100
+default autonomy = 50
+default competence = 50
+default relatedness = 50
+default nutrition = 30
+default physical_activity = 50
 default valence = 50  # Emotional positivity
 default arousal = 50  # Energy/alertness
 default practical_xp = 0
@@ -24,7 +28,7 @@ default show_calendar = False
 default in_cutscene = False
 
 # Date and time variables
-default current_day = 17
+default current_day = 13
 default current_month = 12
 default current_year = 2025
 default current_hour = 9
@@ -43,12 +47,6 @@ init python:
         
         # Motivation is influenced by all factors
         target_motivation = (psychological_avg * 0.6 + physical_avg * 0.4)
-        
-        # Gradually adjust motivation towards target
-        # if motivation < target_motivation:
-        #     motivation = min(max_stat, motivation + 0.2)
-        # elif motivation > target_motivation:
-        #     motivation = max(0, motivation - 0.2)
 
         # Instantly adjust motivation
         motivation = target_motivation
