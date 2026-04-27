@@ -3,7 +3,7 @@ define p = Character("Paijo", color="#77ff77")
 define j = Character("Joko", color="#c9982f")
 
 # Define your stats
-default motivation = 50
+default motivation = 30
 default thesis_progress = 0
 default autonomy = 50
 default competence = 50
@@ -16,6 +16,7 @@ default practical_xp = 0
 default writing_xp = 0
 default practical_level = 1
 default writing_level = 1
+default score = 0
 default max_stat = 100
 
 # Variable to track if detailed stats window is shown
@@ -41,18 +42,13 @@ init python:
         global nutrition, physical_activity, valence, arousal
         global practical_level, writing_level
         
-        # Calculate motivation based on psychological needs and emotional state
-        psychological_avg = (autonomy + competence + relatedness) / 3
-        physical_avg = (nutrition + physical_activity) / 2
-        
-        # Motivation is influenced by all factors
-        target_motivation = (psychological_avg * 0.6 + physical_avg * 0.4)
-
-        # Instantly adjust motivation
-        motivation = target_motivation
+        # Motivation is the lowest stat among psychological and physical needs
+        # This reflects that if any basic need is not met, motivation suffers
+        all_stats = [autonomy, competence, relatedness, nutrition, physical_activity]
+        motivation = min(all_stats)
         
         # Check for burnout
-        if motivation <= 0 or (autonomy <= 10 and competence <= 10):
+        if motivation <= 0:
             renpy.jump("burnout")
         
         # Check for completion
@@ -138,23 +134,52 @@ init python:
         global practical_level, writing_level
         practical_level = get_level_from_xp(practical_xp)
         writing_level = get_level_from_xp(writing_xp)
+    
+    def calculate_thesis_score():
+        """Calculate score gained when writing thesis based on emotion, levels, and XP."""
+        global score, valence, arousal, practical_level, writing_level, practical_xp, writing_xp
+        
+        # Get current emotion and its multiplier from emotions_data
+        current_emotion = get_current_emotion()
+        emotion_data = emotions_data[current_emotion]
+        emotion_multiplier = emotion_data.get("score_multiplier", 1.0)
+        
+        # Level bonuses
+        level_bonus = (practical_level * 0.5) + (writing_level * 0.5)
+        
+        # XP experience bonus (more XP = more experienced = better score)
+        xp_bonus = (practical_xp / 1000.0) + (writing_xp / 1000.0)
+        
+        # Base score per thesis work session
+        base_score = 10
+        
+        # Calculate final score
+        final_score = int((base_score + level_bonus + xp_bonus) * emotion_multiplier)
+        
+        # Ensure minimum score of 1
+        final_score = max(1, final_score)
+        
+        # Add to total score
+        score += final_score
+        
+        return final_score
 
 # Emotion system based on (valence, arousal)
 init python:
     # Emotion coordinates in (valence, arousal) space
     emotions_data = {
-        "excited": {"valence": 81.3, "arousal": 83.4, "color": "#ff6b9d", "description": "Energized and enthusiastic"},
-        "happy": {"valence": 90.1, "arousal": 68.6, "color": "#ffd93d", "description": "Content and joyful"},
-        "satisfied": {"valence": 86.8, "arousal": 49.3, "color": "#6bcf7f", "description": "Pleased and content"},
-        "relaxed": {"valence": 75.0, "arousal": 17.4, "color": "#4a90e2", "description": "Calm and peaceful"},
-        "bored": {"valence": 24.4, "arousal": 22.9, "color": "#95a5a6", "description": "Unengaged and listless"},
-        "depressed": {"valence": 10.4, "arousal": 46.5, "color": "#34495e", "description": "Sad and fatigued"},
-        "sad": {"valence": 5.4, "arousal": 38.6, "color": "#2c3e50", "description": "Melancholic and withdrawn"},
-        "upset": {"valence": 12.5, "arousal": 60.8, "color": "#e74c3c", "description": "Angry and agitated"},
-        "stressed": {"valence": 12.5, "arousal": 80.9, "color": "#c0392b", "description": "Anxious and overwhelmed"},
-        "nervous": {"valence": 28.6, "arousal": 69.9, "color": "#e67e22", "description": "Anxious and alert"},
-        "tense": {"valence": 32.0, "arousal": 69.1, "color": "#d35400", "description": "Tense and activated"},
-        "neutral": {"valence": 50.0, "arousal": 50.0, "color": "#7f8c8d", "description": "Neutral and balanced"}
+        "excited": {"valence": 81.3, "arousal": 83.4, "color": "#ff6b9d", "description": "Energized and enthusiastic", "score_multiplier": 1.5},
+        "happy": {"valence": 90.1, "arousal": 68.6, "color": "#ffd93d", "description": "Content and joyful", "score_multiplier": 1.4},
+        "satisfied": {"valence": 86.8, "arousal": 49.3, "color": "#6bcf7f", "description": "Pleased and content", "score_multiplier": 1.3},
+        "relaxed": {"valence": 75.0, "arousal": 17.4, "color": "#4a90e2", "description": "Calm and peaceful", "score_multiplier": 1.2},
+        "bored": {"valence": 24.4, "arousal": 22.9, "color": "#95a5a6", "description": "Unengaged and listless", "score_multiplier": 0.7},
+        "depressed": {"valence": 10.4, "arousal": 46.5, "color": "#34495e", "description": "Sad and fatigued", "score_multiplier": 0.4},
+        "sad": {"valence": 5.4, "arousal": 38.6, "color": "#2c3e50", "description": "Melancholic and withdrawn", "score_multiplier": 0.5},
+        "upset": {"valence": 12.5, "arousal": 60.8, "color": "#e74c3c", "description": "Angry and agitated", "score_multiplier": 0.6},
+        "stressed": {"valence": 12.5, "arousal": 80.9, "color": "#c0392b", "description": "Anxious and overwhelmed", "score_multiplier": 0.5},
+        "nervous": {"valence": 28.6, "arousal": 69.9, "color": "#e67e22", "description": "Anxious and alert", "score_multiplier": 0.8},
+        "tense": {"valence": 32.0, "arousal": 69.1, "color": "#d35400", "description": "Tense and activated", "score_multiplier": 0.7},
+        "neutral": {"valence": 50.0, "arousal": 50.0, "color": "#7f8c8d", "description": "Neutral and balanced", "score_multiplier": 1.0}
     }
     
     def get_emotion_distance(v1, a1, v2, a2):
@@ -200,14 +225,14 @@ init python:
             return True
         return False
     
-    def decrease_stats():
+    def decrease_stats(time_minutes):
         """Decrease stats over time without going negative."""
         
-        store.autonomy = max(0, store.autonomy - 0.3)
-        store.competence = max(0, store.competence - 0.2)
-        store.relatedness = max(0, store.relatedness - 0.4)
-        store.nutrition = max(0, store.nutrition - 0.8)
-        store.physical_activity = max(0, store.physical_activity - 0.6)
-        store.valence = max(0, store.valence - 0.3)
-        store.arousal = max(0, store.arousal - 0.7)
+        #store.autonomy = max(0, store.autonomy - 0.3)
+        store.competence = max(0, store.competence - (0.1 * time_minutes))
+        store.relatedness = max(0, store.relatedness - (0.1 * time_minutes))
+        store.nutrition = max(0, store.nutrition - (0.104 * time_minutes))
+        store.physical_activity = max(0, store.physical_activity - (0.1 * time_minutes))
+        store.valence = max(0, store.valence - (0.1 * time_minutes))
+        store.arousal = max(0, store.arousal - (0.1 * time_minutes))
         renpy.retain_after_load()

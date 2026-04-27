@@ -5,7 +5,7 @@ screen main_stats():
             xalign 0.05
             yalign 0.05
             xsize 280
-            ysize 350
+            ysize 420
             background "#2c3e50cc"
             padding (15, 15)
             
@@ -52,14 +52,19 @@ screen main_stats():
                         text "[current_emotion.upper()]" size 16 color "#ffffff" bold True
                         text "[emotion_info['description']]" size 11 color "#ffffff"
         
-                null height 30
+                null height 1
+                # Score display
+                text "Score" size 18 color "#ffffff"
+                text "[score]" size 18 color "#f39c12" bold True
+
+                null height 5
                 # Button to show detailed stats
                 textbutton "View Detailed Stats" action ToggleVariable("show_detailed_stats") xsize 250 ysize 75
         
         # Timer that affects stats every second
         if not in_cutscene:
             timer 1.0 repeat True action [
-                Function(decrease_stats),
+                Function(decrease_stats, 1), 
                 Function(update_motivation_and_progress)
             ]
 

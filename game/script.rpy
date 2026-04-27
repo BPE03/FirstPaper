@@ -150,16 +150,20 @@ label main_gameplay:
                 $ writing_xp += 10
                 $ practical_xp += 5
                 $ update_levels()
+                $ earned_score = calculate_thesis_score()
                 $ arousal = max(0, arousal - 5)
                 $ nutrition = max(0, nutrition - 3)
                 $ update_motivation_and_progress()
                 "You worked on your thesis. Progress made!"
+                "You earned [earned_score] points!"
             else:
                 "You're too unmotivated to work effectively right now."
         
         "Eat a healthy meal":
-            $ nutrition = min(max_stat, nutrition + 35)
-            $ valence = min(max_stat, valence + 5)
+            $ nutrition = min(max_stat, nutrition + 50)
+            #$ valence = min(max_stat, valence + 5)
+            $ advance_time(30)
+            $ decrease_stats(30)
             $ update_motivation_and_progress()
             "You ate a nutritious meal. You feel better!"
         
@@ -247,6 +251,7 @@ label burnout:
             $ writing_xp = 0
             $ practical_level = 1
             $ writing_level = 1
+            $ score = 0
             jump start
         
         "No, quit":
@@ -270,6 +275,7 @@ label thesis_complete:
     "Practical Skill Level: [practical_level]"
     "Writing Skill Level: [writing_level]"
     "Final Motivation: [motivation]"
+    "Final Score: [score]"
     
     menu:
         "Play again?"
@@ -288,6 +294,7 @@ label thesis_complete:
             $ writing_xp = 0
             $ practical_level = 1
             $ writing_level = 1
+            $ score = 0
             jump start
         
         "No":
