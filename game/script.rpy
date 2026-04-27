@@ -120,7 +120,7 @@ label prologue_lanjut:
     "Namun, semakin ia mencari, semakin ia merasa kelelahan dan kehilangan motivasi."
     scene kos with fade
     "Keesokan paginya, Paijo merasa sangat lelah dan tidak memiliki energi untuk melanjutkan pencarian referensi untuk proposalnya."
-    "Sehingga dengan berat hati, dia memutuskan untuk berhenti dan tidur."
+    "Sehingga dengan berat hati, dia memutuskan untuk berhenti dan tidur sebelum kondisi kesehatannya memburuk."
     $ valence = 20
     $ arousal = 80
     $ physical_activity = 20
