@@ -127,6 +127,7 @@ label prologue_lanjut:
     $ nutrition = 15
     $ autonomy = 20
     $ competence = 20
+    $ sleep = 50
     $ current_hour = 12
     scene black with fade
     return
@@ -217,8 +218,59 @@ label main_gameplay:
             $ update_motivation_and_progress()
             "You took some time to rest."
         
+        "Skip time":
+            $ advance_time(60000)
+            "Skipping time"
+
         "Cancel":
             call screen interactive_room
+    
+    # Check for random event (1% chance)
+    call check_random_event
+    
+    call screen interactive_room
+
+# Random event system - 1% chance after any activity
+label check_random_event:
+    $ random_chance = renpy.random.randint(1, 100)
+    if random_chance > 1:
+        call random_event
+    return
+
+label random_event:
+    $ in_cutscene = True  # Enter cutscene mode to show event without stats/activity screens
+    $ event_type = renpy.random.choice(["lucky_find", "unexpected_visitors", "inspiration", "small_accident"])
+    
+    if event_type == "lucky_find":
+        "While going about your day, you find a useful reference article on the ground!"
+        "It turns out to be exactly what you needed for your thesis."
+        $ thesis_progress = min(100, thesis_progress + 3)
+        $ competence = min(max_stat, competence + 5)
+        "You gained 3 thesis progress and 5 competence!"
+    
+    elif event_type == "unexpected_visitors":
+        "Someone knocks on your door - it's an old friend you haven't seen in a while!"
+        "They came to surprise you with a visit."
+        $ relatedness = min(max_stat, relatedness + 15)
+        $ valence = min(max_stat, valence + 10)
+        "You gained 15 relatedness and 10 valence!"
+    
+    elif event_type == "inspiration":
+        "A sudden flash of inspiration hits you!"
+        "You feel motivated to work on your thesis right now."
+        $ motivation = min(100, motivation + 20)
+        $ competence = min(max_stat, competence + 5)
+        "You gained 20 motivation and 5 competence!"
+    
+    elif event_type == "small_accident":
+        "Oh no! You accidentally spilled water on your notes."
+        "You'll need to redo some of your work."
+        $ thesis_progress = max(0, thesis_progress - 2)
+        $ valence = max(0, valence - 10)
+        "You lost 2 thesis progress and 10 valence!"
+    
+    $ in_cutscene = False  # Exit cutscene mode after event
+    return
     call screen interactive_room
 
 # Burnout ending

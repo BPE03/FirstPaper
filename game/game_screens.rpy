@@ -193,7 +193,7 @@ screen calendar_window():
                     
                     # Day of week headers
                     hbox:
-                        spacing 5
+                        spacing 46
                         for day_name in ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]:
                             text day_name size 16 color "#ecf0f1" bold True xsize 75 text_align 0.5
                     
@@ -304,6 +304,12 @@ screen detailed_stats_window():
                             text "Physical Activity" size 16 color "#ffffff"
                             bar value physical_activity range max_stat xsize 200 ysize 18 left_bar "#e74c3c" right_bar "#2c3e50"
                             text "[physical_activity:.02f]/[max_stat]" size 14 color "#bdc3c7"
+                            
+                        vbox:
+                            spacing 5
+                            text "Sleep" size 16 color "#ffffff"
+                            bar value sleep range max_stat xsize 200 ysize 18 left_bar "#687279" right_bar "#2c3e50"
+                            text "[sleep:.02f]/[max_stat]" size 14 color "#bdc3c7"
                     
                     null height 15
                     

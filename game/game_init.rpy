@@ -10,6 +10,7 @@ default competence = 50
 default relatedness = 50
 default nutrition = 30
 default physical_activity = 50
+default sleep = 100
 default valence = 50  # Emotional positivity
 default arousal = 50  # Energy/alertness
 default practical_xp = 0
@@ -48,8 +49,8 @@ init python:
         motivation = min(all_stats)
         
         # Check for burnout
-        if motivation <= 0:
-            renpy.jump("burnout")
+        # if motivation <= 0:
+        #     renpy.jump("burnout")
         
         # Check for completion
         if thesis_progress >= 100:
@@ -227,12 +228,14 @@ init python:
     
     def decrease_stats(time_minutes):
         """Decrease stats over time without going negative."""
-        
+        global autonomy, competence, relatedness, nutrition, physical_activity, sleep, valence, arousal
+
         #store.autonomy = max(0, store.autonomy - 0.3)
-        store.competence = max(0, store.competence - (0.1 * time_minutes))
-        store.relatedness = max(0, store.relatedness - (0.1 * time_minutes))
-        store.nutrition = max(0, store.nutrition - (0.104 * time_minutes))
-        store.physical_activity = max(0, store.physical_activity - (0.1 * time_minutes))
-        store.valence = max(0, store.valence - (0.1 * time_minutes))
-        store.arousal = max(0, store.arousal - (0.1 * time_minutes))
+        competence = max(0, competence - (0.1 * time_minutes))
+        relatedness = max(0, relatedness - (0.1 * time_minutes))
+        nutrition = max(0, nutrition - (0.104 * time_minutes))
+        physical_activity = max(0, physical_activity - (0.1 * time_minutes))
+        sleep = max(0, sleep - (0.0625 * time_minutes))
+        valence = max(0, valence - (0.1 * time_minutes))
+        arousal = max(0, arousal - (0.1 * time_minutes))
         renpy.retain_after_load()
