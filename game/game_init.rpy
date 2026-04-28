@@ -45,7 +45,7 @@ init python:
         
         # Motivation is the lowest stat among psychological and physical needs
         # This reflects that if any basic need is not met, motivation suffers
-        all_stats = [autonomy, competence, relatedness, nutrition, physical_activity]
+        all_stats = [autonomy, competence, relatedness, nutrition, physical_activity, sleep]
         motivation = min(all_stats)
         
         # Check for burnout
@@ -58,7 +58,7 @@ init python:
 
     # Hide all screens during cutscenes, show during interactive gameplay
     def set_cutscene_mode(is_cutscene):
-        global in_cutscene
+        global in_cutscene, show_calendar, show_detailed_stats
         in_cutscene = is_cutscene
         show_calendar = False  # Ensure calendar is hidden during cutscenes
         show_detailed_stats = False  # Ensure detailed stats are hidden during cutscenes

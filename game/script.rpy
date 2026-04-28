@@ -238,7 +238,7 @@ label check_random_event:
     return
 
 label random_event:
-    $ in_cutscene = True  # Enter cutscene mode to show event without stats/activity screens
+    $ set_cutscene_mode(True)  # Enter cutscene mode to hide UI
     $ event_type = renpy.random.choice(["lucky_find", "unexpected_visitors", "inspiration", "small_accident"])
     
     if event_type == "lucky_find":
@@ -269,7 +269,7 @@ label random_event:
         $ valence = max(0, valence - 10)
         "You lost 2 thesis progress and 10 valence!"
     
-    $ in_cutscene = False  # Exit cutscene mode after event
+    $ set_cutscene_mode(False)  # Exit cutscene mode after event
     return
     call screen interactive_room
 

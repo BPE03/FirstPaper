@@ -151,7 +151,7 @@ screen motivation_warning():
 
 # Calendar window
 screen calendar_window():
-    if show_calendar:
+    showif show_calendar:
         # Modal background
         frame:
             background "#000000aa"
@@ -237,7 +237,7 @@ screen calendar_window():
 
 # Detailed stats window (shown when button is pressed)
 screen detailed_stats_window():
-    if show_detailed_stats:
+    showif show_detailed_stats:
         # Modal background
         frame:
             background "#000000aa"
