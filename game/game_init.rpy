@@ -36,6 +36,23 @@ default current_year = 2025
 default current_hour = 9
 default current_minute = 0
 
+# Calendar display variables
+default display_month = current_month
+default display_year = current_year
+
+# Calendar event data
+default calendar_events = [
+    {
+        "day": 9,
+        "month": 1,
+        "year": 2026,
+        "title": "Thesis Deadline",
+        "description": "Final thesis submission is due today. Prepare your final draft, supporting documents, and submit before the deadline."
+    }
+]
+default selected_calendar_event = None
+default show_event_details = False
+
 # Python function to calculate motivation and progress
 init python:
     def update_motivation_and_progress():
@@ -111,6 +128,35 @@ init python:
 
     def format_time():
         return "{:02d}:{:02d}".format(current_hour, current_minute)
+
+    def get_calendar_events(day, month, year):
+        return [event for event in calendar_events if event["day"] == day and event["month"] == month and event["year"] == year]
+
+    def get_next_calendar_event():
+        today = datetime.date(current_year, current_month, current_day)
+        future_events = [event for event in calendar_events if datetime.date(event["year"], event["month"], event["day"]) >= today]
+        if not future_events:
+            return None
+        return sorted(future_events, key=lambda e: (e["year"], e["month"], e["day"]))[0]
+
+    def set_selected_calendar_event(event):
+        global selected_calendar_event, show_event_details
+        selected_calendar_event = event
+        show_event_details = True
+
+    def next_display_month():
+        global display_month, display_year
+        display_month += 1
+        if display_month > 12:
+            display_month = 1
+            display_year += 1
+
+    def prev_display_month():
+        global display_month, display_year
+        display_month -= 1
+        if display_month < 1:
+            display_month = 12
+            display_year -= 1
 
 # Level system functions
 init python:

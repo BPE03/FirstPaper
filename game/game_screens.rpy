@@ -163,7 +163,7 @@ screen calendar_window():
                 xalign 0.5
                 yalign 0.2
                 xsize 600
-                ysize 600
+                ysize 640
                 background "#34495e"
                 padding (25, 25)
                 
@@ -171,12 +171,24 @@ screen calendar_window():
                     spacing 15
                     
                     hbox:
-                        text "Calendar - [month_names[current_month]] [current_year]" size 28 color "#ecf0f1" bold True
+                        textbutton "✕ Close":
+                            action [SetVariable("show_calendar", False), SetVariable("show_event_details", False)]
+                            text_size 20
+                            #xalign 0.95
+                    
+                    null height 1
+                    
+                    hbox:
                         xfill True
-                        textbutton "✕ Close" action SetVariable("show_calendar", False) text_size 20 xalign 1.0
-                    
-                    null height 10
-                    
+                        textbutton "Prev":
+                            action Function(prev_display_month)
+                            text_size 20
+                        text "Calendar - [month_names[display_month]] [display_year]" size 25 color "#ecf0f1" bold True xalign 0.5
+                        textbutton "Next":
+                            action Function(next_display_month)
+                            text_size 20
+                            xpos 1.0
+                            xanchor 1.0
                     # Current date and time display
                     frame:
                         background "#2c3e50"
@@ -199,9 +211,9 @@ screen calendar_window():
                     
                     # Calendar grid
                     python:
-                        days_in_month = get_days_in_month(current_month, current_year)
+                        days_in_month = get_days_in_month(display_month, display_year)
                         # Calculate first day of month (simplified - starts on Sunday for demo)
-                        first_day = datetime.date(current_year, current_month, 1).weekday()
+                        first_day = datetime.date(display_year, display_month, 1).weekday()
                         first_day = (first_day + 1) % 7  # Adjust so Sunday = 0
                     
                     # Calendar days
@@ -212,15 +224,27 @@ screen calendar_window():
                                 spacing 5
                                 for day_of_week in range(7):
                                     $ day_number = week * 7 + day_of_week - first_day + 1
+                                    $ day_events = get_calendar_events(day_number, display_month, display_year)
+                                    $ has_event = len(day_events) > 0
                                     if day_number > 0 and day_number <= days_in_month:
-                                        if day_number == current_day:
+                                        if day_number == current_day and display_month == current_month and display_year == current_year:
                                             # Highlight current day
                                             frame:
-                                                background "#2ecc71"
+                                                background "#2ecc72"
                                                 xsize 75
                                                 ysize 50
                                                 padding (5, 5)
                                                 text "[day_number]" size 18 color "#ffffff" bold True xalign 0.5 yalign 0.5
+                                        elif has_event:
+                                            frame:
+                                                background "#e67e22"
+                                                xsize 75
+                                                ysize 50
+                                                padding (5, 5)
+                                                textbutton "[day_number]":
+                                                    text_style "my_textbutton_text"
+                                                    xalign 0.5 yalign 0.5
+                                                    action Function(set_selected_calendar_event, day_events[0]) 
                                         else:
                                             frame:
                                                 background "#7f8c8d"
@@ -234,6 +258,43 @@ screen calendar_window():
                                             background None
                                             xsize 75
                                             ysize 50
+
+                    #null height 1
+
+                    # Event details section
+                    $ next_event = get_next_calendar_event()
+                    if next_event is not None:
+                        frame:
+                            background "#2c3e50"
+                            xsize 550
+                            padding (10, 10)
+                            vbox:
+                                spacing 5
+                                text "Upcoming Event" size 18 color "#3498db" bold True
+                                textbutton "[next_event['title']] – [month_names[next_event['month']]] [next_event['day']]" action Function(set_selected_calendar_event, next_event) xalign 0.0 text_size 18
+                                text "Click any highlighted date on the calendar to see event details." size 14 color "#bdc3c7"
+                    else:
+                        frame:
+                            background "#2c3e50"
+                            xsize 550
+                            padding (10, 10)
+                            vbox:
+                                spacing 5
+                                text "No upcoming events" size 18 color "#3498db" bold True
+                                text "There are currently no events scheduled on the calendar." size 16 color "#ecf0f1"
+
+                    if show_event_details and selected_calendar_event is not None:
+                        frame:
+                            background "#1a252f"
+                            xsize 550
+                            padding (15, 15)
+                            vbox:
+                                spacing 8
+                                text "[selected_calendar_event['title']]" size 22 color "#ecf0f1" bold True
+                                text "Date: [month_names[selected_calendar_event['month']]] [selected_calendar_event['day']], [selected_calendar_event['year']]" size 16 color "#ffffff"
+                                text "[selected_calendar_event['description']]" size 16 color "#bdc3c7" text_align 0.0
+                                null height 8
+                                textbutton "Close Event Details" action [SetVariable("show_event_details", False), SetVariable("selected_calendar_event", None)] xalign 0.0 text_size 18
 
 # Detailed stats window (shown when button is pressed)
 screen detailed_stats_window():

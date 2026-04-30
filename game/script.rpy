@@ -141,89 +141,174 @@ label prologue_lanjut_besok:
 
 # Main gameplay loop
 label main_gameplay:
+    $ activity = None
     menu:
         "What would you like to do?"
         
         "Work on thesis (Requires motivation > 30)":
-            if motivation > 30:
-                $ thesis_progress = min(100, thesis_progress + 2)
-                $ competence = min(max_stat, competence + 1)
-                $ writing_xp += 10
-                $ practical_xp += 5
-                $ update_levels()
-                $ earned_score = calculate_thesis_score()
-                $ arousal = max(0, arousal - 5)
-                $ nutrition = max(0, nutrition - 3)
-                $ update_motivation_and_progress()
-                "You worked on your thesis. Progress made!"
-                "You earned [earned_score] points!"
-            else:
-                "You're too unmotivated to work effectively right now."
+            $ activity = "thesis"
         
         "Eat a healthy meal":
-            $ nutrition = min(max_stat, nutrition + 50)
-            #$ valence = min(max_stat, valence + 5)
-            $ advance_time(30)
-            $ decrease_stats(30)
-            $ update_motivation_and_progress()
-            "You ate a nutritious meal. You feel better!"
+            $ activity = "eat"
         
         "Exercise / Go for a walk":
-            $ physical_activity = min(max_stat, physical_activity + 30)
-            $ arousal = min(max_stat, arousal + 15)
-            $ valence = min(max_stat, valence + 10)
-            $ update_motivation_and_progress()
-            "You exercised. You feel refreshed and energized!"
+            $ activity = "exercise"
         
         "Meet with advisor":
-            $ autonomy = min(max_stat, autonomy + 15)
-            $ competence = min(max_stat, competence + 10)
-            $ relatedness = min(max_stat, relatedness + 20)
-            $ practical_xp += 5
-            $ update_levels()
-            $ update_motivation_and_progress()
-            "You met with your advisor. You gained clarity and direction!"
+            $ activity = "advisor"
         
         "Socialize with friends":
-            $ relatedness = min(max_stat, relatedness + 30)
-            $ valence = min(max_stat, valence + 20)
-            $ update_motivation_and_progress()
-            "You spent time with friends. You feel connected and happy!"
+            $ activity = "socialize"
         
         "Take a nap":
-            $ arousal = min(max_stat, arousal + 25)
-            $ valence = min(max_stat, valence + 10)
-            $ update_motivation_and_progress()
-            "You took a nap. You feel more alert now!"
+            $ activity = "nap"
         
         "Attend a workshop / Learn new skills":
-            $ practical_xp += 15
-            $ writing_xp += 10
-            $ update_levels()
-            $ competence = min(max_stat, competence + 10)
-            $ arousal = max(0, arousal - 10)
-            $ update_motivation_and_progress()
-            "You attended a workshop. Your skills improved!"
+            $ activity = "workshop"
         
         "Practice self-directed learning":
-            $ autonomy = min(max_stat, autonomy + 20)
-            $ writing_xp += 8
-            $ update_levels()
-            $ update_motivation_and_progress()
-            "You studied independently. You feel more in control!"
+            $ activity = "selflearn"
         
         "Just rest and do nothing":
-            $ arousal = min(max_stat, arousal + 10)
-            $ valence = min(max_stat, valence + 5)
-            $ update_motivation_and_progress()
-            "You took some time to rest."
+            $ activity = "rest"
         
         "Skip time":
-            $ advance_time(60000)
-            "Skipping time"
+            $ activity = "skip"
 
         "Cancel":
-            call screen interactive_room
+            $ activity = "cancel"
+    
+    if activity == "cancel":
+        call screen interactive_room
+    
+    # Ask for time
+    $ time_input = renpy.input("How many minutes will you spend on this activity?", default="60")
+    $ time_minutes = int(time_input) if time_input.isdigit() else 60
+    if time_minutes <= 0:
+        $ time_minutes = 60
+    
+    # Set base minutes for scaling
+    if activity == "thesis":
+        $ base_minutes = 60
+    elif activity == "eat":
+        $ base_minutes = 30
+    elif activity == "exercise":
+        $ base_minutes = 60
+    elif activity == "advisor":
+        $ base_minutes = 60
+    elif activity == "socialize":
+        $ base_minutes = 60
+    elif activity == "nap":
+        $ base_minutes = 60
+    elif activity == "workshop":
+        $ base_minutes = 120
+    elif activity == "selflearn":
+        $ base_minutes = 60
+    elif activity == "rest":
+        $ base_minutes = 60
+    elif activity == "skip":
+        $ base_minutes = 1  # doesn't matter
+    
+    $ per_scale = 1.0 / base_minutes
+    
+    # Loop through each minute
+    python:
+        for i in range(time_minutes):
+            advance_time(1)
+            decrease_stats(1)
+            
+            if activity == "thesis":
+                if motivation > 30:
+                    store.thesis_progress = min(100, store.thesis_progress + 2 * per_scale)
+                    store.competence = min(store.max_stat, store.competence + 1 * per_scale)
+                    store.writing_xp += 10 * per_scale
+                    store.practical_xp += 5 * per_scale
+                    store.arousal = max(0, store.arousal - 5 * per_scale)
+                    store.nutrition = max(0, store.nutrition - 3 * per_scale)
+            
+            elif activity == "eat":
+                store.nutrition = min(store.max_stat, store.nutrition + 50 * per_scale)
+            
+            elif activity == "exercise":
+                store.physical_activity = min(store.max_stat, store.physical_activity + 30 * per_scale)
+                store.arousal = min(store.max_stat, store.arousal + 15 * per_scale)
+                store.valence = min(store.max_stat, store.valence + 10 * per_scale)
+            
+            elif activity == "advisor":
+                store.autonomy = min(store.max_stat, store.autonomy + 15 * per_scale)
+                store.competence = min(store.max_stat, store.competence + 10 * per_scale)
+                store.relatedness = min(store.max_stat, store.relatedness + 20 * per_scale)
+                store.practical_xp += 5 * per_scale
+            
+            elif activity == "socialize":
+                store.relatedness = min(store.max_stat, store.relatedness + 30 * per_scale)
+                store.valence = min(store.max_stat, store.valence + 20 * per_scale)
+            
+            elif activity == "nap":
+                store.arousal = min(store.max_stat, store.arousal + 25 * per_scale)
+                store.valence = min(store.max_stat, store.valence + 10 * per_scale)
+            
+            elif activity == "workshop":
+                store.practical_xp += 15 * per_scale
+                store.writing_xp += 10 * per_scale
+                store.competence = min(store.max_stat, store.competence + 10 * per_scale)
+                store.arousal = max(0, store.arousal - 10 * per_scale)
+            
+            elif activity == "selflearn":
+                store.autonomy = min(store.max_stat, store.autonomy + 20 * per_scale)
+                store.writing_xp += 8 * per_scale
+            
+            elif activity == "rest":
+                store.arousal = min(store.max_stat, store.arousal + 10 * per_scale)
+                store.valence = min(store.max_stat, store.valence + 5 * per_scale)
+            
+            # For skip, no effects
+    
+    # Update levels and motivation after loop
+    if activity in ["thesis", "advisor", "workshop", "selflearn"]:
+        $ update_levels()
+    
+    $ update_motivation_and_progress()
+    
+    # Show messages
+    if activity == "thesis":
+        if motivation > 30:
+            $ earned_score = calculate_thesis_score()
+            "You worked on your thesis for [time_minutes] minutes. Progress made!"
+            "You earned [earned_score] points!"
+        else:
+            "You're too unmotivated to work effectively right now."
+    
+    elif activity == "eat":
+        "You ate a nutritious meal for [time_minutes] minutes. You feel better!"
+    
+    elif activity == "exercise":
+        "You exercised for [time_minutes] minutes. You feel refreshed and energized!"
+    
+    elif activity == "advisor":
+        "You met with your advisor for [time_minutes] minutes. You gained clarity and direction!"
+    
+    elif activity == "socialize":
+        "You spent time with friends for [time_minutes] minutes. You feel connected and happy!"
+    
+    elif activity == "nap":
+        "You took a nap for [time_minutes] minutes. You feel more alert now!"
+    
+    elif activity == "workshop":
+        "You attended a workshop for [time_minutes] minutes. Your skills improved!"
+    
+    elif activity == "selflearn":
+        "You studied independently for [time_minutes] minutes. You feel more in control!"
+    
+    elif activity == "rest":
+        "You rested for [time_minutes] minutes."
+    
+    elif activity == "skip":
+        "You skipped [time_minutes] minutes."
+    
+    # Fast-forward effect
+    "Time passes quickly..."
+    $ renpy.pause(0.5)
     
     # Check for random event (1% chance)
     call check_random_event
