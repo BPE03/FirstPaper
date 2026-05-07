@@ -53,6 +53,13 @@ default calendar_events = [
 default selected_calendar_event = None
 default show_event_details = False
 
+# Sleep mechanic variables (based on circadian rhythm and adenosine buildup)
+default sleep_debt = 0  # Hours of missed sleep, accumulates over time
+default adenosine_level = 0  # Sleep pressure (0-100), increases during wakefulness
+default last_sleep_time = 0  # Timestamp (in hours) of last sleep
+default caffeine_level = 0  # Caffeine in system (0-100), blocks adenosine
+default total_hours_awake = 0  # Track how long character has been awake
+
 # Python function to calculate motivation and progress
 init python:
     def update_motivation_and_progress():
@@ -275,13 +282,192 @@ init python:
     def decrease_stats(time_minutes):
         """Decrease stats over time without going negative."""
         global autonomy, competence, relatedness, nutrition, physical_activity, sleep, valence, arousal
+        global sleep_debt, adenosine_level
 
         #store.autonomy = max(0, store.autonomy - 0.3)
         competence = max(0, competence - (0.1 * time_minutes))
         relatedness = max(0, relatedness - (0.1 * time_minutes))
         nutrition = max(0, nutrition - (0.104 * time_minutes))
         physical_activity = max(0, physical_activity - (0.1 * time_minutes))
-        sleep = max(0, sleep - (0.0625 * time_minutes))
+        
+        # Update sleep-wake cycle: adenosine builds up, decreasing sleep stat
+        update_adenosine()
+        
+        # Sleep stat decreases faster based on adenosine level
+        # If adenosine is high (high sleep pressure), sleep stat drops faster
+        adenosine_effect = (adenosine_level / 100) * 0.05  # Max 0.05 extra per minute
+        sleep = max(0, sleep - (0.0625 * time_minutes) - adenosine_effect)
+        
+        # Apply circadian rhythm effect: sleep stat decreases slower during optimal sleep times
+        circadian_factor = get_circadian_rhythm_factor()
+        if circadian_factor < 0.5:  # Daytime (poor sleep alignment)
+            sleep = max(0, sleep - (0.02 * time_minutes))  # Extra penalty during day
+        
         valence = max(0, valence - (0.1 * time_minutes))
         arousal = max(0, arousal - (0.1 * time_minutes))
+        
+        # Apply sleep deprivation penalties
+        if sleep <= 30:  # Only when really tired
+            sleep_debt += time_minutes / 60  # Accumulate sleep debt in hours
+        
+        apply_sleep_deprivation_penalty()
+        
+        renpy.retain_after_load()
+
+    # Sleep Mechanic Functions (based on NHLBI Sleep-Wake Cycle research)
+    # https://www.nhlbi.nih.gov/health/sleep/sleep-wake-cycle
+    
+    def get_circadian_rhythm_factor():
+        """
+        Returns a factor (0.0-1.0) representing how aligned the current time is 
+        with natural sleep patterns. Based on melatonin release and cortisol patterns.
+        
+        Peak sleep time: 2-4 AM (factor ~1.0 - best sleep)
+        Wake time: 6-8 AM (cortisol rises)
+        Afternoon dip: 2-3 PM (factor ~0.6)
+        Evening: 10 PM - midnight (factor ~0.9)
+        """
+        hour = current_hour
+        
+        # Night time: 10 PM - 8 AM is prime sleep time
+        if 22 <= hour or hour < 8:
+            # Peak at 2-4 AM (hour 2-4)
+            if 2 <= hour < 4:
+                return 1.0
+            # Good sleep time 10 PM - 8 AM
+            elif 22 <= hour or hour < 6:
+                return 0.9
+            # Morning transition 6-8 AM (waking up with cortisol)
+            else:  # 6-8
+                return 0.7
+        # Morning: 8 AM - noon (awake time, low sleep quality)
+        elif 8 <= hour < 12:
+            return 0.2
+        # Afternoon: noon - 6 PM (very low, afternoon energy dip 2-3 PM is ~0.6)
+        elif 12 <= hour < 15:
+            return 0.4
+        elif 15 <= hour < 18:
+            return 0.3
+        # Evening: 6 PM - 10 PM (gradually increasing melatonin)
+        else:  # 18-22
+            return 0.5
+    
+    def update_adenosine():
+        """
+        Updates adenosine level based on time awake.
+        Adenosine is a compound that builds up during wakefulness and signals
+        the need for sleep. Caffeine blocks adenosine.
+        """
+        global adenosine_level, total_hours_awake, caffeine_level
+        
+        # Adenosine increases ~10 points per hour awake
+        adenosine_increase = 0.167  # 10 per hour = 0.167 per minute
+        
+        # Caffeine fades over time (~25% per hour)
+        caffeine_level = max(0, caffeine_level - 0.417)  # 25% per hour = 0.417 per minute
+        
+        # Caffeine blocks adenosine (reduces perceived sleep pressure)
+        if caffeine_level > 0:
+            caffeine_blocking = (caffeine_level / 100) * 0.5  # Max 50% reduction
+            adenosine_level = max(0, adenosine_level - (adenosine_increase * caffeine_blocking))
+        else:
+            adenosine_level = min(100, adenosine_level + adenosine_increase)
+        
+        total_hours_awake += 1/60  # Convert minutes to hours
+    
+    def get_sleep_quality_factor():
+        """
+        Returns a factor (0.0-2.0) for how effectively sleep restores the character.
+        Based on:
+        - Time of day (circadian alignment)
+        - Hours slept (more is better, diminishing returns after 8 hours)
+        - Sleep debt (recovering from debt reduces quality slightly)
+        """
+        circadian_factor = get_circadian_rhythm_factor()
+        
+        # More circadian alignment = better sleep quality
+        return 0.5 + (circadian_factor * 1.5)
+    
+    def calculate_sleep_recovery(hours_slept):
+        """
+        Calculates how much sleep stat recovery occurs for sleeping N hours.
+        Takes into account circadian rhythm and sleep debt.
+        
+        Returns: (sleep_stat_gained, adenosine_reduction)
+        """
+        # Base recovery: ~20 points per hour of sleep
+        base_recovery = hours_slept * 20
+        
+        # Apply circadian factor for quality
+        quality_factor = get_sleep_quality_factor()
+        recovery_with_quality = base_recovery * (quality_factor / 2.0)
+        
+        # Diminishing returns after 8 hours
+        if hours_slept > 8:
+            excess = hours_slept - 8
+            recovery_with_quality = recovery_with_quality - (excess * 5)
+        
+        # Cap at max sleep stat
+        sleep_recovery = min(100, recovery_with_quality)
+        
+        # Adenosine reduction: almost complete reset with good sleep
+        adenosine_reduction = hours_slept * 15  # 100 adenosine cleared per ~6.7 hours
+        
+        return (sleep_recovery, adenosine_reduction)
+    
+    def apply_sleep_deprivation_penalty():
+        """
+        Applies penalties to stats when sleep debt is high.
+        Based on research showing sleep deprivation affects cognitive function,
+        emotional regulation, and immune system.
+        """
+        global autonomy, competence, relatedness, valence, arousal, sleep_debt
+        
+        if sleep_debt > 0:
+            # Mild penalty for 1-4 hours of debt
+            if sleep_debt <= 4:
+                penalty = sleep_debt * 2
+                competence = max(0, competence - penalty)
+            # Severe penalty for 4+ hours of debt
+            else:
+                severe_debt = sleep_debt - 4
+                competence = max(0, competence - (8 + severe_debt * 5))
+                arousal = max(0, arousal - (severe_debt * 3))
+                valence = max(0, valence - (severe_debt * 2))
+    
+    def perform_sleep(hours_to_sleep):
+        """
+        Main sleep function that handles sleeping for N hours.
+        Updates all relevant stats and time.
+        """
+        global sleep, adenosine_level, total_hours_awake, sleep_debt
+        global valence, arousal, current_hour, current_minute, current_day
+        global current_month, current_year
+        
+        # Validate input
+        hours_to_sleep = max(1, min(12, hours_to_sleep))  # Clamp 1-12 hours
+        
+        # Calculate sleep recovery
+        sleep_gained, adenosine_cleared = calculate_sleep_recovery(hours_to_sleep)
+        
+        # Update stats
+        sleep = min(100, sleep + sleep_gained)
+        adenosine_level = max(0, adenosine_level - adenosine_cleared)
+        
+        # Clear part of sleep debt
+        debt_cleared = min(sleep_debt, hours_to_sleep)
+        sleep_debt = max(0, sleep_debt - debt_cleared)
+        
+        # Reset time awake counter
+        total_hours_awake = 0
+        
+        # Emotional effects of sleep (rested feeling)
+        # Good sleep improves mood and arousal
+        circadian_quality = get_sleep_quality_factor()
+        valence = min(100, valence + (circadian_quality * 10))
+        arousal = min(100, arousal + (circadian_quality * 8))
+        
+        # Advance time
+        advance_time(int(hours_to_sleep * 60))
+        
         renpy.retain_after_load()

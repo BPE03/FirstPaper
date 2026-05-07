@@ -163,6 +163,9 @@ label main_gameplay:
         "Take a nap":
             $ activity = "nap"
         
+        "Sleep (Full sleep cycle)":
+            $ activity = "sleep"
+        
         "Attend a workshop / Learn new skills":
             $ activity = "workshop"
         
@@ -181,17 +184,35 @@ label main_gameplay:
     if activity == "cancel":
         call screen interactive_room
     
-    # Ask for time
-    $ time_input = renpy.input("How many minutes will you spend on this activity?", default="60")
-    $ time_minutes = int(time_input) if time_input.isdigit() else 60
-    if time_minutes <= 0:
-        $ time_minutes = 60
+    # Ask for time in hours and minutes
+    if activity == "eat":
+        $ time_minutes = 20
+    elif activity == "sleep":
+        $ sleep_hours_input = renpy.input("How many hours will you sleep? (4-10 hours recommended)", default="8")
+        $ sleep_hours = int(sleep_hours_input) if sleep_hours_input.isdigit() else 8
+        $ sleep_hours = max(4, min(10, sleep_hours))  # Clamp to 4-10 hours
+        $ time_minutes = sleep_hours * 60
+    else:
+        $ hours_input = renpy.input("How many hours will you spend on this activity?", default="1")
+        $ minutes_input = renpy.input("How many additional minutes?", default="0")
+        $ hours = int(hours_input) if hours_input.isdigit() else 1
+        $ minutes = int(minutes_input) if minutes_input.isdigit() else 0
+        if hours < 0:
+            $ hours = 1
+        if minutes < 0:
+            $ minutes = 0
+        elif minutes >= 60:
+            $ hours += minutes // 60
+            $ minutes = minutes % 60
+        $ time_minutes = hours * 60 + minutes
+        if time_minutes <= 0:
+            $ time_minutes = 60
     
     # Set base minutes for scaling
     if activity == "thesis":
         $ base_minutes = 60
     elif activity == "eat":
-        $ base_minutes = 30
+        $ base_minutes = 20
     elif activity == "exercise":
         $ base_minutes = 60
     elif activity == "advisor":
@@ -200,6 +221,8 @@ label main_gameplay:
         $ base_minutes = 60
     elif activity == "nap":
         $ base_minutes = 60
+    elif activity == "sleep":
+        $ base_minutes = time_minutes  # For sleep, scale based on actual hours
     elif activity == "workshop":
         $ base_minutes = 120
     elif activity == "selflearn":
@@ -211,56 +234,64 @@ label main_gameplay:
     
     $ per_scale = 1.0 / base_minutes
     
-    # Loop through each minute
-    python:
-        for i in range(time_minutes):
-            advance_time(1)
-            decrease_stats(1)
-            
-            if activity == "thesis":
-                if motivation > 30:
-                    store.thesis_progress = min(100, store.thesis_progress + 2 * per_scale)
-                    store.competence = min(store.max_stat, store.competence + 1 * per_scale)
-                    store.writing_xp += 10 * per_scale
+    # Special handling for sleep activity - uses dedicated sleep mechanic
+    if activity == "sleep":
+        $ sleep_hours = time_minutes // 60
+        "You head to bed for the night..."
+        "Zzzzzzz... [sleep_hours] hours of sleep..."
+        $ perform_sleep(sleep_hours)
+        scene black with fade
+    # Loop through each minute for other activities
+    else:
+        python:
+            for i in range(time_minutes):
+                advance_time(1)
+                decrease_stats(1)
+                
+                if activity == "thesis":
+                    if motivation > 30:
+                        store.thesis_progress = min(100, store.thesis_progress + 2 * per_scale)
+                        store.competence = min(store.max_stat, store.competence + 1 * per_scale)
+                        store.writing_xp += 10 * per_scale
+                        store.practical_xp += 5 * per_scale
+                        store.arousal = max(0, store.arousal - 5 * per_scale)
+                        store.nutrition = max(0, store.nutrition - 3 * per_scale)
+                
+                elif activity == "eat":
+                    store.nutrition = min(store.max_stat, store.nutrition + 50 * per_scale)
+                
+                elif activity == "exercise":
+                    store.physical_activity = min(store.max_stat, store.physical_activity + 30 * per_scale)
+                    store.arousal = min(store.max_stat, store.arousal + 15 * per_scale)
+                    store.valence = min(store.max_stat, store.valence + 10 * per_scale)
+                
+                elif activity == "advisor":
+                    store.autonomy = min(store.max_stat, store.autonomy + 15 * per_scale)
+                    store.competence = min(store.max_stat, store.competence + 10 * per_scale)
+                    store.relatedness = min(store.max_stat, store.relatedness + 20 * per_scale)
                     store.practical_xp += 5 * per_scale
-                    store.arousal = max(0, store.arousal - 5 * per_scale)
-                    store.nutrition = max(0, store.nutrition - 3 * per_scale)
-            
-            elif activity == "eat":
-                store.nutrition = min(store.max_stat, store.nutrition + 50 * per_scale)
-            
-            elif activity == "exercise":
-                store.physical_activity = min(store.max_stat, store.physical_activity + 30 * per_scale)
-                store.arousal = min(store.max_stat, store.arousal + 15 * per_scale)
-                store.valence = min(store.max_stat, store.valence + 10 * per_scale)
-            
-            elif activity == "advisor":
-                store.autonomy = min(store.max_stat, store.autonomy + 15 * per_scale)
-                store.competence = min(store.max_stat, store.competence + 10 * per_scale)
-                store.relatedness = min(store.max_stat, store.relatedness + 20 * per_scale)
-                store.practical_xp += 5 * per_scale
-            
-            elif activity == "socialize":
-                store.relatedness = min(store.max_stat, store.relatedness + 30 * per_scale)
-                store.valence = min(store.max_stat, store.valence + 20 * per_scale)
-            
-            elif activity == "nap":
-                store.arousal = min(store.max_stat, store.arousal + 25 * per_scale)
-                store.valence = min(store.max_stat, store.valence + 10 * per_scale)
-            
-            elif activity == "workshop":
-                store.practical_xp += 15 * per_scale
-                store.writing_xp += 10 * per_scale
-                store.competence = min(store.max_stat, store.competence + 10 * per_scale)
-                store.arousal = max(0, store.arousal - 10 * per_scale)
-            
-            elif activity == "selflearn":
-                store.autonomy = min(store.max_stat, store.autonomy + 20 * per_scale)
-                store.writing_xp += 8 * per_scale
-            
-            elif activity == "rest":
-                store.arousal = min(store.max_stat, store.arousal + 10 * per_scale)
-                store.valence = min(store.max_stat, store.valence + 5 * per_scale)
+                
+                elif activity == "socialize":
+                    store.relatedness = min(store.max_stat, store.relatedness + 30 * per_scale)
+                    store.valence = min(store.max_stat, store.valence + 20 * per_scale)
+                
+                elif activity == "nap":
+                    store.arousal = min(store.max_stat, store.arousal + 25 * per_scale)
+                    store.valence = min(store.max_stat, store.valence + 10 * per_scale)
+                
+                elif activity == "workshop":
+                    store.practical_xp += 15 * per_scale
+                    store.writing_xp += 10 * per_scale
+                    store.competence = min(store.max_stat, store.competence + 10 * per_scale)
+                    store.arousal = max(0, store.arousal - 10 * per_scale)
+                
+                elif activity == "selflearn":
+                    store.autonomy = min(store.max_stat, store.autonomy + 20 * per_scale)
+                    store.writing_xp += 8 * per_scale
+                
+                elif activity == "rest":
+                    store.arousal = min(store.max_stat, store.arousal + 10 * per_scale)
+                    store.valence = min(store.max_stat, store.valence + 5 * per_scale)
             
             # For skip, no effects
     
@@ -294,6 +325,15 @@ label main_gameplay:
     elif activity == "nap":
         "You took a nap for [time_minutes] minutes. You feel more alert now!"
     
+    elif activity == "sleep":
+        $ sleep_hours = time_minutes // 60
+        $ circadian_quality = get_sleep_quality_factor()
+        if circadian_quality >= 1.3:
+            "You had a wonderful night's sleep! You feel completely refreshed!"
+        else:
+            "You woke up feeling reasonably rested."
+        "Adenosine level: [int(adenosine_level)], Sleep debt: [int(sleep_debt)] hours"
+    
     elif activity == "workshop":
         "You attended a workshop for [time_minutes] minutes. Your skills improved!"
     
@@ -305,10 +345,6 @@ label main_gameplay:
     
     elif activity == "skip":
         "You skipped [time_minutes] minutes."
-    
-    # Fast-forward effect
-    "Time passes quickly..."
-    $ renpy.pause(0.5)
     
     # Check for random event (1% chance)
     call check_random_event
