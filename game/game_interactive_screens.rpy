@@ -36,6 +36,14 @@ screen interactive_kos():
         text_size 22
         action Jump("main_gameplay")
 
+    textbutton "Go Somewhere":
+        xalign 0.95
+        yalign 0.85
+        xsize 200
+        ysize 60
+        text_size 22
+        action Show("game_maps")
+
 # Imagemap for interactive areas (always visible)
 screen interactive_dapur():
     # Main room imagemap
@@ -73,3 +81,34 @@ screen interactive_dapur():
         ysize 60
         text_size 22
         action Jump("main_gameplay")
+
+    textbutton "Go Somewhere":
+        xalign 0.95
+        yalign 0.85
+        xsize 200
+        ysize 60
+        text_size 22
+        action Show("game_maps")
+
+screen game_maps():
+    zorder 2
+    modal True
+
+    frame:
+        xalign 0.5 yalign 0.5
+        xsize 600
+        ysize 800
+        padding (20, 20)
+        
+        vbox:
+            text "Visitable places" xalign 0.5 size 30
+            null height 30
+            
+            for dest in locations[current_location]["explorable"]:
+                $ loc_name = locations[dest]["name"]
+                textbutton "[loc_name]" action Function(move_to_map, dest)
+            
+            null height 30
+            textbutton "Close Map":
+                action Hide("game_maps")
+                xalign 0.5

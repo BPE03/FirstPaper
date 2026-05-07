@@ -109,7 +109,7 @@ label start:
     show screen calendar_now
     show screen calendar_window
     
-    call screen interactive_kos
+    jump kos
 
 label prologue_lanjut:
     "Paijo pun memutuskan untuk terus mencari referensi untuk proposalnya."
@@ -139,7 +139,39 @@ label prologue_lanjut_besok:
     scene black with fade
     return
 
+label kos:
+    $ current_location = "kos"
+    scene kos with fade
+    call screen interactive_kos
+
+label dapur:
+    $ current_location = "dapur"
+    scene dapur with fade
+    call screen interactive_dapur
+
 # Main gameplay loop
+label activity_kos:
+    $ activity = None
+    menu:
+        "Mau Ngapain?"
+
+        "Olahraga":
+            $ activity = "olahraga"
+
+label activity_dapur:
+    $ activity = None
+    menu:
+        "Mau ngapain?"
+
+        "Makan Bergizi":
+            $ activity = "makan_bergizi"
+        
+        "Makan Enak Sembarangan":
+            $ activity = "makan_enak"
+
+        "Buat Kopi":
+            $ activity = "buat_kopi"
+
 label main_gameplay:
     $ activity = None
     menu:
@@ -147,9 +179,6 @@ label main_gameplay:
         
         "Work on thesis (Requires motivation > 30)":
             $ activity = "thesis"
-        
-        "Eat a healthy meal":
-            $ activity = "eat"
         
         "Exercise / Go for a walk":
             $ activity = "exercise"
@@ -185,9 +214,7 @@ label main_gameplay:
         call screen interactive_kos
     
     # Ask for time in hours and minutes
-    if activity == "eat":
-        $ time_minutes = 20
-    elif activity == "sleep":
+    if activity == "sleep":
         $ sleep_hours_input = renpy.input("How many hours will you sleep? (4-10 hours recommended)", default="8")
         $ sleep_hours = int(sleep_hours_input) if sleep_hours_input.isdigit() else 8
         $ sleep_hours = max(4, min(10, sleep_hours))  # Clamp to 4-10 hours
@@ -211,8 +238,6 @@ label main_gameplay:
     # Set base minutes for scaling
     if activity == "thesis":
         $ base_minutes = 60
-    elif activity == "eat":
-        $ base_minutes = 20
     elif activity == "exercise":
         $ base_minutes = 60
     elif activity == "advisor":
@@ -309,9 +334,6 @@ label main_gameplay:
             "You earned [earned_score] points!"
         else:
             "You're too unmotivated to work effectively right now."
-    
-    elif activity == "eat":
-        "You ate a nutritious meal for [time_minutes] minutes. You feel better!"
     
     elif activity == "exercise":
         "You exercised for [time_minutes] minutes. You feel refreshed and energized!"

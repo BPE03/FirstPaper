@@ -60,6 +60,29 @@ default last_sleep_time = 0  # Timestamp (in hours) of last sleep
 default caffeine_level = 0  # Caffeine in system (0-100), blocks adenosine
 default total_hours_awake = 0  # Track how long character has been awake
 
+# Exploration specific flags
+default current_location = "kos"  # Start in dorm room
+define locations = {
+    "kos": {
+        "explorable": ["dapur"],
+        "name": "Dorm Room",
+    },
+    "dapur": {
+        "explorable": ["kos"],
+        "name": "Kitchen",
+    },
+}
+
+init python:
+    def move_to_map(location_label):
+        renpy.hide_screen("game_maps")
+        renpy.transition(fade)
+        renpy.jump(location_label)  # or any Ren'Py function like renpy.show_screen
+    def interact_environment(env_label):
+        global can_move_places
+        can_move_places = 0
+        renpy.call(env_label)
+
 # Python function to calculate motivation and progress
 init python:
     def update_motivation_and_progress():
