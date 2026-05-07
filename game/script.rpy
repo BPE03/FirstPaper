@@ -109,7 +109,7 @@ label start:
     show screen calendar_now
     show screen calendar_window
     
-    call screen interactive_room
+    call screen interactive_kos
 
 label prologue_lanjut:
     "Paijo pun memutuskan untuk terus mencari referensi untuk proposalnya."
@@ -182,7 +182,7 @@ label main_gameplay:
             $ activity = "cancel"
     
     if activity == "cancel":
-        call screen interactive_room
+        call screen interactive_kos
     
     # Ask for time in hours and minutes
     if activity == "eat":
@@ -349,7 +349,7 @@ label main_gameplay:
     # Check for random event (1% chance)
     call check_random_event
     
-    call screen interactive_room
+    call screen interactive_kos
 
 # Random event system - 1% chance after any activity
 label check_random_event:
@@ -392,13 +392,13 @@ label random_event:
     
     $ set_cutscene_mode(False)  # Exit cutscene mode after event
     return
-    call screen interactive_room
+    call screen interactive_kos
 
 # Burnout ending
 label burnout:
     hide screen main_stats
     hide screen detailed_stats_window
-    hide screen interactive_room
+    hide screen interactive_kos
     hide screen calendar_now
     hide screen calendar_window
     
@@ -435,7 +435,7 @@ label burnout:
 label thesis_complete:
     hide screen main_stats
     hide screen detailed_stats_window
-    hide screen interactive_room
+    hide screen interactive_kos
     hide screen calendar_now
     hide screen calendar_window
     

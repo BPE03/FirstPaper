@@ -90,65 +90,6 @@ screen calendar_now():
                 Function(advance_time, 1)
             ]
 
-# Imagemap for interactive areas (always visible)
-screen interactive_room():
-    # Main room imagemap
-    imagemap:
-        ground "bg room"  # Your background image
-        hover "bg room_hover"  # Optional: hover overlay image
-        
-        # Define clickable hotspots (x, y, width, height)
-        # Adjust these coordinates to match your background image
-        
-        # Example: Click on desk area to open activity menu
-        hotspot (800, 400, 200, 150) action SetVariable("show_activity_menu", True)
-        
-        # You can add more hotspots for different interactions
-        # Example: Click on bed for rest activities
-        # hotspot (100, 300, 150, 200) action Jump("rest_activities")
-        
-        # Example: Click on bookshelf for academic activities
-        # hotspot (1200, 200, 180, 300) action Jump("academic_activities")
-    
-    # Optional: Show a button overlay if you want a visible button
-    # You can remove this if you want just invisible hotspots
-    # imagebutton:
-    #     xalign 0.95
-    #     yalign 0.95
-    #     idle "gui/button/do_something_idle.png"  # Replace with your image
-    #     hover "gui/button/do_something_hover.png"  # Replace with your image
-    #     action SetVariable("show_activity_menu", True)
-    
-    # Alternative text button (remove if using image button above)
-    textbutton "Do Something":
-        xalign 0.95
-        yalign 0.95
-        xsize 200
-        ysize 60
-        text_size 22
-        action Jump("main_gameplay")
-
-# Warning screen for low motivation
-screen motivation_warning():
-    frame:
-        background "#000000cc"
-        xfill True
-        yfill True
-        
-        frame:
-            xalign 0.5
-            yalign 0.5
-            xsize 400
-            ysize 200
-            background "#e74c3c"
-            padding (20, 20)
-            
-            vbox:
-                spacing 20
-                text "Too Unmotivated!" size 24 color "#ffffff" bold True xalign 0.5
-                text "You need more than 30 motivation to work effectively on your thesis." size 16 color "#ffffff" text_align 0.5
-                textbutton "OK" action Hide("motivation_warning") xalign 0.5 xsize 150 ysize 45
-
 # Calendar window
 screen calendar_window():
     showif show_calendar:

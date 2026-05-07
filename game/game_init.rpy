@@ -103,7 +103,7 @@ init python:
         elif month in [4, 6, 9, 11]:
             return 30
         else:  # February
-            if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+            if year % 4 == 0:
                 return 29
             return 28
     
@@ -226,6 +226,7 @@ init python:
         "happy": {"valence": 90.1, "arousal": 68.6, "color": "#ffd93d", "description": "Content and joyful", "score_multiplier": 1.4},
         "satisfied": {"valence": 86.8, "arousal": 49.3, "color": "#6bcf7f", "description": "Pleased and content", "score_multiplier": 1.3},
         "relaxed": {"valence": 75.0, "arousal": 17.4, "color": "#4a90e2", "description": "Calm and peaceful", "score_multiplier": 1.2},
+        "calm": {"valence": 78.7, "arousal": 42.5, "color": "#62bac0", "description": "Calm and composed", "score_multiplier": 1.1},
         "bored": {"valence": 24.4, "arousal": 22.9, "color": "#95a5a6", "description": "Unengaged and listless", "score_multiplier": 0.7},
         "depressed": {"valence": 10.4, "arousal": 46.5, "color": "#34495e", "description": "Sad and fatigued", "score_multiplier": 0.4},
         "sad": {"valence": 5.4, "arousal": 38.6, "color": "#2c3e50", "description": "Melancholic and withdrawn", "score_multiplier": 0.5},
@@ -362,7 +363,7 @@ init python:
         
         # Adenosine increases ~10 points per hour awake
         adenosine_increase = 0.167  # 10 per hour = 0.167 per minute
-        
+
         # Caffeine fades over time (~25% per hour)
         caffeine_level = max(0, caffeine_level - 0.417)  # 25% per hour = 0.417 per minute
         
