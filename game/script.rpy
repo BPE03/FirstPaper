@@ -145,6 +145,22 @@ label prologue_lanjut_besok:
     scene black with fade
     return
 
+label sempro:
+    "Hari seminar proposal pun tiba."
+    "Paijo merasa sangat gugup dan tidak percaya diri karena dia belum menyelesaikan proposalnya."
+    "Namun, dia tahu bahwa dia harus menghadapi kenyataan dan melakukan yang terbaik dalam seminar proposalnya."
+    scene black with fade
+    return
+
+label post_sempro:
+    "Setelah seminar proposal, Paijo merasa sangat lega dan senang karena dia berhasil melalui seminar proposal dengan baik."
+
+label sidang_akhir:
+    "Hari sidang akhir pun tiba."
+
+label post_sidang_akhir:
+    "Setelah sidang akhir, Paijo merasa sangat lega dan senang karena dia berhasil menyelesaikan sidang akhir dengan baik."
+
 label kos:
     $ current_location = "kos"
     scene kos with fade
