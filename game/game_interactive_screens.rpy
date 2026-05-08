@@ -34,7 +34,7 @@ screen interactive_kos():
         xsize 200
         ysize 60
         text_size 22
-        action Jump("main_gameplay")
+        action Jump("activity_kos")
 
     textbutton "Go Somewhere":
         xalign 0.95
@@ -80,7 +80,7 @@ screen interactive_dapur():
         xsize 200
         ysize 60
         text_size 22
-        action Jump("main_gameplay")
+        action Jump("activity_dapur")
 
     textbutton "Go Somewhere":
         xalign 0.95

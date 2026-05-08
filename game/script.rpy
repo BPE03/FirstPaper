@@ -1,4 +1,5 @@
 ﻿# Label to start the game
+
 label start:
     "Jumat, 12 Desember 2025."
     scene kelas with fade
@@ -102,6 +103,11 @@ label start:
     "Sabtu, 13 Desember 2025."
     "Hari ini adalah hari di mana Paijo memulai perjalanannya untuk menyelesaikan proposalnya."
     "Bantu Paijo kelola waktunya dengan baik, jaga kesehatan fisik dan mentalnya, dan kembangkan keterampilannya agar dia bisa menyelesaikan proposalnya tepat waktu!"
+    p "....."
+    p "Bangun pagi ku terus...."
+    p "Ngerjain skripsi."
+    p "...."
+    p "Oalah pantes"
 
     # Show all screens
     show screen main_stats
@@ -155,33 +161,11 @@ label activity_kos:
     menu:
         "Mau Ngapain?"
 
-        "Olahraga":
-            $ activity = "olahraga"
-
-label activity_dapur:
-    $ activity = None
-    menu:
-        "Mau ngapain?"
-
-        "Makan Bergizi":
-            $ activity = "makan_bergizi"
-        
-        "Makan Enak Sembarangan":
-            $ activity = "makan_enak"
-
-        "Buat Kopi":
-            $ activity = "buat_kopi"
-
-label main_gameplay:
-    $ activity = None
-    menu:
-        "What would you like to do?"
-        
         "Work on thesis (Requires motivation > 30)":
             $ activity = "thesis"
-        
-        "Exercise / Go for a walk":
-            $ activity = "exercise"
+
+        "Olahraga":
+            $ activity = "olahraga"
         
         "Meet with advisor":
             $ activity = "advisor"
@@ -208,56 +192,60 @@ label main_gameplay:
             $ activity = "skip"
 
         "Cancel":
-            $ activity = "cancel"
+            jump kos
     
-    if activity == "cancel":
-        call screen interactive_kos
-    
+    call process_activity
+    jump kos
+
+label activity_dapur:
+    $ activity = None
+    menu:
+        "Mau ngapain?"
+
+        "Makan Bergizi":
+            $ activity = "makan_bergizi"
+        
+        "Makan Enak Sembarangan":
+            $ activity = "makan_enak"
+
+        "Buat Kopi":
+            $ activity = "buat_kopi"
+
+        "Ga jadi":
+            jump dapur
+
+    call process_activity
+    jump dapur
+
+label process_activity:
     # Ask for time in hours and minutes
-    if activity == "sleep":
-        $ sleep_hours_input = renpy.input("How many hours will you sleep? (4-10 hours recommended)", default="8")
-        $ sleep_hours = int(sleep_hours_input) if sleep_hours_input.isdigit() else 8
-        $ sleep_hours = max(4, min(10, sleep_hours))  # Clamp to 4-10 hours
-        $ time_minutes = sleep_hours * 60
+    $ activity_data = activities[activity]
+    $ min_dur = activity_data["min_duration"]
+    $ max_dur = activity_data["max_duration"]
+    $ def_h = activity_data["default_duration_hours"]
+    $ def_m = activity_data["default_duration_minutes"]
+    if min_dur == max_dur:
+        $ time_minutes = min_dur
     else:
-        $ hours_input = renpy.input("How many hours will you spend on this activity?", default="1")
-        $ minutes_input = renpy.input("How many additional minutes?", default="0")
-        $ hours = int(hours_input) if hours_input.isdigit() else 1
-        $ minutes = int(minutes_input) if minutes_input.isdigit() else 0
-        if hours < 0:
-            $ hours = 1
-        if minutes < 0:
-            $ minutes = 0
-        elif minutes >= 60:
-            $ hours += minutes // 60
-            $ minutes = minutes % 60
-        $ time_minutes = hours * 60 + minutes
-        if time_minutes <= 0:
-            $ time_minutes = 60
-    
-    # Set base minutes for scaling
-    if activity == "thesis":
-        $ base_minutes = 60
-    elif activity == "exercise":
-        $ base_minutes = 60
-    elif activity == "advisor":
-        $ base_minutes = 60
-    elif activity == "socialize":
-        $ base_minutes = 60
-    elif activity == "nap":
-        $ base_minutes = 60
-    elif activity == "sleep":
-        $ base_minutes = time_minutes  # For sleep, scale based on actual hours
-    elif activity == "workshop":
-        $ base_minutes = 120
-    elif activity == "selflearn":
-        $ base_minutes = 60
-    elif activity == "rest":
-        $ base_minutes = 60
-    elif activity == "skip":
-        $ base_minutes = 1  # doesn't matter
-    
-    $ per_scale = 1.0 / base_minutes
+        if activity == "sleep":
+            $ hours_input = renpy.input("How many hours will you sleep? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
+            $ hours = int(hours_input) if hours_input.isdigit() else def_h
+            $ hours = max(min_dur//60, min(max_dur//60, hours))
+            $ time_minutes = hours * 60
+        else:
+            $ hours_input = renpy.input("How many hours will you spend on this activity? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
+            $ minutes_input = renpy.input("How many additional minutes?", default=str(def_m))
+            $ hours = int(hours_input) if hours_input.isdigit() else def_h
+            $ minutes = int(minutes_input) if minutes_input.isdigit() else def_m
+            if hours < 0:
+                $ hours = 0
+            if minutes < 0:
+                $ minutes = 0
+            elif minutes >= 60:
+                $ hours += minutes // 60
+                $ minutes = minutes % 60
+            $ time_minutes = hours * 60 + minutes
+            $ time_minutes = max(min_dur, min(max_dur, time_minutes))
     
     # Special handling for sleep activity - uses dedicated sleep mechanic
     if activity == "sleep":
@@ -268,6 +256,7 @@ label main_gameplay:
         scene black with fade
     # Loop through each minute for other activities
     else:
+        "You spend [time_minutes] minutes on this activity..."
         python:
             for i in range(time_minutes):
                 advance_time(1)
@@ -275,48 +264,63 @@ label main_gameplay:
                 
                 if activity == "thesis":
                     if motivation > 30:
-                        store.thesis_progress = min(100, store.thesis_progress + 2 * per_scale)
-                        store.competence = min(store.max_stat, store.competence + 1 * per_scale)
-                        store.writing_xp += 10 * per_scale
-                        store.practical_xp += 5 * per_scale
-                        store.arousal = max(0, store.arousal - 5 * per_scale)
-                        store.nutrition = max(0, store.nutrition - 3 * per_scale)
+                        store.thesis_progress = min(100, store.thesis_progress + 1/60)
+                        decrease_stats(1)  # No additional decrease for thesis work
+                        store.writing_xp += 25/60
+                        store.practical_xp += 15/60
                 
-                elif activity == "eat":
-                    store.nutrition = min(store.max_stat, store.nutrition + 50 * per_scale)
+                elif activity == "makan_bergizi":
+                    store.nutrition = min(store.max_stat, store.nutrition + 50/20)
+                    store.valence = max(0, store.valence - 6/60)
+
+                elif activity == "makan_enak":
+                    store.nutrition = min(store.max_stat, store.nutrition + 50/20)
+                    store.valence = min(store.max_stat, store.valence + 40/20)
+                    store.autonomy = min(store.max_stat, store.autonomy + 10/20)
+                    store.physical_activity = max(0, store.physical_activity - 6/60)
+
+                elif activity == "buat_kopi":
+                    store.caffeine_level = min(100, store.caffeine_level + 20/15)
+                    store.arousal = min(store.max_stat, store.arousal + 25/15)
                 
-                elif activity == "exercise":
-                    store.physical_activity = min(store.max_stat, store.physical_activity + 30 * per_scale)
-                    store.arousal = min(store.max_stat, store.arousal + 15 * per_scale)
-                    store.valence = min(store.max_stat, store.valence + 10 * per_scale)
+                elif activity == "olahraga":
+                    store.physical_activity = min(store.max_stat, store.physical_activity + 30/60)
+                    store.arousal = min(store.max_stat, store.arousal + 15/60)
+                    #store.valence = min(store.max_stat, store.valence + 10/60)
                 
                 elif activity == "advisor":
-                    store.autonomy = min(store.max_stat, store.autonomy + 15 * per_scale)
-                    store.competence = min(store.max_stat, store.competence + 10 * per_scale)
-                    store.relatedness = min(store.max_stat, store.relatedness + 20 * per_scale)
-                    store.practical_xp += 5 * per_scale
+                    #store.autonomy = min(store.max_stat, store.autonomy + 15)
+                    store.competence = min(store.max_stat, store.competence + 10/60)
+                    store.relatedness = min(store.max_stat, store.relatedness + 20/60)
+                    store.valence = min(store.max_stat, store.valence + 15/60)
+                    store.arousal = min(store.max_stat, store.arousal + 10/60)
+                    store.writing_xp += 10
+                    store.practical_xp += 5
                 
                 elif activity == "socialize":
-                    store.relatedness = min(store.max_stat, store.relatedness + 30 * per_scale)
-                    store.valence = min(store.max_stat, store.valence + 20 * per_scale)
+                    store.relatedness = min(store.max_stat, store.relatedness + 30/60)
+                    store.valence = min(store.max_stat, store.valence + 20/60)
                 
                 elif activity == "nap":
-                    store.arousal = min(store.max_stat, store.arousal + 25 * per_scale)
-                    store.valence = min(store.max_stat, store.valence + 10 * per_scale)
+                    store.arousal = min(store.max_stat, store.arousal + 25/60)
+                    store.valence = min(store.max_stat, store.valence + 10)
                 
                 elif activity == "workshop":
-                    store.practical_xp += 15 * per_scale
-                    store.writing_xp += 10 * per_scale
-                    store.competence = min(store.max_stat, store.competence + 10 * per_scale)
-                    store.arousal = max(0, store.arousal - 10 * per_scale)
+                    store.practical_xp += 15/20
+                    store.writing_xp += 10/20
+                    store.competence = min(store.max_stat, store.competence + 60/60)
+                    store.arousal = max(0, store.arousal - 10/60)
                 
                 elif activity == "selflearn":
-                    store.autonomy = min(store.max_stat, store.autonomy + 20 * per_scale)
-                    store.writing_xp += 8 * per_scale
+                    store.autonomy = min(store.max_stat, store.autonomy + 20/60)
+                    store.writing_xp += 8/20
                 
                 elif activity == "rest":
-                    store.arousal = min(store.max_stat, store.arousal + 10 * per_scale)
-                    store.valence = min(store.max_stat, store.valence + 5 * per_scale)
+                    store.arousal = min(store.max_stat, store.arousal + 10/60)
+                    store.valence = min(store.max_stat, store.valence + 5/60)
+
+                delay = 0.5/time_minutes
+                renpy.pause(delay, hard=True)  # Small pause to allow UI to update each minute
             
             # For skip, no effects
     
@@ -335,8 +339,8 @@ label main_gameplay:
         else:
             "You're too unmotivated to work effectively right now."
     
-    elif activity == "exercise":
-        "You exercised for [time_minutes] minutes. You feel refreshed and energized!"
+    elif activity == "olahraga":
+        "You olahragad for [time_minutes] minutes. You feel refreshed and energized!"
     
     elif activity == "advisor":
         "You met with your advisor for [time_minutes] minutes. You gained clarity and direction!"
@@ -346,6 +350,15 @@ label main_gameplay:
     
     elif activity == "nap":
         "You took a nap for [time_minutes] minutes. You feel more alert now!"
+
+    elif activity == "makan_bergizi":
+        "You ate a nutritious meal for [time_minutes] minutes. Your nutrition improved!"
+
+    elif activity == "makan_enak":
+        "You enjoyed some tasty food for [time_minutes] minutes. Your mood lifted, but you skipped some olahraga."
+
+    elif activity == "buat_kopi":
+        "You brewed a coffee for [time_minutes] minutes. Your caffeine and alertness increased!"
     
     elif activity == "sleep":
         $ sleep_hours = time_minutes // 60
@@ -371,7 +384,7 @@ label main_gameplay:
     # Check for random event (1% chance)
     call check_random_event
     
-    call screen interactive_kos
+    return
 
 # Random event system - 1% chance after any activity
 label check_random_event:

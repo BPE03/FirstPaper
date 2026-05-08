@@ -73,6 +73,107 @@ define locations = {
     },
 }
 
+
+init python:
+    def format_duration(minutes):
+        hours = minutes // 60
+        mins = minutes % 60
+        return "{} hours {} minutes".format(hours, mins)
+
+define activities = {
+    "thesis": {
+        "name": "Work on thesis",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
+        "max_duration": 1440
+    },
+    "olahraga": {
+        "name": "Olahraga",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
+        "max_duration": 1440
+    },
+    "advisor": {
+        "name": "Meet with advisor",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
+        "max_duration": 1440
+    },
+    "socialize": {
+        "name": "Socialize with friends",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
+        "max_duration": 1440
+    },
+    "nap": {
+        "name": "Take a nap",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
+        "max_duration": 1440
+    },
+    "sleep": {
+        "name": "Sleep",
+        "min_duration": 240,
+        "default_duration_hours": 8,
+        "default_duration_minutes": 0,
+        "max_duration": 600
+    },
+    "workshop": {
+        "name": "Attend a workshop",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
+        "max_duration": 1440
+    },
+    "selflearn": {
+        "name": "Practice self-directed learning",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
+        "max_duration": 1440
+    },
+    "rest": {
+        "name": "Just rest and do nothing",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
+        "max_duration": 1440
+    },
+    "skip": {
+        "name": "Skip time",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
+        "max_duration": 1440
+    },
+    "makan_bergizi": {
+        "name": "Makan Bergizi",
+        "min_duration": 20,
+        "default_duration_hours": 0,
+        "default_duration_minutes": 20,
+        "max_duration": 20
+    },
+    "makan_enak": {
+        "name": "Makan Enak Sembarangan",
+        "min_duration": 20,
+        "default_duration_hours": 0,
+        "default_duration_minutes": 20,
+        "max_duration": 20
+    },
+    "buat_kopi": {
+        "name": "Buat Kopi",
+        "min_duration": 15,
+        "default_duration_hours": 0,
+        "default_duration_minutes": 15,
+        "max_duration": 15
+    }
+}
+
 init python:
     def move_to_map(location_label):
         renpy.hide_screen("game_maps")
@@ -100,8 +201,8 @@ init python:
         #     renpy.jump("burnout")
         
         # Check for completion
-        if thesis_progress >= 100:
-            renpy.jump("thesis_complete")
+        # if thesis_progress >= 100:
+        #     renpy.jump("thesis_complete")
 
     # Hide all screens during cutscenes, show during interactive gameplay
     def set_cutscene_mode(is_cutscene):
@@ -309,10 +410,10 @@ init python:
         global sleep_debt, adenosine_level
 
         #store.autonomy = max(0, store.autonomy - 0.3)
-        competence = max(0, competence - (0.1 * time_minutes))
-        relatedness = max(0, relatedness - (0.1 * time_minutes))
-        nutrition = max(0, nutrition - (0.104 * time_minutes))
-        physical_activity = max(0, physical_activity - (0.1 * time_minutes))
+        competence = max(0, competence - (6/60 * time_minutes))
+        relatedness = max(0, relatedness - (6/60 * time_minutes))
+        nutrition = max(0, nutrition - (5/48 * time_minutes))
+        physical_activity = max(0, physical_activity - (6/60 * time_minutes))
         
         # Update sleep-wake cycle: adenosine builds up, decreasing sleep stat
         update_adenosine()
@@ -327,14 +428,15 @@ init python:
         if circadian_factor < 0.5:  # Daytime (poor sleep alignment)
             sleep = max(0, sleep - (0.02 * time_minutes))  # Extra penalty during day
         
-        valence = max(0, valence - (0.1 * time_minutes))
-        arousal = max(0, arousal - (0.1 * time_minutes))
+        valence = max(0, valence - (6/60 * time_minutes))
+        arousal = max(0, arousal - (6/60 * time_minutes))
         
         # Apply sleep deprivation penalties
         if sleep <= 30:  # Only when really tired
             sleep_debt += time_minutes / 60  # Accumulate sleep debt in hours
         
         apply_sleep_deprivation_penalty()
+        update_motivation_and_progress()  # Ensure motivation is updated based on current stats
         
         renpy.retain_after_load()
 

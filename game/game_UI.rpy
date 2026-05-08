@@ -65,7 +65,6 @@ screen main_stats():
         if not in_cutscene:
             timer 1.0 repeat True action [
                 Function(decrease_stats, 1), 
-                Function(update_motivation_and_progress)
             ]
 
 screen calendar_now():
@@ -346,7 +345,7 @@ screen detailed_stats_window():
                             $ required = get_required_for_level(practical_level)
                             text "Practical Skill Level [practical_level]" size 16 color "#ffffff"
                             bar value xp_in_level range required xsize 200 ysize 18 left_bar "#16a085" right_bar "#2c3e50"
-                            text "[xp_in_level]/[required] XP" size 14 color "#bdc3c7"
+                            text "[xp_in_level:.02f]/[required] XP" size 14 color "#bdc3c7"
                         
                         vbox:
                             spacing 5
@@ -355,4 +354,4 @@ screen detailed_stats_window():
                             $ required = get_required_for_level(writing_level)
                             text "Writing Skill Level [writing_level]" size 16 color "#ffffff"
                             bar value xp_in_level range required xsize 200 ysize 18 left_bar "#27ae60" right_bar "#2c3e50"
-                            text "[xp_in_level]/[required] XP" size 14 color "#bdc3c7"
+                            text "[xp_in_level:.02f]/[required] XP" size 14 color "#bdc3c7"
