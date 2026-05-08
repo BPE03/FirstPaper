@@ -155,6 +155,8 @@ label sempro:
 label post_sempro:
     "Setelah seminar proposal, Paijo merasa sangat lega dan senang karena dia berhasil melalui seminar proposal dengan baik."
 
+    jump kos
+
 label sidang_akhir:
     "Hari sidang akhir pun tiba."
 
