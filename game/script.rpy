@@ -101,13 +101,24 @@ label start:
     $ renpy.pause(5.0, hard=True) # Matches the transition time
     scene kos with fade
     "Sabtu, 13 Desember 2025."
-    "Hari ini adalah hari di mana Paijo memulai perjalanannya untuk menyelesaikan proposalnya."
-    "Bantu Paijo kelola waktunya dengan baik, jaga kesehatan fisik dan mentalnya, dan kembangkan keterampilannya agar dia bisa menyelesaikan proposalnya tepat waktu!"
     p "....."
-    p "Bangun pagi ku terus...."
+    p "Bangun pagi, ku terus...."
     p "Ngerjain skripsi."
     p "...."
-    p "Oalah pantes"
+    p "Oalah pantes aja."
+    p "Gua ga nemu-nemu topik yang pas itu bukan karena gua ga nyari di tempat yang bener."
+    p "Tapi emang gua aja yang ga tau kemampuan ama minat gua."
+    p "Kalo gua ga minat apa-apa dapet topik gimana coba."
+    p "Hmm terus gimana dah."
+    p "...."
+    p "Bentar."
+    p "...."
+    p "Di Informatika kan ada beberapa bidang ilmu yak."
+    p "Mungkin gua bisa riset dari situ dulu, baru gua cari topik yang lebih spesifik lagi."
+    "Paijo pun "
+
+    "Hari ini adalah hari di mana Paijo memulai perjalanannya untuk menyelesaikan proposalnya."
+    "Bantu Paijo kelola waktunya dengan baik, jaga kesehatan fisik dan mentalnya, dan kembangkan keterampilannya agar dia bisa menyelesaikan proposalnya tepat waktu!"
 
     # Show all screens
     show screen main_stats
@@ -116,6 +127,41 @@ label start:
     show screen calendar_window
     
     jump kos
+
+label pilih_bidang:
+    menu:
+        "Bidang ilmu mana yang mau kamu jelajahi duluan?"
+        "KCV":
+            $ selected_bidang = "KCV"
+        "AlPro":
+            $ selected_bidang = "AlPro"
+        "GIGA":
+            $ selected_bidang = "GIGA"
+        "RPL":
+            $ selected_bidang = "RPL"
+        "Selanjutnya":
+            menu:
+                "Bidang ilmu mana yang mau kamu jelajahi duluan?"
+                "KBJ":
+                    $ selected_bidang = "KBJ"
+                "Netics":
+                    $ selected_bidang = "Netics"
+                "MCI":
+                    $ selected_bidang = "MCI"
+                "PKT":
+                    $ selected_bidang = "PKT"
+                "Kembali":
+                    jump pilih_bidang
+    "[bidang_ilmu[selected_bidang]['nama']]"
+    "[bidang_ilmu[selected_bidang]['deskripsi']]"
+    "Yakin ingin fokus ke bidang ilmu ini?"
+    menu:
+        "Yakin ingin fokus ke bidang ilmu ini?"
+        "Ya":
+            #block of code to run
+        "Tidak":
+            jump pilih_bidang
+            
 
 label prologue_lanjut:
     "Paijo pun memutuskan untuk terus mencari referensi untuk proposalnya."

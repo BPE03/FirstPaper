@@ -20,6 +20,19 @@ default writing_level = 1
 default score = 0
 default max_stat = 100
 
+define bidang_ilmu = {
+    "KCV": {"nama": "Komputasi Cerdas dan Visi", "deskripsi": ""},
+    "AlPro": {"nama": "Algoritma dan Pemrograman", "deskripsi": ""},
+    "GIGA": {"nama": "Grafika, Interaksi, Gim, dan Analitik", "deskripsi": ""},
+    "RPL": {"nama": "Rekayasa Perangkat Lunak", "deskripsi": ""},
+    "KBJ": {"nama": "Komputasi Berbasis Jaringan", "deskripsi": ""},
+    "Netics": {"nama": "Teknologi Jaringan dan Keamanan Siber Cerdas", "deskripsi": ""},
+    "MCI": {"nama": "Manajemen Cerdas Informasi", "deskripsi": ""},
+    "PKT": {"nama": "Permodelan dan Komputasi Terapan", "deskripsi": ""},
+    # Add more fields as needed
+}
+default selected_bidang = None
+
 # Variable to track if detailed stats window is shown
 default show_detailed_stats = False
 # Variable to track if activity menu is shown
