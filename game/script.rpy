@@ -115,7 +115,8 @@ label start:
     p "...."
     p "Di Informatika kan ada beberapa bidang ilmu yak."
     p "Mungkin gua bisa riset dari situ dulu, baru gua cari topik yang lebih spesifik lagi."
-    "Paijo pun "
+    "Paijo pun makan"
+    jump pilih_bidang
 
     "Hari ini adalah hari di mana Paijo memulai perjalanannya untuk menyelesaikan proposalnya."
     "Bantu Paijo kelola waktunya dengan baik, jaga kesehatan fisik dan mentalnya, dan kembangkan keterampilannya agar dia bisa menyelesaikan proposalnya tepat waktu!"
@@ -152,13 +153,15 @@ label pilih_bidang:
                     $ selected_bidang = "PKT"
                 "Kembali":
                     jump pilih_bidang
-    "[bidang_ilmu[selected_bidang]['nama']]"
-    "[bidang_ilmu[selected_bidang]['deskripsi']]"
-    "Yakin ingin fokus ke bidang ilmu ini?"
+    n "[bidang_ilmu[selected_bidang]['nama']]"
+    n "Laboratorium ini menawarkan bidang keahlian yang ditekankan pada kemampuan lulusan dalam [bidang_ilmu[selected_bidang]['deskripsi']]"
+    n "Mata kuliah pada bidang ilmu ini adalah [bidang_ilmu[selected_bidang]['mata_kuliah']]."
+    n "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
+    nvl clear
     menu:
-        "Yakin ingin fokus ke bidang ilmu ini?"
+        "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
         "Ya":
-            #block of code to run
+            jump kos
         "Tidak":
             jump pilih_bidang
             

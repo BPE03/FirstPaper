@@ -1,6 +1,7 @@
 # Define characters
 define p = Character("Paijo", color="#77ff77")
 define j = Character("Joko", color="#c9982f")
+define n = Character(None, kind=nvl)
 
 # Define your stats
 default motivation = 30
@@ -21,14 +22,117 @@ default score = 0
 default max_stat = 100
 
 define bidang_ilmu = {
-    "KCV": {"nama": "Komputasi Cerdas dan Visi", "deskripsi": ""},
-    "AlPro": {"nama": "Algoritma dan Pemrograman", "deskripsi": ""},
-    "GIGA": {"nama": "Grafika, Interaksi, Gim, dan Analitik", "deskripsi": ""},
-    "RPL": {"nama": "Rekayasa Perangkat Lunak", "deskripsi": ""},
-    "KBJ": {"nama": "Komputasi Berbasis Jaringan", "deskripsi": ""},
-    "Netics": {"nama": "Teknologi Jaringan dan Keamanan Siber Cerdas", "deskripsi": ""},
-    "MCI": {"nama": "Manajemen Cerdas Informasi", "deskripsi": ""},
-    "PKT": {"nama": "Permodelan dan Komputasi Terapan", "deskripsi": ""},
+    "KCV": {
+        "nama": "Komputasi Cerdas dan Visi",
+        "deskripsi": "memanipulasi dan menganalisis data citra pada berbagai bidang aplikasi, kemampuan menerapkan metode sistem cerdas pada berbagai bidang aplikasi dan kemampuan memodelkan dan mengoptimasikan sistem nyata.",
+        "mata_kuliah": [
+            "Pengolahan Citra Digital",
+            "Analisis Data Multivariat",
+            "Data Mining",
+            "Komputasi Biomedik",
+            "Visi Komputer",
+            "Sistem Temu Kembali Informasi",
+            "Robotika",
+            "Analisis Media Sosial dan Topik Khusus KCV"
+        ]
+    },
+    "AlPro": {
+        "nama": "Algoritma dan Pemrograman",
+        "deskripsi": "merancang dan menganalisa algoritma dalam menyelesaikan permasalahan secara efektif dan efisien berdasarkan kaidah pemrograman yang kuat, mampu mengaplikasikan model pemrograman yang mendasari berbagai bahasa pemrograman yang ada, serta mampu memilih bahasa pemrograman untuk menghasilkan aplikasi yang sesuai, seperti mengembangkan sistem/aplikasi berbasis kerangka kerja dan pada perangkat bergerak.",
+        "mata_kuliah": [
+            "Pengembangan Analisis Algoritma",
+            "Pemrograman Berbasis Antarmuka",
+            "Pemorgraman Perangkat Bergerak",
+            "Topik Khusus Algroritma dan Pemrograman"
+        ]
+    },
+    "GIGA": {
+        "nama": "Grafika, Interaksi, Gim, dan Analitik",
+        "deskripsi": "mendesain, mengembangkan dan mendokumentasikan proses pembuatan game sesuai dengan standar. Serta membuat model 3 dimensi dan pemograman di dalam realitas virtual serta aplikasi realitas virtual 3 dimensi dengan menggunakan game engine.",
+        "mata_kuliah": [
+            "Animasi Komputer dan Permodelan 3D",
+            "Desain Pengalaman Pengguna",
+            "Game Cerdas",
+            "Game Edukasi dan Simulasi",
+            "Game Engine",
+            "Teknik Pengembangan Game",
+            "Grafika Komputer",
+            "Interaksi Manusia dan Komputer",
+            "Realitas X",
+            "Topik Khusus GIGA"
+        ]
+    },
+    "RPL": {
+        "nama": "Rekayasa Perangkat Lunak",
+        "deskripsi": "melakukan pengujian perangkat lunak, Kemampuan mengelola proyek perangkat lunak, Kemampuan mengurangi resiko kesalahan perangkat lunak, dan Kemampuan membuat perangkat lunak game.",
+        "mata_kuliah": [
+            "Penjaminan Mutu Perangkat Lunak",
+            "Arsitektur Perangkat Lunak",
+            "Evolusi Perangkat Lunak",
+            "Konstruksi Perangkat Lunak",
+            "Penyempurnaan Proses Perangkat Lunak",
+            "Ekonomi Rekayasa Perangkat Lunak",
+            "Topik Khusus RPL"
+        ]
+    },
+    "KBJ": {
+        "nama": "Komputasi Berbasis Jaringan",
+        "deskripsi": "membangun infrastruktur jaringan yang aman, kemampuan membangun sistem grid, Kemampuan membangun aplikasi jaringan sesuai Standard dan Kemampuan membangun aplikasi multimedia berbasis jaringan.",
+        "mata_kuliah": [
+            "Komputasi Bergerak",
+            "Sistem Terdistribusi",
+            "Keamanan Informasi dan Jaringan",
+            "Jaringan Multimedia",
+            "Komputasi Awan",
+            "Forensik Digital",
+            "Komputasi Pervasif dan Jaringan Sensor",
+            "Topik Khusus Komputasi berbasis Jaringan"
+        ]
+    },
+    "Netics": {
+        "nama": "Teknologi Jaringan dan Keamanan Siber Cerdas",
+        "deskripsi": "membangun berbagai macam arsitektur jaringan sesuai standar teknologi terkini dan menerapkan keamanan jaringan.",
+        "mata_kuliah": [
+            "Sistem Operasi",
+            "Jaringan Komputer",
+            "Pemrograman Jaringan",
+            "Jaringan Nirkabel",
+            "Teknologi Antar Jaringan",
+            "Perancangan Keamanan Sistem Dan Jaringan",
+            "Desain dan Audit Jaringan",
+            "Teknologi IoT",
+            "Topik Khusus Teknologi Jaringan dan Keamanan Siber Cerdas"
+        ]
+    },
+    "MCI": {
+        "nama": "Manajemen Cerdas Informasi",
+        "deskripsi": "menganalisis, mensintesa dan mengevaluasi proses bisnis dan sistem informasi pada sistem Enterprise, mengimplementasikan rekayasa pengetahuan ke dalam suatu aplikasi, melakukan investigasi, pengujian, evaluasi kematangan dan kepatutan terhadap prosedur standard dan tata kelola teknologi informasi, melakukan tata kelola proyek dan sumber daya manusia dan merancang dan mengimplementasikan solusi basis data terdistribusi dan teknologi Big Data.",
+        "mata_kuliah": [
+            "Sistem Enterprise",
+            "Rekayasa Pengetahuan",
+            "Sistem Informasi Geografis",
+            "Audit Sistem",
+            "Tata Kelola Teknologi Informasi",
+            "Basis Data Terdistribusi",
+            "Big Data",
+            "Topik Khusus Manajemen Informasi"
+        ]
+    },
+    "PKT": {
+        "nama": "Permodelan dan Komputasi Terapan",
+        "deskripsi": "riset dan kerjasama industri di bidang pemodelan & simulasi, peramalan sains, optimasi, serta komputasional saintifik.",
+        "mata_kuliah": [
+            "Pemodelan dan Simulasi",
+            "Matematika Diskrit",
+            "Teori Graf dan Otomata",
+            "Aljabar Linear dan Matriks",
+            "Probabilitas dan Statistika",
+            "Komputasi Numerik",
+            "Riset Operasi",
+            "Analisis Data Multivariat",
+            "Topik Khusus Permodelan dan Komputasi Terapan"
+        ]
+    },
     # Add more fields as needed
 }
 default selected_bidang = None
