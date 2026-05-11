@@ -115,12 +115,22 @@ label start:
     p "...."
     p "Di Informatika kan ada beberapa bidang ilmu yak."
     p "Mungkin gua bisa riset dari situ dulu, baru gua cari topik yang lebih spesifik lagi."
-    "Paijo pun makan"
-    jump pilih_bidang
-
-    "Hari ini adalah hari di mana Paijo memulai perjalanannya untuk menyelesaikan proposalnya."
-    "Bantu Paijo kelola waktunya dengan baik, jaga kesehatan fisik dan mentalnya, dan kembangkan keterampilannya agar dia bisa menyelesaikan proposalnya tepat waktu!"
-
+    "Paijo pun mencari tahu bidang ilmu apa saja yang ada di Teknik Informatika."
+    p "Okeh, gua dah nemu semua nih, sekarang bidang ilmu mana dulu yang pengen gua telusuri?"
+    call pilih_bidang
+    p "Oke, kayaknya Lab [selected_bidang] ini yang paling menarik deh buat gua."
+    p "Berarti next step gua cari jurnal ama topik yang berhubungan sama bidang ilmu ini."
+    p "Oke, gua dah tau apa yang harus gua lakuin, saatnya eksekusi!"
+    "...."
+    "Eits, bentar dulu."
+    "Apakah kamu sudah paham bagaimana cara memainkan game ini?"
+    menu:
+        "Apakah kamu sudah paham bagaimana cara memainkan game ini?"
+        "Sudah":
+            "Bersiaplah."
+        "Belum":
+            call tutorial_scene
+    "Sekarang."
     # Show all screens
     show screen main_stats
     show screen detailed_stats_window
@@ -128,43 +138,6 @@ label start:
     show screen calendar_window
     
     jump kos
-
-label pilih_bidang:
-    menu:
-        "Bidang ilmu mana yang mau kamu jelajahi duluan?"
-        "KCV":
-            $ selected_bidang = "KCV"
-        "AlPro":
-            $ selected_bidang = "AlPro"
-        "GIGA":
-            $ selected_bidang = "GIGA"
-        "RPL":
-            $ selected_bidang = "RPL"
-        "Selanjutnya":
-            menu:
-                "Bidang ilmu mana yang mau kamu jelajahi duluan?"
-                "KBJ":
-                    $ selected_bidang = "KBJ"
-                "Netics":
-                    $ selected_bidang = "Netics"
-                "MCI":
-                    $ selected_bidang = "MCI"
-                "PKT":
-                    $ selected_bidang = "PKT"
-                "Kembali":
-                    jump pilih_bidang
-    n "[bidang_ilmu[selected_bidang]['nama']]"
-    n "Laboratorium ini menawarkan bidang keahlian yang ditekankan pada kemampuan lulusan dalam [bidang_ilmu[selected_bidang]['deskripsi']]"
-    n "Mata kuliah pada bidang ilmu ini adalah [bidang_ilmu[selected_bidang]['mata_kuliah']]."
-    n "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
-    nvl clear
-    menu:
-        "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
-        "Ya":
-            jump kos
-        "Tidak":
-            jump pilih_bidang
-            
 
 label prologue_lanjut:
     "Paijo pun memutuskan untuk terus mencari referensi untuk proposalnya."
@@ -192,6 +165,97 @@ label prologue_lanjut_besok:
     "Tentu saja hal ini tidak membuatnya merasa lebih baik, karena dia tahu bahwa deadline seminar proposal semakin dekat."
     "Namun, dia merasa bahwa dia tidak bisa memaksakan dirinya untuk terus mencari referensi ketika dia sudah sangat lelah."
     scene black with fade
+    return
+
+label pilih_bidang:
+    menu:
+        "Bidang ilmu mana yang mau kamu jelajahi duluan?"
+        "KCV":
+            $ selected_bidang = "KCV"
+        "AlPro":
+            $ selected_bidang = "AlPro"
+        "GIGA":
+            $ selected_bidang = "GIGA"
+        "RPL":
+            $ selected_bidang = "RPL"
+        "Selanjutnya":
+            menu:
+                "Bidang ilmu mana yang mau kamu jelajahi duluan?"
+                "KBJ":
+                    $ selected_bidang = "KBJ"
+                "Netics":
+                    $ selected_bidang = "Netics"
+                "MCI":
+                    $ selected_bidang = "MCI"
+                "PKT":
+                    $ selected_bidang = "PKT"
+                "Kembali":
+                    call pilih_bidang
+                    return
+    n "[bidang_ilmu[selected_bidang]['nama']]"
+    n "Laboratorium ini menawarkan bidang keahlian yang ditekankan pada kemampuan lulusan dalam [bidang_ilmu[selected_bidang]['deskripsi']]"
+    n "Mata kuliah pada bidang ilmu ini adalah [bidang_ilmu[selected_bidang]['mata_kuliah']]."
+    n "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
+    nvl clear
+    menu:
+        "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
+        "Ya":
+            return
+        "Tidak":
+            call pilih_bidang
+            return
+    return
+
+label tutorial_scene:
+    n "Game ini mensimulasikan kehidupan seorang mahasiswa yang sedang mengerjakan skripsi."
+    n "Ada beberapa aspek yang disimulasikan dalam game ini, namun secara utama hal yang perlu diperhatikan adalah motivasi dan emosi karakter."
+    n "Motivasi akan mempengaruhi seberapa besar keinginan karakter untuk mengerjakan skripsi."
+    n "Emosi akan mempengaruhi seberapa baik karakter dapat mengerjakan skripsinya."
+    n "Kamu akan diberikan pilihan aktivitas setiap harinya, dan setiap aktivitas akan mempengaruhi motivasi dan emosi karakter dengan cara yang berbeda-beda."
+    nvl clear
+
+    n "Motivasi"
+    n "Untuk meningkatkan motivasi, pemain perlu memenuhi kebutuhan psikologis dan kebutuhan fisiknya."
+    n "Kebutuhan psikologis terdiri dari kebutuhan akan otonomi, kompetensi, dan keterhubungan."
+    n "Kebutuhan fisik terdiri dari kebutuhan akan nutrisi, aktivitas fisik, dan tidur."
+    nvl clear
+    n "Otonomi adalah kebutuhan untuk merasa memiliki kontrol atas hidup kita sendiri."
+    n "Otonomi dapat dipenuhi dengan melakukan aktivitas yang kita sukai, atau dengan membuat keputusan sendiri tentang apa yang akan kita lakukan."
+    n "Kompetensi adalah kebutuhan untuk merasa mampu dan efektif dalam melakukan sesuatu."
+    n "Kompetensi dapat dipenuhi dengan melakukan aktivitas yang menantang tetapi masih bisa kita lakukan, atau dengan belajar sesuatu yang baru."
+    n "Keterhubungan adalah kebutuhan untuk merasa terhubung dengan orang lain."
+    n "Keterhubungan dapat dipenuhi dengan menghabiskan waktu dengan teman-teman, atau dengan berbicara dengan orang lain tentang apa yang kita rasakan."
+    nvl clear
+    n "Nutrisi adalah kebutuhan untuk mendapatkan asupan nutrisi melalui makanan atau minuman."
+    n "Nutrisi tentu saja dapat dipenuhi dengan mengonsumsi makanan atau minuman."
+    n "Aktivitas fisik adalah kebutuhan untuk melakukan aktivitas fisik yang cukup."
+    n "Aktivitas fisik dapat dipenuhi dengan berolahraga."
+    n "Tidur adalah kebutuhan untuk mendapatkan tidur yang cukup."
+    n "Namun, mekanik tidur di dalam game ini tidak hanya sekadar mendapatkan tidur yang cukup, tetapi juga mendapatkan tidur yang berkualitas dengan memperhatikan faktor-faktor seperti siklus sirkadian dan utang tidur."
+    n "Secara umum, pemain hanya perlu untuk melakukan tidur dan bangun pada jam yang konsisten."
+    nvl clear
+
+    n "Emosi"
+    n "Emosi dalam game ini terdiri dari dua dimensi yaitu {i}valence{/i} dan {i}arousal{/i}."
+    n "{i}Valence{/i} adalah dimensi yang menunjukkan seberapa positif atau negatif suatu emosi."
+    n "{i}Valence{/i} akan meningkat ketika karakter melakukan aktivitas yang menyenangkan atau memuaskan, dan akan menurun ketika karakter melakukan aktivitas yang tidak menyenangkan atau membuat stres."
+    n "{i}Arousal{/i} adalah dimensi yang menunjukkan seberapa intens suatu emosi."
+    n "{i}Arousal{/i} akan meningkat ketika karakter melakukan aktivitas yang menstimulasi atau membuatnya merasa lebih hidup, dan akan menurun ketika karakter melakukan aktivitas yang menenangkan atau membuatnya merasa lebih santai."
+    nvl clear
+
+    n "Untuk mendapatkan topik proposal, kamu dapat mendapatkannya dari aktivitas mencari jurnal."
+    n "Namun faktor keberhasilanmu untuk mendapatkan topik proposal yang dapat kamu pahami dipengaruhi oleh kemampuan praktismu."
+    n "Semakin tinggi kemampuan praktismu, semakin besar peluangmu untuk mendapatkan topik proposal yang dapat kamu pahami."
+    n "Kamu bisa mulai mengerjakan skripsimu ketika kamu sudah mendapatkan topik."
+
+    "Apakah kamu ingin mengulang penjelasan tadi?"
+    menu:
+        "Apakah kamu ingin mengulang penjelasan tadi?"
+        "Ya":
+            call tutorial_scene
+            return
+        "Tidak":
+            return
     return
 
 label sempro:

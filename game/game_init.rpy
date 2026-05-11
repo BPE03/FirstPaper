@@ -190,13 +190,6 @@ define locations = {
     },
 }
 
-
-init python:
-    def format_duration(minutes):
-        hours = minutes // 60
-        mins = minutes % 60
-        return "{} hours {} minutes".format(hours, mins)
-
 define activities = {
     "thesis": {
         "name": "Work on thesis",
@@ -291,6 +284,7 @@ define activities = {
     }
 }
 
+# Helper functions
 init python:
     def move_to_map(location_label):
         renpy.hide_screen("game_maps")
@@ -300,26 +294,29 @@ init python:
         global can_move_places
         can_move_places = 0
         renpy.call(env_label)
+    def format_duration(minutes):
+        hours = minutes // 60
+        mins = minutes % 60
+        return "{} hours {} minutes".format(hours, mins)
+    def fade_music_transition(new_track=None, fade_out=1.0, fade_in=0.0, music_volume=1.0):
+        """
+        Fades out current music, stops it, and optionally plays a new track with fade in.
+        
+        Parameters:
+        - new_track: The music track to play after fading out (None to just stop current music)
+        - fade_out: Time in seconds to fade out current music
+        - fade_in: Time in seconds to fade in new music (0 for immediate)
+        - music_volume: Target volume for new music (default 1.0)
 
-# Python function to calculate motivation and progress
-init python:
-    def update_motivation_and_progress():
-        global motivation, thesis_progress, autonomy, competence, relatedness
-        global nutrition, physical_activity, valence, arousal
-        global practical_level, writing_level
+        Example usage: fade_music_transition('songname.ogg', fade_out=2.0, fade_in=1.0)
+        """
+        renpy.music.set_volume(volume=0.0, delay=fade_out, channel='music')
+        renpy.pause(fade_out)
+        renpy.music.stop(channel='music')
         
-        # Motivation is the lowest stat among psychological and physical needs
-        # This reflects that if any basic need is not met, motivation suffers
-        all_stats = [autonomy, competence, relatedness, nutrition, physical_activity, sleep]
-        motivation = min(all_stats)
-        
-        # Check for burnout
-        # if motivation <= 0:
-        #     renpy.jump("burnout")
-        
-        # Check for completion
-        # if thesis_progress >= 100:
-        #     renpy.jump("thesis_complete")
+        if new_track:
+            renpy.music.set_volume(volume=music_volume, delay=fade_in, channel='music')
+            renpy.music.play(new_track, channel='music', fadein=fade_in)
 
     # Hide all screens during cutscenes, show during interactive gameplay
     def set_cutscene_mode(is_cutscene):
@@ -329,7 +326,7 @@ init python:
         show_detailed_stats = False  # Ensure detailed stats are hidden during cutscenes
         renpy.retain_after_load()  # Ensure this state persists after loading
 
-# Dictionary for month names
+# Date related functions
 init python:
     import datetime
     month_names = {
@@ -406,7 +403,7 @@ init python:
             display_month = 12
             display_year -= 1
 
-# Level system functions
+# Level system and progression functions
 init python:
     def get_level_from_xp(xp):
         level = 1
@@ -459,7 +456,26 @@ init python:
         
         return final_score
 
-# Emotion system based on (valence, arousal)
+    # Python function to calculate motivation and progress
+    def update_motivation_and_progress():
+        global motivation, thesis_progress, autonomy, competence, relatedness
+        global nutrition, physical_activity, valence, arousal
+        global practical_level, writing_level
+        
+        # Motivation is the lowest stat among psychological and physical needs
+        # This reflects that if any basic need is not met, motivation suffers
+        all_stats = [autonomy, competence, relatedness, nutrition, physical_activity, sleep]
+        motivation = min(all_stats)
+        
+        # Check for burnout
+        # if motivation <= 0:
+        #     renpy.jump("burnout")
+        
+        # Check for completion
+        # if thesis_progress >= 100:
+        #     renpy.jump("thesis_complete")
+
+# Emotion system based on (valence, arousal) and stats
 init python:
     # Emotion coordinates in (valence, arousal) space
     emotions_data = {

@@ -265,69 +265,69 @@ screen detailed_stats_window():
                     null height 10
                     
                     # Psychological Needs
-                    text "Psychological Needs" size 22 color "#3498db" bold True
+                    text "Kebutuhan Psikologis" size 22 color "#3498db" bold True
                     
                     hbox:
                         spacing 20
                         vbox:
                             spacing 5
-                            text "Autonomy" size 16 color "#ffffff"
+                            text "Otonomi" size 16 color "#ffffff"
                             bar value autonomy range max_stat xsize 200 ysize 18 left_bar "#9b59b6" right_bar "#2c3e50"
                             text "[autonomy:.02f]/[max_stat]" size 14 color "#bdc3c7"
                         
                         vbox:
                             spacing 5
-                            text "Competence" size 16 color "#ffffff"
+                            text "Kompetensi" size 16 color "#ffffff"
                             bar value competence range max_stat xsize 200 ysize 18 left_bar "#3498db" right_bar "#2c3e50"
                             text "[competence:.02f]/[max_stat]" size 14 color "#bdc3c7"
                         
                         vbox:
                             spacing 5
-                            text "Relatedness" size 16 color "#ffffff"
+                            text "Keterhubungan" size 16 color "#ffffff"
                             bar value relatedness range max_stat xsize 200 ysize 18 left_bar "#1abc9c" right_bar "#2c3e50"
                             text "[relatedness:.02f]/[max_stat]" size 14 color "#bdc3c7"
                     
                     null height 15
                     
                     # Physical Wellbeing
-                    text "Physical Wellbeing" size 22 color "#e67e22" bold True
+                    text "Kesehatan Fisik" size 22 color "#e67e22" bold True
                     
                     hbox:
                         spacing 20
                         vbox:
                             spacing 5
-                            text "Nutrition" size 16 color "#ffffff"
+                            text "Nutrisi" size 16 color "#ffffff"
                             bar value nutrition range max_stat xsize 200 ysize 18 left_bar "#f39c12" right_bar "#2c3e50"
                             text "[nutrition:.02f]/[max_stat]" size 14 color "#bdc3c7"
                         
                         vbox:
                             spacing 5
-                            text "Physical Activity" size 16 color "#ffffff"
+                            text "Aktivitas Fisik" size 16 color "#ffffff"
                             bar value physical_activity range max_stat xsize 200 ysize 18 left_bar "#e74c3c" right_bar "#2c3e50"
                             text "[physical_activity:.02f]/[max_stat]" size 14 color "#bdc3c7"
                             
                         vbox:
                             spacing 5
-                            text "Sleep" size 16 color "#ffffff"
+                            text "Tidur" size 16 color "#ffffff"
                             bar value sleep range max_stat xsize 200 ysize 18 left_bar "#687279" right_bar "#2c3e50"
                             text "[sleep:.02f]/[max_stat]" size 14 color "#bdc3c7"
                     
                     null height 15
                     
                     # Emotional State
-                    text "Emotional State" size 22 color "#e91e63" bold True
+                    text "Status Emosional" size 22 color "#e91e63" bold True
                     
                     hbox:
                         spacing 20
                         vbox:
                             spacing 5
-                            text "Valence (Positivity)" size 16 color "#ffffff"
+                            text "Valence (Kesenangan)" size 16 color "#ffffff"
                             bar value valence range max_stat xsize 200 ysize 18 left_bar "#ff6b9d" right_bar "#2c3e50"
                             text "[valence:.02f]/[max_stat]" size 14 color "#bdc3c7"
                         
                         vbox:
                             spacing 5
-                            text "Arousal (Alertness)" size 16 color "#ffffff"
+                            text "Arousal (Intensitas)" size 16 color "#ffffff"
                             bar value arousal range max_stat xsize 200 ysize 18 left_bar "#ffd93d" right_bar "#2c3e50"
                             text "[arousal:.02f]/[max_stat]" size 14 color "#bdc3c7"
                     
