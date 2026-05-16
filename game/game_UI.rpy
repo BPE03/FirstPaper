@@ -334,7 +334,7 @@ screen detailed_stats_window():
                     null height 15
                     
                     # Skills
-                    text "Skills" size 22 color "#27ae60" bold True
+                    text "Kemampuan" size 22 color "#27ae60" bold True
                     
                     hbox:
                         spacing 20
@@ -343,7 +343,8 @@ screen detailed_stats_window():
                             $ practical_level = get_level_from_xp(practical_xp)
                             $ xp_in_level = get_xp_in_level(practical_xp, practical_level)
                             $ required = get_required_for_level(practical_level)
-                            text "Practical Skill Level [practical_level]" size 16 color "#ffffff"
+                            text "Praktis" size 16 color "#ffffff"
+                            text "Level [practical_level]" size 16 color "#ffffff"
                             bar value xp_in_level range required xsize 200 ysize 18 left_bar "#16a085" right_bar "#2c3e50"
                             text "[xp_in_level:.02f]/[required] XP" size 14 color "#bdc3c7"
                         
@@ -352,6 +353,7 @@ screen detailed_stats_window():
                             $ writing_level = get_level_from_xp(writing_xp)
                             $ xp_in_level = get_xp_in_level(writing_xp, writing_level)
                             $ required = get_required_for_level(writing_level)
-                            text "Writing Skill Level [writing_level]" size 16 color "#ffffff"
+                            text "Menulis" size 16 color "#ffffff"
+                            text "Level [writing_level]" size 16 color "#ffffff"
                             bar value xp_in_level range required xsize 200 ysize 18 left_bar "#27ae60" right_bar "#2c3e50"
                             text "[xp_in_level:.02f]/[required] XP" size 14 color "#bdc3c7"

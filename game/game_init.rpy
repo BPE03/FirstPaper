@@ -19,6 +19,7 @@ default writing_xp = 0
 default practical_level = 1
 default writing_level = 1
 default score = 0
+default earned_score = 0
 default max_stat = 100
 
 define bidang_ilmu = {
@@ -190,100 +191,6 @@ define locations = {
     },
 }
 
-define activities = {
-    "thesis": {
-        "name": "Work on thesis",
-        "min_duration": 60,
-        "default_duration_hours": 1,
-        "default_duration_minutes": 0,
-        "max_duration": 1440
-    },
-    "olahraga": {
-        "name": "Olahraga",
-        "min_duration": 60,
-        "default_duration_hours": 1,
-        "default_duration_minutes": 0,
-        "max_duration": 1440
-    },
-    "advisor": {
-        "name": "Meet with advisor",
-        "min_duration": 60,
-        "default_duration_hours": 1,
-        "default_duration_minutes": 0,
-        "max_duration": 1440
-    },
-    "socialize": {
-        "name": "Socialize with friends",
-        "min_duration": 60,
-        "default_duration_hours": 1,
-        "default_duration_minutes": 0,
-        "max_duration": 1440
-    },
-    "nap": {
-        "name": "Take a nap",
-        "min_duration": 60,
-        "default_duration_hours": 1,
-        "default_duration_minutes": 0,
-        "max_duration": 1440
-    },
-    "sleep": {
-        "name": "Sleep",
-        "min_duration": 240,
-        "default_duration_hours": 8,
-        "default_duration_minutes": 0,
-        "max_duration": 600
-    },
-    "workshop": {
-        "name": "Attend a workshop",
-        "min_duration": 60,
-        "default_duration_hours": 1,
-        "default_duration_minutes": 0,
-        "max_duration": 1440
-    },
-    "selflearn": {
-        "name": "Practice self-directed learning",
-        "min_duration": 60,
-        "default_duration_hours": 1,
-        "default_duration_minutes": 0,
-        "max_duration": 1440
-    },
-    "rest": {
-        "name": "Just rest and do nothing",
-        "min_duration": 60,
-        "default_duration_hours": 1,
-        "default_duration_minutes": 0,
-        "max_duration": 1440
-    },
-    "skip": {
-        "name": "Skip time",
-        "min_duration": 60,
-        "default_duration_hours": 1,
-        "default_duration_minutes": 0,
-        "max_duration": 1440
-    },
-    "makan_bergizi": {
-        "name": "Makan Bergizi",
-        "min_duration": 20,
-        "default_duration_hours": 0,
-        "default_duration_minutes": 20,
-        "max_duration": 20
-    },
-    "makan_enak": {
-        "name": "Makan Enak Sembarangan",
-        "min_duration": 20,
-        "default_duration_hours": 0,
-        "default_duration_minutes": 20,
-        "max_duration": 20
-    },
-    "buat_kopi": {
-        "name": "Buat Kopi",
-        "min_duration": 15,
-        "default_duration_hours": 0,
-        "default_duration_minutes": 15,
-        "max_duration": 15
-    }
-}
-
 # Helper functions
 init python:
     def move_to_map(location_label):
@@ -443,7 +350,7 @@ init python:
         xp_bonus = (practical_xp / 1000.0) + (writing_xp / 1000.0)
         
         # Base score per thesis work session
-        base_score = 10
+        base_score = 1
         
         # Calculate final score
         final_score = int((base_score + level_bonus + xp_bonus) * emotion_multiplier)

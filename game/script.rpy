@@ -304,9 +304,6 @@ label activity_kos:
         "Socialize with friends":
             $ activity = "socialize"
         
-        "Take a nap":
-            $ activity = "nap"
-        
         "Sleep (Full sleep cycle)":
             $ activity = "sleep"
         
@@ -339,8 +336,8 @@ label activity_dapur:
         "Makan Enak Sembarangan":
             $ activity = "makan_enak"
 
-        "Buat Kopi":
-            $ activity = "buat_kopi"
+        "Minum Kopi":
+            $ activity = "minum_kopi"
 
         "Ga jadi":
             jump dapur
@@ -377,7 +374,7 @@ label process_activity:
                 $ minutes = minutes % 60
             $ time_minutes = hours * 60 + minutes
             $ time_minutes = max(min_dur, min(max_dur, time_minutes))
-    
+    $ minutes_activity = 0
     # Special handling for sleep activity - uses dedicated sleep mechanic
     if activity == "sleep":
         $ sleep_hours = time_minutes // 60
@@ -387,71 +384,29 @@ label process_activity:
         scene black with fade
     # Loop through each minute for other activities
     else:
-        "You spend [time_minutes] minutes on this activity..."
         python:
-            for i in range(time_minutes):
+            for minutes_activity in range(time_minutes):
                 advance_time(1)
                 decrease_stats(1)
                 
                 if activity == "thesis":
                     if motivation > 30:
                         store.thesis_progress = min(100, store.thesis_progress + 1/60)
-                        decrease_stats(1)  # No additional decrease for thesis work
+                        decrease_stats(1)
                         store.writing_xp += 25/60
                         store.practical_xp += 15/60
-                
-                elif activity == "makan_bergizi":
-                    store.nutrition = min(store.max_stat, store.nutrition + 50/20)
-                    store.valence = max(0, store.valence - 6/60)
-
-                elif activity == "makan_enak":
-                    store.nutrition = min(store.max_stat, store.nutrition + 50/20)
-                    store.valence = min(store.max_stat, store.valence + 40/20)
-                    store.autonomy = min(store.max_stat, store.autonomy + 10/20)
-                    store.physical_activity = max(0, store.physical_activity - 6/60)
-
-                elif activity == "buat_kopi":
-                    store.caffeine_level = min(100, store.caffeine_level + 20/15)
-                    store.arousal = min(store.max_stat, store.arousal + 25/15)
-                
-                elif activity == "olahraga":
-                    store.physical_activity = min(store.max_stat, store.physical_activity + 30/60)
-                    store.arousal = min(store.max_stat, store.arousal + 15/60)
-                    #store.valence = min(store.max_stat, store.valence + 10/60)
-                
-                elif activity == "advisor":
-                    #store.autonomy = min(store.max_stat, store.autonomy + 15)
-                    store.competence = min(store.max_stat, store.competence + 10/60)
-                    store.relatedness = min(store.max_stat, store.relatedness + 20/60)
-                    store.valence = min(store.max_stat, store.valence + 15/60)
-                    store.arousal = min(store.max_stat, store.arousal + 10/60)
-                    store.writing_xp += 10
-                    store.practical_xp += 5
-                
-                elif activity == "socialize":
-                    store.relatedness = min(store.max_stat, store.relatedness + 30/60)
-                    store.valence = min(store.max_stat, store.valence + 20/60)
-                
-                elif activity == "nap":
-                    store.arousal = min(store.max_stat, store.arousal + 25/60)
-                    store.valence = min(store.max_stat, store.valence + 10)
-                
-                elif activity == "workshop":
-                    store.practical_xp += 15/20
-                    store.writing_xp += 10/20
-                    store.competence = min(store.max_stat, store.competence + 60/60)
-                    store.arousal = max(0, store.arousal - 10/60)
-                
-                elif activity == "selflearn":
-                    store.autonomy = min(store.max_stat, store.autonomy + 20/60)
-                    store.writing_xp += 8/20
-                
-                elif activity == "rest":
-                    store.arousal = min(store.max_stat, store.arousal + 10/60)
-                    store.valence = min(store.max_stat, store.valence + 5/60)
+                        earned_score += calculate_thesis_score()
+                    else:
+                        break
+                else:
+                    fn = ACTIVITY_DISPATCH.get(activity)
+                    if fn:
+                        fn()
 
                 delay = 0.5/time_minutes
                 renpy.pause(delay, hard=True)  # Small pause to allow UI to update each minute
+                if interrupted:
+                    break
             
             # For skip, no effects
     
@@ -463,57 +418,53 @@ label process_activity:
     
     # Show messages
     if activity == "thesis":
-        if motivation > 30:
-            $ earned_score = calculate_thesis_score()
-            "You worked on your thesis for [time_minutes] minutes. Progress made!"
-            "You earned [earned_score] points!"
-        else:
-            "You're too unmotivated to work effectively right now."
+        "Kamu mengerjakan skripsi selama [minutes_activity] menit."
+        "Kamu mendapatkan [earned_score] poin!"
     
     elif activity == "olahraga":
-        "You olahragad for [time_minutes] minutes. You feel refreshed and energized!"
+        "Kamu olahraga for [minutes_activity] minutes. You feel refreshed and energized!"
     
     elif activity == "advisor":
-        "You met with your advisor for [time_minutes] minutes. You gained clarity and direction!"
+        "Kamu bertemu dengan advisor kamu selama [minutes_activity] menit. Kamu memperoleh kejelasan dan arah!"
     
     elif activity == "socialize":
-        "You spent time with friends for [time_minutes] minutes. You feel connected and happy!"
+        "Kamu menghabiskan waktu dengan teman-teman untuk [minutes_activity] menit. Kamu merasa terhubung dan bahagia!"
     
     elif activity == "nap":
-        "You took a nap for [time_minutes] minutes. You feel more alert now!"
+        "Kamu tidur siang selama [minutes_activity] menit. Kamu merasa lebih waspada sekarang!"
 
     elif activity == "makan_bergizi":
-        "You ate a nutritious meal for [time_minutes] minutes. Your nutrition improved!"
-
+        "Kamu makan makanan bergizi selama [minutes_activity] menit. Nutrisimu meningkat!"
     elif activity == "makan_enak":
-        "You enjoyed some tasty food for [time_minutes] minutes. Your mood lifted, but you skipped some olahraga."
+        "Kamu menikmati makanan enak selama [minutes_activity] menit. Mood kamu meningkat, tapi kamu melewatkan olahraga."
 
-    elif activity == "buat_kopi":
-        "You brewed a coffee for [time_minutes] minutes. Your caffeine and alertness increased!"
+    elif activity == "minum_kopi":
+        "Kamu menikmati kopi selama [minutes_activity] menit. Tingkat kafein dan kewaspadaan kamu meningkat!"
     
     elif activity == "sleep":
         $ sleep_hours = time_minutes // 60
         $ circadian_quality = get_sleep_quality_factor()
         if circadian_quality >= 1.3:
-            "You had a wonderful night's sleep! You feel completely refreshed!"
+            "Kamu tidur nyenyak! Kamu merasa benar-benar segar!"
         else:
-            "You woke up feeling reasonably rested."
-        "Adenosine level: [int(adenosine_level)], Sleep debt: [int(sleep_debt)] hours"
+            "Kamu bangun merasa cukup istirahat."
+        "Tingkat Adenosine: [int(adenosine_level)], Utang Tidur: [int(sleep_debt)] hours"
     
     elif activity == "workshop":
-        "You attended a workshop for [time_minutes] minutes. Your skills improved!"
+        "Kamu menghadiri sebuah workshop selama [minutes_activity] menit. Kemampuanmu meningkat!"
     
     elif activity == "selflearn":
-        "You studied independently for [time_minutes] minutes. You feel more in control!"
+        "Kamu belajar secara mandiri selama [minutes_activity] menit. Kamu merasa lebih punya kendali!"
     
     elif activity == "rest":
-        "You rested for [time_minutes] minutes."
+        "Kamu beristirahat selama [minutes_activity] menit."
     
     elif activity == "skip":
-        "You skipped [time_minutes] minutes."
+        "Kamu melewatkan [minutes_activity] menit."
     
     # Check for random event (1% chance)
     call check_random_event
+    $ earned_score = 0  # Reset earned score after showing message
     
     return
 
