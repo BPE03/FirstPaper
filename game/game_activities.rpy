@@ -146,6 +146,11 @@ init python:
         store.autonomy = min(store.max_stat, store.autonomy + 20/60)
         store.writing_xp += 8/20
 
+    def _activity_cari_jurnal():
+        store.writing_xp += 20/60
+        store.competence = min(store.max_stat, store.competence + 15/60)
+        store.nutrition = max(0, store.nutrition - 5/60)
+
     def _activity_rest():
         store.arousal = min(store.max_stat, store.arousal + 10/60)
         store.valence = min(store.max_stat, store.valence + 5/60)
@@ -161,4 +166,5 @@ init python:
         "workshop":       _activity_workshop,
         "selflearn":      _activity_selflearn,
         "rest":           _activity_rest,
+        "cari_jurnal":    _activity_cari_jurnal,
     }

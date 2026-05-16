@@ -313,9 +313,12 @@ label activity_kos:
         "Practice self-directed learning":
             $ activity = "selflearn"
         
-        "Just rest and do nothing":
-            $ activity = "rest"
+        # "Just rest and do nothing":
+        #     $ activity = "rest"
         
+        "Cari Jurnal":
+            $ activity = "cari_jurnal"
+
         "Skip time":
             $ activity = "skip"
 

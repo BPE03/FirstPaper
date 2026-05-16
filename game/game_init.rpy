@@ -21,6 +21,7 @@ default writing_level = 1
 default score = 0
 default earned_score = 0
 default max_stat = 100
+default dapat_topik = False
 
 define bidang_ilmu = {
     "KCV": {
