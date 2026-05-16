@@ -153,6 +153,7 @@ default current_month = 12
 default current_year = 2025
 default current_hour = 9
 default current_minute = 0
+default delay = 1/30
 
 # Calendar display variables
 default display_month = current_month
@@ -309,6 +310,36 @@ init python:
         if display_month < 1:
             display_month = 12
             display_year -= 1
+
+    def add_calendar_event(day, month, year, title, description, avoid_duplicates=True):
+        """
+        Append a new event to the calendar.
+        
+        Args:
+            day (int): Day of the month (1-31)
+            month (int): Month (1-12)
+            year (int): Year
+            title (str): Event title
+            description (str): Event description
+            avoid_duplicates (bool): If True, won't add duplicate events on same date with same title
+        
+        Returns:
+            bool: True if event was added, False if it was a duplicate and skipped
+        
+        Example:
+            add_calendar_event(20, 5, 2026, "Advisor Meeting", "Discuss thesis progress.")
+        """
+        global calendar_events
+        event = {"day": day, "month": month, "year": year, "title": title, "description": description}
+        
+        if avoid_duplicates:
+            for e in calendar_events:
+                if (e["day"] == day and e["month"] == month and e["year"] == year and e["title"] == title):
+                    return False  # Duplicate found, skip
+        
+        calendar_events.append(event)
+        renpy.retain_after_load()
+        return True
 
 # Level system and progression functions
 init python:

@@ -76,7 +76,7 @@ define activities = {
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
-        "max_duration": 1440
+        "max_duration": 144000
     },
     "makan_bergizi": {
         "name": "Makan Bergizi",

@@ -374,7 +374,8 @@ label process_activity:
                 $ minutes = minutes % 60
             $ time_minutes = hours * 60 + minutes
             $ time_minutes = max(min_dur, min(max_dur, time_minutes))
-    $ minutes_activity = 0
+    $ minutes_activity = 1
+    $ delay_batch = time_minutes // 60  # For activities longer than 1 hour, we can batch the time advancement
     # Special handling for sleep activity - uses dedicated sleep mechanic
     if activity == "sleep":
         $ sleep_hours = time_minutes // 60
@@ -385,7 +386,7 @@ label process_activity:
     # Loop through each minute for other activities
     else:
         python:
-            for minutes_activity in range(time_minutes):
+            for minutes_activity in range(time_minutes+1):
                 advance_time(1)
                 decrease_stats(1)
                 
@@ -402,9 +403,8 @@ label process_activity:
                     fn = ACTIVITY_DISPATCH.get(activity)
                     if fn:
                         fn()
-
-                delay = 0.5/time_minutes
-                renpy.pause(delay, hard=True)  # Small pause to allow UI to update each minute
+                if (minutes_activity % delay_batch == 0):
+                    renpy.pause(delay=delay)  # Small pause to allow UI to update each minute
                 if interrupted:
                     break
             
@@ -463,7 +463,7 @@ label process_activity:
         "Kamu melewatkan [minutes_activity] menit."
     
     # Check for random event (1% chance)
-    call check_random_event
+    #call check_random_event
     $ earned_score = 0  # Reset earned score after showing message
     
     return
