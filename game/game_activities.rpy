@@ -9,7 +9,7 @@ define activities = {
         "max_duration": 1440
     },
     "cari_jurnal": {
-        "name": "Search for academic papers",
+        "name": "Cari dan baca jurnal",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
@@ -19,15 +19,15 @@ define activities = {
         "name": "Olahraga",
         "min_duration": 60,
         "default_duration_hours": 1,
-        "default_duration_minutes": 0,
+        "default_duration_minutes": 30,
         "max_duration": 1440
     },
-    "advisor": {
-        "name": "Meet with advisor",
+    "bimbingan": {
+        "name": "Bimbingan dengan dosen",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
-        "max_duration": 1440
+        "max_duration": 60
     },
     "socialize": {
         "name": "Socialize with friends",
@@ -120,7 +120,7 @@ init python:
         store.physical_activity = min(store.max_stat, store.physical_activity + 30/60)
         store.arousal = min(store.max_stat, store.arousal + 15/60)
 
-    def _activity_advisor():
+    def _activity_bimbingan():
         store.competence = min(store.max_stat, store.competence + 10/60)
         store.relatedness = min(store.max_stat, store.relatedness + 20/60)
         store.valence = min(store.max_stat, store.valence + 15/60)
@@ -147,7 +147,7 @@ init python:
         store.writing_xp += 8/20
 
     def _activity_cari_jurnal():
-        store.writing_xp += 20/60
+        store.writing_xp += 30/60
         store.competence = min(store.max_stat, store.competence + 15/60)
         store.nutrition = max(0, store.nutrition - 5/60)
 
@@ -160,7 +160,7 @@ init python:
         "makan_enak":     _activity_makan_enak,
         "minum_kopi":     _activity_minum_kopi,
         "olahraga":       _activity_olahraga,
-        "advisor":        _activity_advisor,
+        "bimbingan":      _activity_bimbingan,
         "socialize":      _activity_socialize,
         "nap":            _activity_nap,
         "workshop":       _activity_workshop,

@@ -292,14 +292,20 @@ label activity_kos:
     menu:
         "Mau Ngapain?"
 
-        "Work on thesis (Requires motivation > 30)":
+        "Kerjakan Skripsi (Membutuhkan motivation > 30)":
+            if not dapat_topik:
+                "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
+                jump kos
             $ activity = "thesis"
 
         "Olahraga":
             $ activity = "olahraga"
         
-        "Meet with advisor":
-            $ activity = "advisor"
+        "Bimbingan dengan dosen":
+            if not dapat_topik:
+                "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa bimbingan."
+                jump kos
+            $ activity = "bimbingan"
         
         "Socialize with friends":
             $ activity = "socialize"
@@ -355,17 +361,18 @@ label process_activity:
     $ max_dur = activity_data["max_duration"]
     $ def_h = activity_data["default_duration_hours"]
     $ def_m = activity_data["default_duration_minutes"]
+        
     if min_dur == max_dur:
         $ time_minutes = min_dur
     else:
         if activity == "sleep":
-            $ hours_input = renpy.input("How many hours will you sleep? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
+            $ hours_input = renpy.input("Kamu akan tidur berapa jam? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
             $ hours = int(hours_input) if hours_input.isdigit() else def_h
             $ hours = max(min_dur//60, min(max_dur//60, hours))
             $ time_minutes = hours * 60
         else:
-            $ hours_input = renpy.input("How many hours will you spend on this activity? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
-            $ minutes_input = renpy.input("How many additional minutes?", default=str(def_m))
+            $ hours_input = renpy.input("Kamu mau aktivitas selama berapa jam? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
+            $ minutes_input = renpy.input("Berapa menit?", default=str(def_m))
             $ hours = int(hours_input) if hours_input.isdigit() else def_h
             $ minutes = int(minutes_input) if minutes_input.isdigit() else def_m
             if hours < 0:
@@ -377,8 +384,16 @@ label process_activity:
                 $ minutes = minutes % 60
             $ time_minutes = hours * 60 + minutes
             $ time_minutes = max(min_dur, min(max_dur, time_minutes))
+    "Yakin mau melakukan aktivitas ini?"
+    menu:
+        "Yakin mau melakukan aktivitas ini?"
+        "Yakin":
+            #Continue to next line
+            pass
+        "Tidak":
+            return
     $ minutes_activity = 1
-    $ delay_batch = time_minutes // 60  # For activities longer than 1 hour, we can batch the time advancement
+    $ delay_batch = time_minutes / 60  # For activities longer than 1 hour, we can batch the time advancement
     # Special handling for sleep activity - uses dedicated sleep mechanic
     if activity == "sleep":
         $ sleep_hours = time_minutes // 60
@@ -402,6 +417,28 @@ label process_activity:
                         earned_score += calculate_thesis_score()
                     else:
                         break
+                elif activity == "cari_jurnal":
+                    if not dapat_topik:
+                        xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
+                        required = get_required_for_level(store.practical_level)
+                        xp_ratio = xp_in_level / required
+                        # Each level above 1 adds 15% base; XP within the level adds up to 15% more
+                        chance = min(0.9, (store.practical_level - 1 + xp_ratio) * 0.15)
+                        if renpy.random.random() < chance:
+                            dapat_topik = True
+                            renpy.say(narrator, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
+                            renpy.say(narrator, "Segera bimbingan dengan dosen untuk memastikan apakah topik ini layak untuk dilanjutkan.")
+                    ACTIVITY_DISPATCH.get(activity, lambda: None)()
+                elif activity == "bimbingan":
+                    if not dosen_acc:
+                        # 5% chance per minute to get acc, increased by competence and relatedness
+                        base_chance = 0.05
+                        competence_factor = store.competence / store.max_stat * 0.1  # up to +10%
+                        relatedness_factor = store.relatedness / store.max_stat * 0.1  # up to +10%
+                        total_chance = base_chance + competence_factor + relatedness_factor
+                        if renpy.random.random() < total_chance:
+                            dosen_acc = True
+                            renpy.say(narrator, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
                 else:
                     fn = ACTIVITY_DISPATCH.get(activity)
                     if fn:
@@ -414,7 +451,7 @@ label process_activity:
             # For skip, no effects
     
     # Update levels and motivation after loop
-    if activity in ["thesis", "advisor", "workshop", "selflearn"]:
+    if activity in ["thesis", "bimbingan", "workshop", "selflearn"]:
         $ update_levels()
     
     $ update_motivation_and_progress()
@@ -423,12 +460,18 @@ label process_activity:
     if activity == "thesis":
         "Kamu mengerjakan skripsi selama [minutes_activity] menit."
         "Kamu mendapatkan [earned_score] poin!"
+        $ earned_score = 0  # Reset earned score after showing message
     
     elif activity == "olahraga":
         "Kamu olahraga for [minutes_activity] minutes. You feel refreshed and energized!"
     
-    elif activity == "advisor":
-        "Kamu bertemu dengan advisor kamu selama [minutes_activity] menit. Kamu memperoleh kejelasan dan arah!"
+    elif activity == "bimbingan":
+        if not dosen_acc:
+            "Kamu bimbingan dengan dosen selama [minutes_activity] menit, namun topikmu belum disetujui."
+            "Dosen menyarankan untuk memperdalam pemahamanmu tentang topik yang kamu pilih dan kembali lagi nanti."
+            $ dapat_topik = False  # Ensure you don't get the benefits of having a topic until you actually get it
+        else:
+            "Kamu bimbingan dengan dosen selama [minutes_activity] menit. Kamu memperoleh kejelasan dan arah!"
     
     elif activity == "socialize":
         "Kamu menghabiskan waktu dengan teman-teman untuk [minutes_activity] menit. Kamu merasa terhubung dan bahagia!"
@@ -464,10 +507,14 @@ label process_activity:
     
     elif activity == "skip":
         "Kamu melewatkan [minutes_activity] menit."
+
+    elif activity == "cari_jurnal":
+        if not dapat_topik:
+            "Kamu belum berhasil menemukan topik proposal yang kamu pahami."
+        "Kamu mencari dan membaca jurnal selama [minutes_activity] menit. Kamu mendapatkan ilmu baru."
     
     # Check for random event (1% chance)
     #call check_random_event
-    $ earned_score = 0  # Reset earned score after showing message
     
     return
 

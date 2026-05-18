@@ -22,6 +22,7 @@ default score = 0
 default earned_score = 0
 default max_stat = 100
 default dapat_topik = False
+default dosen_acc = False
 
 define bidang_ilmu = {
     "KCV": {
@@ -185,11 +186,11 @@ default current_location = "kos"  # Start in dorm room
 define locations = {
     "kos": {
         "explorable": ["dapur"],
-        "name": "Dorm Room",
+        "name": "Kos",
     },
     "dapur": {
         "explorable": ["kos"],
-        "name": "Kitchen",
+        "name": "Dapur",
     },
 }
 
