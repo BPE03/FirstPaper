@@ -12,14 +12,14 @@ screen main_stats():
             vbox:
                 spacing 15
                 
-                text "Thesis Journey" size 24 color "#ecf0f1" bold True
+                text "Kerjakan Skripsimu❤" size 24 color "#ecf0f1" bold True
                 
                 # Current emotion display
                 $ current_emotion = get_current_emotion()
                 $ emotion_info = get_emotion_info(current_emotion)
                 
                 # Motivation stat
-                text "Motivation" size 18 color "#ffffff"
+                text "Motivasi" size 18 color "#ffffff"
                 bar:
                     value motivation
                     range max_stat
@@ -30,7 +30,7 @@ screen main_stats():
                 text "[motivation:.02f]/[max_stat]" size 14 color "#bdc3c7"
                 
                 # Thesis Progress
-                text "Thesis Progress" size 18 color "#ffffff"
+                text "Kemajuan Skripsi" size 18 color "#ffffff"
                 bar:
                     value thesis_progress
                     range max_stat
@@ -48,18 +48,18 @@ screen main_stats():
                     
                     vbox:
                         spacing 3
-                        text "Emotion" size 12 color "#ffffff"
+                        text "Emosi" size 12 color "#ffffff"
                         text "[current_emotion.upper()]" size 16 color "#ffffff" bold True
                         text "[emotion_info['description']]" size 11 color "#ffffff"
         
                 null height 1
                 # Score display
-                text "Score" size 18 color "#ffffff"
+                text "Skor" size 18 color "#ffffff"
                 text "[score]" size 18 color "#f39c12" bold True
 
                 null height 5
                 # Button to show detailed stats
-                textbutton "View Detailed Stats" action ToggleVariable("show_detailed_stats") xsize 250 ysize 75
+                textbutton "Lihat Statistik Detil" action ToggleVariable("show_detailed_stats") xsize 250 ysize 75
         
         # Timer that affects stats every second
         if not in_cutscene:
@@ -82,7 +82,7 @@ screen calendar_now():
                 
                 text "[current_day]/[current_month]/[current_year]" size 28 color "#ffffff"
                 text "[format_time()]" size 28 color "#ffffff"
-                textbutton "{size=24}View Calendar" action ToggleVariable("show_calendar") xsize 200 ysize 75
+                textbutton "{size=24}Lihat Kalender" action ToggleVariable("show_calendar") xsize 200 ysize 75
         # Timer that affects stats every second
         if not in_cutscene:
             timer 1.0 repeat True action [
@@ -111,7 +111,7 @@ screen calendar_window():
                     spacing 15
                     
                     hbox:
-                        textbutton "✕ Close":
+                        textbutton "✕ Tutup":
                             action [SetVariable("show_calendar", False), SetVariable("show_event_details", False)]
                             text_size 20
                             #xalign 0.95
@@ -123,7 +123,7 @@ screen calendar_window():
                         textbutton "Prev":
                             action Function(prev_display_month)
                             text_size 20
-                        text "Calendar - [month_names[display_month]] [display_year]" size 25 color "#ecf0f1" bold True xalign 0.5
+                        text "Kalender - [month_names[display_month]] [display_year]" size 25 color "#ecf0f1" bold True xalign 0.5
                         textbutton "Next":
                             action Function(next_display_month)
                             text_size 20
@@ -137,7 +137,7 @@ screen calendar_window():
                         
                         vbox:
                             spacing 5
-                            text "Current Date & Time" size 18 color "#3498db" bold True
+                            text "Tanggal & Waktu Saat Ini" size 18 color "#3498db" bold True
                             text "[month_names[current_month]] [current_day], [current_year]" size 22 color "#ffffff"
                             text "{:02d}:{:02d}".format(current_hour, current_minute) size 32 color "#2ecc71" bold True
                     
@@ -146,7 +146,7 @@ screen calendar_window():
                     # Day of week headers
                     hbox:
                         spacing 46
-                        for day_name in ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]:
+                        for day_name in ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"]:
                             text day_name size 16 color "#ecf0f1" bold True xsize 75 text_align 0.5
                     
                     # Calendar grid
@@ -210,9 +210,9 @@ screen calendar_window():
                             padding (10, 10)
                             vbox:
                                 spacing 5
-                                text "Upcoming Event" size 18 color "#3498db" bold True
+                                text "Acara Mendatang" size 18 color "#3498db" bold True
                                 textbutton "[next_event['title']] – [month_names[next_event['month']]] [next_event['day']]" action Function(set_selected_calendar_event, next_event) xalign 0.0 text_size 18
-                                text "Click any highlighted date on the calendar to see event details." size 14 color "#bdc3c7"
+                                text "Klik tanggal yang disorot pada kalender untuk melihat detail acara." size 14 color "#bdc3c7"
                     else:
                         frame:
                             background "#2c3e50"
@@ -220,8 +220,8 @@ screen calendar_window():
                             padding (10, 10)
                             vbox:
                                 spacing 5
-                                text "No upcoming events" size 18 color "#3498db" bold True
-                                text "There are currently no events scheduled on the calendar." size 16 color "#ecf0f1"
+                                text "Tidak ada acara yang akan datang" size 18 color "#3498db" bold True
+                                text "Saat ini tidak ada acara yang dijadwalkan pada kalender." size 16 color "#ecf0f1"
 
                     if show_event_details and selected_calendar_event is not None:
                         frame:
@@ -231,10 +231,10 @@ screen calendar_window():
                             vbox:
                                 spacing 8
                                 text "[selected_calendar_event['title']]" size 22 color "#ecf0f1" bold True
-                                text "Date: [month_names[selected_calendar_event['month']]] [selected_calendar_event['day']], [selected_calendar_event['year']]" size 16 color "#ffffff"
+                                text "Tanggal: [month_names[selected_calendar_event['month']]] [selected_calendar_event['day']], [selected_calendar_event['year']]" size 16 color "#ffffff"
                                 text "[selected_calendar_event['description']]" size 16 color "#bdc3c7" text_align 0.0
                                 null height 8
-                                textbutton "Close Event Details" action [SetVariable("show_event_details", False), SetVariable("selected_calendar_event", None)] xalign 0.0 text_size 18
+                                textbutton "Tutup Detail Acara" action [SetVariable("show_event_details", False), SetVariable("selected_calendar_event", None)] xalign 0.0 text_size 18
 
 # Detailed stats window (shown when button is pressed)
 screen detailed_stats_window():
@@ -259,8 +259,8 @@ screen detailed_stats_window():
                     
                     hbox:
                         spacing 400
-                        text "Detailed Statistics" size 28 color "#ecf0f1" bold True
-                        textbutton "✕ Close" action SetVariable("show_detailed_stats", False) text_size 20
+                        text "Detil Statistik" size 28 color "#ecf0f1" bold True
+                        textbutton "✕ Tutup" action SetVariable("show_detailed_stats", False) text_size 20
                     
                     null height 10
                     

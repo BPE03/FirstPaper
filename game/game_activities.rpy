@@ -29,8 +29,8 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 60
     },
-    "socialize": {
-        "name": "Socialize with friends",
+    "sosialisasi": {
+        "name": "Sosialisasi dengan teman",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
@@ -43,8 +43,8 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 1440
     },
-    "sleep": {
-        "name": "Sleep",
+    "tidur": {
+        "name": "Tidur",
         "min_duration": 240,
         "default_duration_hours": 8,
         "default_duration_minutes": 0,
@@ -128,7 +128,7 @@ init python:
         store.writing_xp += 10
         store.practical_xp += 5
 
-    def _activity_socialize():
+    def _activity_sosialisasi():
         store.relatedness = min(store.max_stat, store.relatedness + 30/60)
         store.valence = min(store.max_stat, store.valence + 20/60)
 
@@ -161,7 +161,7 @@ init python:
         "minum_kopi":     _activity_minum_kopi,
         "olahraga":       _activity_olahraga,
         "bimbingan":      _activity_bimbingan,
-        "socialize":      _activity_socialize,
+        "sosialisasi":    _activity_sosialisasi,
         "nap":            _activity_nap,
         "workshop":       _activity_workshop,
         "selflearn":      _activity_selflearn,

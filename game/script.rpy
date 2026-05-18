@@ -289,40 +289,47 @@ label dapur:
 # Main gameplay loop
 label activity_kos:
     $ activity = None
+    $ _m_thesis     = get_activity_motivation("thesis")[1]
+    $ _m_olahraga   = get_activity_motivation("olahraga")[1]
+    $ _m_bimbingan  = get_activity_motivation("bimbingan")[1]
+    $ _m_sosialisasi  = get_activity_motivation("sosialisasi")[1]
+    $ _m_workshop   = get_activity_motivation("workshop")[1]
+    $ _m_selflearn  = get_activity_motivation("selflearn")[1]
+    $ _m_jurnal     = get_activity_motivation("cari_jurnal")[1]
     menu:
         "Mau Ngapain?"
 
-        "Kerjakan Skripsi (Membutuhkan motivation > 30)":
+        "Kerjakan Skripsi ([_m_thesis]) (Membutuhkan motivation > 30)":
             if not dapat_topik:
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
                 jump kos
             $ activity = "thesis"
 
-        "Olahraga":
+        "Olahraga ([_m_olahraga])":
             $ activity = "olahraga"
-        
-        "Bimbingan dengan dosen":
+
+        "Bimbingan dengan dosen ([_m_bimbingan])":
             if not dapat_topik:
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa bimbingan."
                 jump kos
             $ activity = "bimbingan"
-        
-        "Socialize with friends":
-            $ activity = "socialize"
-        
-        "Sleep (Full sleep cycle)":
-            $ activity = "sleep"
-        
-        "Attend a workshop / Learn new skills":
+
+        "Sosialisasi dengan teman ([_m_sosialisasi])":
+            $ activity = "sosialisasi"
+
+        "Tidur":
+            $ activity = "tidur"
+
+        "Attend a workshop / Learn new skills ([_m_workshop])":
             $ activity = "workshop"
-        
-        "Practice self-directed learning":
+
+        "Practice self-directed learning ([_m_selflearn])":
             $ activity = "selflearn"
-        
+
         # "Just rest and do nothing":
         #     $ activity = "rest"
-        
-        "Cari Jurnal":
+
+        "Cari Jurnal ([_m_jurnal])":
             $ activity = "cari_jurnal"
 
         "Skip time":
@@ -336,16 +343,19 @@ label activity_kos:
 
 label activity_dapur:
     $ activity = None
+    $ _m_bergizi = get_activity_motivation("makan_bergizi")[1]
+    $ _m_enak    = get_activity_motivation("makan_enak")[1]
+    $ _m_kopi    = get_activity_motivation("minum_kopi")[1]
     menu:
         "Mau ngapain?"
 
-        "Makan Bergizi":
+        "Makan Bergizi ([_m_bergizi])":
             $ activity = "makan_bergizi"
-        
-        "Makan Enak Sembarangan":
+
+        "Makan Enak Sembarangan ([_m_enak])":
             $ activity = "makan_enak"
 
-        "Minum Kopi":
+        "Minum Kopi ([_m_kopi])":
             $ activity = "minum_kopi"
 
         "Ga jadi":
@@ -365,7 +375,7 @@ label process_activity:
     if min_dur == max_dur:
         $ time_minutes = min_dur
     else:
-        if activity == "sleep":
+        if activity == "tidur":
             $ hours_input = renpy.input("Kamu akan tidur berapa jam? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
             $ hours = int(hours_input) if hours_input.isdigit() else def_h
             $ hours = max(min_dur//60, min(max_dur//60, hours))
@@ -394,8 +404,11 @@ label process_activity:
             return
     $ minutes_activity = 1
     $ delay_batch = time_minutes / 60  # For activities longer than 1 hour, we can batch the time advancement
+    $ current_motivation_mult, current_motivation_label = get_activity_motivation(activity)
+    if activity not in ("skip", "tidur"):
+        "Motivasimu untuk aktivitas ini: [current_motivation_label] (x[current_motivation_mult])"
     # Special handling for sleep activity - uses dedicated sleep mechanic
-    if activity == "sleep":
+    if activity == "tidur":
         $ sleep_hours = time_minutes // 60
         "You head to bed for the night..."
         "Zzzzzzz... [sleep_hours] hours of sleep..."
@@ -410,11 +423,12 @@ label process_activity:
                 
                 if activity == "thesis":
                     if motivation > 30:
-                        store.thesis_progress = min(100, store.thesis_progress + 1/60)
+                        mult = store.current_motivation_mult
+                        store.thesis_progress = min(100, store.thesis_progress + (1/60) * mult)
                         decrease_stats(1)
-                        store.writing_xp += 25/60
-                        store.practical_xp += 15/60
-                        earned_score += calculate_thesis_score()
+                        store.writing_xp += (25/60) * mult
+                        store.practical_xp += (15/60) * mult
+                        earned_score += calculate_thesis_score() * mult
                     else:
                         break
                 elif activity == "cari_jurnal":
@@ -428,7 +442,7 @@ label process_activity:
                             dapat_topik = True
                             renpy.say(narrator, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
                             renpy.say(narrator, "Segera bimbingan dengan dosen untuk memastikan apakah topik ini layak untuk dilanjutkan.")
-                    ACTIVITY_DISPATCH.get(activity, lambda: None)()
+                    apply_with_motivation(ACTIVITY_DISPATCH.get(activity, lambda: None), store.current_motivation_mult)
                 elif activity == "bimbingan":
                     if not dosen_acc:
                         # 5% chance per minute to get acc, increased by competence and relatedness
@@ -439,10 +453,11 @@ label process_activity:
                         if renpy.random.random() < total_chance:
                             dosen_acc = True
                             renpy.say(narrator, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
+                    apply_with_motivation(ACTIVITY_DISPATCH.get(activity, lambda: None), store.current_motivation_mult)
                 else:
                     fn = ACTIVITY_DISPATCH.get(activity)
                     if fn:
-                        fn()
+                        apply_with_motivation(fn, store.current_motivation_mult)
                 if (minutes_activity % delay_batch == 0):
                     renpy.pause(delay=delay)  # Small pause to allow UI to update each minute
                 if interrupted:
@@ -450,6 +465,10 @@ label process_activity:
             
             # For skip, no effects
     
+    # Record when this activity was last done (for motivation tracking)
+    if activity not in ("skip", "tidur"):
+        $ activity_last_done[activity] = get_total_game_minutes()
+
     # Update levels and motivation after loop
     if activity in ["thesis", "bimbingan", "workshop", "selflearn"]:
         $ update_levels()
@@ -473,7 +492,7 @@ label process_activity:
         else:
             "Kamu bimbingan dengan dosen selama [minutes_activity] menit. Kamu memperoleh kejelasan dan arah!"
     
-    elif activity == "socialize":
+    elif activity == "sosialisasi":
         "Kamu menghabiskan waktu dengan teman-teman untuk [minutes_activity] menit. Kamu merasa terhubung dan bahagia!"
     
     elif activity == "nap":
@@ -487,7 +506,7 @@ label process_activity:
     elif activity == "minum_kopi":
         "Kamu menikmati kopi selama [minutes_activity] menit. Tingkat kafein dan kewaspadaan kamu meningkat!"
     
-    elif activity == "sleep":
+    elif activity == "tidur":
         $ sleep_hours = time_minutes // 60
         $ circadian_quality = get_sleep_quality_factor()
         if circadian_quality >= 1.3:
@@ -559,7 +578,6 @@ label random_event:
     
     $ set_cutscene_mode(False)  # Exit cutscene mode after event
     return
-    call screen interactive_kos
 
 # Burnout ending
 label burnout:

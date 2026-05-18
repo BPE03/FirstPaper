@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"g:\\\\Program Files\\\\renpy-8.5.2-sdk\\\\RenPy Projects\\\\FirstPaper\\\\game\\\\\" -Recurse -Filter \"*.rpy\" | Select-Object FullName)",
+      "Bash(findstr /r \"history\\\\|track\\\\|log\\\\|random\\\\|weight\" \"g:\\\\Program Files\\\\renpy-8.5.2-sdk\\\\RenPy Projects\\\\FirstPaper\\\\game\\\\game_activities.rpy\")"
+    ]
+  }
+}

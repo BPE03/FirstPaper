@@ -23,6 +23,9 @@ default earned_score = 0
 default max_stat = 100
 default dapat_topik = False
 default dosen_acc = False
+default activity_last_done = {}
+default current_motivation_mult = 1.0
+default current_motivation_label = "Bersemangat"
 
 define bidang_ilmu = {
     "KCV": {
@@ -167,8 +170,8 @@ default calendar_events = [
         "day": 9,
         "month": 1,
         "year": 2026,
-        "title": "Thesis Deadline",
-        "description": "Final thesis submission is due today. Prepare your final draft, supporting documents, and submit before the deadline."
+        "title": "Deadline Pengumpulan Proposal",
+        "description": "Batas akhir untuk mengumpulkan proposal penelitian tesis. Pastikan proposal sudah lengkap dan disetujui oleh dosen pembimbing sebelum tanggal ini."
     }
 ]
 default selected_calendar_event = None
@@ -240,9 +243,9 @@ init python:
 init python:
     import datetime
     month_names = {
-        1: "January", 2: "February", 3: "March", 4: "April",
-        5: "May", 6: "June", 7: "July", 8: "August",
-        9: "September", 10: "October", 11: "November", 12: "December"
+        1: "Januari", 2: "Februari", 3: "Maret", 4: "April",
+        5: "Mei", 6: "Juni", 7: "Juli", 8: "Agustus",
+        9: "September", 10: "Oktober", 11: "November", 12: "Desember"
     }
     
     def get_days_in_month(month, year):
@@ -280,6 +283,48 @@ init python:
         if current_month > 12:
             current_month = 1
             current_year += 1
+
+    def get_total_game_minutes():
+        """Returns total elapsed game-minutes from a fixed reference (2025-01-01)."""
+        days = (store.current_year - 2025) * 365 + (store.current_month - 1) * 30 + store.current_day
+        return days * 1440 + store.current_hour * 60 + store.current_minute
+
+    _MOTIVATION_STATS_CAPPED = [
+        "nutrition", "physical_activity", "autonomy", "competence",
+        "relatedness", "valence", "arousal", "caffeine_level"
+    ]
+    _MOTIVATION_STATS_UNCAPPED = ["writing_xp", "practical_xp"]
+
+    def get_activity_motivation(activity_key):
+        """Returns (multiplier, label) based on how long ago the activity was last done."""
+        last_done = getattr(store, 'activity_last_done', {})
+        if activity_key not in last_done:
+            return 1.2, "Bersemangat"
+        minutes_since = get_total_game_minutes() - last_done[activity_key]
+        if minutes_since >= 480:
+            return 1.2, "Bersemangat"
+        elif minutes_since >= 240:
+            return 1.0, "Siap"
+        elif minutes_since >= 120:
+            return 0.85, "Kurang Semangat"
+        elif minutes_since >= 60:
+            return 0.7, "Lelah"
+        else:
+            return 0.5, "Kelelahan"
+
+    def apply_with_motivation(fn, mult):
+        """Call an activity dispatch function and scale all stat deltas by mult."""
+        before_capped = {s: getattr(store, s) for s in _MOTIVATION_STATS_CAPPED}
+        before_uncapped = {s: getattr(store, s) for s in _MOTIVATION_STATS_UNCAPPED}
+        fn()
+        for s in _MOTIVATION_STATS_CAPPED:
+            delta = getattr(store, s) - before_capped[s]
+            if delta != 0:
+                setattr(store, s, max(0, min(store.max_stat, before_capped[s] + delta * mult)))
+        for s in _MOTIVATION_STATS_UNCAPPED:
+            delta = getattr(store, s) - before_uncapped[s]
+            if delta != 0:
+                setattr(store, s, max(0, before_uncapped[s] + delta * mult))
 
     def format_time():
         return "{:02d}:{:02d}".format(current_hour, current_minute)
