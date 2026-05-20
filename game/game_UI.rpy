@@ -1,3 +1,10 @@
+# Variable to track if detailed stats window is shown
+default show_detailed_stats = False
+# Variable to track if activity menu is shown
+default show_activity_menu = False
+# Variable to track if calendar window is shown
+default show_calendar = False
+
 # Main stats display (always visible)
 screen main_stats():
     showif not in_cutscene:  # Hide during cutscenes, show during interactive gameplay
