@@ -289,21 +289,17 @@ label dapur:
 # Main gameplay loop
 label activity_kos:
     $ activity = None
-    $ _m_thesis     = get_activity_motivation("thesis")[1]
+    $ _m_thesis     = get_activity_motivation("skripsi")[1]
     $ _m_olahraga   = get_activity_motivation("olahraga")[1]
     $ _m_bimbingan  = get_activity_motivation("bimbingan")[1]
     $ _m_sosialisasi  = get_activity_motivation("sosialisasi")[1]
     $ _m_workshop   = get_activity_motivation("workshop")[1]
     $ _m_selflearn  = get_activity_motivation("selflearn")[1]
     $ _m_jurnal     = get_activity_motivation("cari_jurnal")[1]
+    $ _m_chat_online = get_activity_motivation("chat_online")[1]
+    $ _m_main_game = get_activity_motivation("main_game")[1]
     menu:
         "Mau Ngapain?"
-
-        "Kerjakan Skripsi ([_m_thesis]) (Membutuhkan motivation > 30)":
-            if not dapat_topik:
-                "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
-                jump kos
-            $ activity = "thesis"
 
         "Olahraga ([_m_olahraga])":
             $ activity = "olahraga"
@@ -320,22 +316,44 @@ label activity_kos:
         "Tidur":
             $ activity = "tidur"
 
-        "Attend a workshop / Learn new skills ([_m_workshop])":
-            $ activity = "workshop"
-
-        "Practice self-directed learning ([_m_selflearn])":
-            $ activity = "selflearn"
-
         # "Just rest and do nothing":
         #     $ activity = "rest"
-
-        "Cari Jurnal ([_m_jurnal])":
-            $ activity = "cari_jurnal"
 
         "Skip time":
             $ activity = "skip"
 
-        "Cancel":
+        "Selanjutnya":
+            menu:
+                "Mau Ngapain?"
+
+                "Kerjakan Skripsi ([_m_thesis]) (Membutuhkan motivation > 30)":
+                    if not dapat_topik:
+                        "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
+                        jump kos
+                    if motivation <= 30:
+                        "Motivasi kamu terlalu rendah untuk mengerjakan skripsi. Coba lakukan aktivitas lain untuk meningkatkan motivasimu."
+                        jump kos
+                    $ activity = "skripsi"
+
+                "Attend a workshop / Learn new skills ([_m_workshop])":
+                    $ activity = "workshop"
+
+                "Practice self-directed learning ([_m_selflearn])":
+                    $ activity = "selflearn"
+
+                "Cari Jurnal ([_m_jurnal])":
+                    $ activity = "cari_jurnal"
+
+                "Chat Online ([_m_chat_online])":
+                    $ activity = "chat_online"
+
+                "Main Game ([_m_main_game])":
+                    $ activity = "main_game"
+
+                "Batal":
+                    jump kos
+
+        "Batal":
             jump kos
     
     call process_activity
@@ -403,7 +421,9 @@ label process_activity:
         "Tidak":
             return
     $ minutes_activity = 1
-    $ delay_batch = time_minutes / 60  # For activities longer than 1 hour, we can batch the time advancement
+    $ delay_batch = time_minutes // 60  # For activities longer than 1 hour, we can batch the time advancement
+    if delay_batch < 1:
+        $ delay_batch = 1  # Minimum batch of 1 minute to ensure UI updates
     $ current_motivation_mult, current_motivation_label = get_activity_motivation(activity)
     if activity not in ("skip", "tidur"):
         "Motivasimu untuk aktivitas ini: [current_motivation_label] (x[current_motivation_mult])"
@@ -421,13 +441,11 @@ label process_activity:
                 advance_time(1)
                 decrease_stats(1)
                 
-                if activity == "thesis":
+                if activity == "skripsi":
                     if motivation > 30:
                         mult = store.current_motivation_mult
                         store.thesis_progress = min(100, store.thesis_progress + (1/60) * mult)
-                        decrease_stats(1)
-                        store.writing_xp += (25/60) * mult
-                        store.practical_xp += (15/60) * mult
+                        ACTIVITY_DISPATCH["skripsi"]()  # Apply thesis-specific effects
                         earned_score += calculate_thesis_score() * mult
                     else:
                         break
@@ -470,19 +488,19 @@ label process_activity:
         $ activity_last_done[activity] = get_total_game_minutes()
 
     # Update levels and motivation after loop
-    if activity in ["thesis", "bimbingan", "workshop", "selflearn"]:
+    if activity in ["skripsi", "bimbingan", "workshop", "selflearn"]:
         $ update_levels()
     
     $ update_motivation_and_progress()
     
     # Show messages
-    if activity == "thesis":
+    if activity == "skripsi":
         "Kamu mengerjakan skripsi selama [minutes_activity] menit."
         "Kamu mendapatkan [earned_score] poin!"
         $ earned_score = 0  # Reset earned score after showing message
     
     elif activity == "olahraga":
-        "Kamu olahraga for [minutes_activity] minutes. You feel refreshed and energized!"
+        "Kamu olahraga selama [minutes_activity] menit. Kamu merasa lebih segar!"
     
     elif activity == "bimbingan":
         if not dosen_acc:
@@ -501,7 +519,7 @@ label process_activity:
     elif activity == "makan_bergizi":
         "Kamu makan makanan bergizi selama [minutes_activity] menit. Nutrisimu meningkat!"
     elif activity == "makan_enak":
-        "Kamu menikmati makanan enak selama [minutes_activity] menit. Mood kamu meningkat, tapi kamu melewatkan olahraga."
+        "Kamu menikmati makanan enak selama [minutes_activity] menit. Mood kamu meningkat, namun kamu mendapatkan kalori lebih banyak."
 
     elif activity == "minum_kopi":
         "Kamu menikmati kopi selama [minutes_activity] menit. Tingkat kafein dan kewaspadaan kamu meningkat!"
@@ -513,7 +531,7 @@ label process_activity:
             "Kamu tidur nyenyak! Kamu merasa benar-benar segar!"
         else:
             "Kamu bangun merasa cukup istirahat."
-        "Tingkat Adenosine: [int(adenosine_level)], Utang Tidur: [int(sleep_debt)] hours"
+        "Tingkat Adenosine: [int(adenosine_level)], Utang Tidur: [int(sleep_debt)] jam"
     
     elif activity == "workshop":
         "Kamu menghadiri sebuah workshop selama [minutes_activity] menit. Kemampuanmu meningkat!"
@@ -531,6 +549,12 @@ label process_activity:
         if not dapat_topik:
             "Kamu belum berhasil menemukan topik proposal yang kamu pahami."
         "Kamu mencari dan membaca jurnal selama [minutes_activity] menit. Kamu mendapatkan ilmu baru."
+
+    elif activity == "chat_online":
+        "Kamu mengobrol dengan teman-teman secara online selama [minutes_activity] menit. Kamu merasa lebih terhubung!"
+
+    elif activity == "main_game":
+        "Kamu bermain game selama [minutes_activity] menit. Kamu merasa lebih santai dan terhibur!"
     
     # Check for random event (1% chance)
     #call check_random_event

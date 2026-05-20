@@ -12,7 +12,7 @@ screen main_stats():
             xalign 0.05
             yalign 0.05
             xsize 280
-            ysize 420
+            ysize 450
             background "#2c3e50cc"
             padding (15, 15)
             

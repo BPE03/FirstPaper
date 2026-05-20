@@ -28,7 +28,7 @@ screen interactive_kos():
     #     action SetVariable("show_activity_menu", True)
     
     # Alternative text button (remove if using image button above)
-    textbutton "Do Something":
+    textbutton "Lakukan Sesuatu":
         xalign 0.95
         yalign 0.95
         xsize 200
@@ -36,7 +36,7 @@ screen interactive_kos():
         text_size 22
         action Jump("activity_kos")
 
-    textbutton "Go Somewhere":
+    textbutton "Map":
         xalign 0.95
         yalign 0.85
         xsize 200
@@ -74,7 +74,7 @@ screen interactive_dapur():
     #     action SetVariable("show_activity_menu", True)
     
     # Alternative text button (remove if using image button above)
-    textbutton "Do Something":
+    textbutton "Lakukan Sesuatu":
         xalign 0.95
         yalign 0.95
         xsize 200
@@ -82,7 +82,7 @@ screen interactive_dapur():
         text_size 22
         action Jump("activity_dapur")
 
-    textbutton "Go Somewhere":
+    textbutton "Map":
         xalign 0.95
         yalign 0.85
         xsize 200
@@ -101,7 +101,7 @@ screen game_maps():
         padding (20, 20)
         
         vbox:
-            text "Visitable places" xalign 0.5 size 30
+            text "Tempat yang Dapat Dikunjungi" xalign 0.5 size 30
             null height 30
             
             for dest in locations[current_location]["explorable"]:
@@ -109,6 +109,6 @@ screen game_maps():
                 textbutton "[loc_name]" action Function(move_to_map, dest)
             
             null height 30
-            textbutton "Close Map":
+            textbutton "Tutup Map":
                 action Hide("game_maps")
                 xalign 0.5

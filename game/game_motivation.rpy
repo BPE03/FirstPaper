@@ -83,17 +83,30 @@ init python:
             arousal = emotion["arousal"]
             return True
         return False
-    
+
+init python:
+    # Per second decay function (called every in-game minute)
     def decrease_stats(time_minutes):
         """Decrease stats over time without going negative."""
         global autonomy, competence, relatedness, nutrition, physical_activity, sleep, valence, arousal
         global sleep_debt, adenosine_level
 
-        #store.autonomy = max(0, store.autonomy - 0.3)
-        competence = max(0, competence - (6/60 * time_minutes))
-        relatedness = max(0, relatedness - (6/60 * time_minutes))
-        nutrition = max(0, nutrition - (5/48 * time_minutes)) # 50% / 8 hours
-        physical_activity = max(0, physical_activity - (6/60 * time_minutes))
+        autonomy_modifier = store.autonomy * 0.015
+        if store.autonomy < 50:
+            store.autonomy = min(max_stat, store.autonomy + autonomy_modifier/60 * time_minutes)
+        else:
+            store.autonomy = max(0, store.autonomy - autonomy_modifier/60 * time_minutes)
+
+        competence_modifier = store.competence * 0.015
+        store.competence = max(0, store.competence - (competence_modifier/60 * time_minutes))
+
+        relatedness_modifier = store.relatedness * 0.015
+        store.relatedness = max(0, store.relatedness - (relatedness_modifier/60 * time_minutes))
+
+        store.nutrition = max(0, store.nutrition - (5/48 * time_minutes)) # 50% / 8 hours
+        
+        pa_modifier = store.physical_activity * 0.025
+        store.physical_activity = max(0, store.physical_activity - (pa_modifier/60 * time_minutes))
         
         # Update sleep-wake cycle: adenosine builds up, decreasing sleep stat
         update_adenosine()
@@ -101,28 +114,46 @@ init python:
         # Sleep stat decreases faster based on adenosine level
         # If adenosine is high (high sleep pressure), sleep stat drops faster
         adenosine_effect = (adenosine_level / 100) * 0.05  # Max 0.05 extra per minute
-        sleep = max(0, sleep - (0.0625 * time_minutes) - adenosine_effect)
+        store.sleep = max(0, store.sleep - (0.0625 * time_minutes) - adenosine_effect)
         
         # Apply circadian rhythm effect: sleep stat decreases slower during optimal sleep times
         circadian_factor = get_circadian_rhythm_factor()
         if circadian_factor < 0.5:  # Daytime (poor sleep alignment)
-            sleep = max(0, sleep - (0.02 * time_minutes))  # Extra penalty during day
+            store.sleep = max(0, store.sleep - (0.02 * time_minutes))  # Extra penalty during day
         
-        valence = max(0, valence - (6/60 * time_minutes))
-        arousal = max(0, arousal - (6/60 * time_minutes))
+        store.valence = max(0, store.valence - (6/60 * time_minutes))
+        store.arousal = max(0, store.arousal - (6/60 * time_minutes))
         
         # Apply sleep deprivation penalties
-        if sleep <= 30:  # Only when really tired
+        if store.sleep <= 30:  # Only when really tired
             sleep_debt += time_minutes / 60  # Accumulate sleep debt in hours
         
-        apply_sleep_deprivation_penalty()
+        #apply_sleep_deprivation_penalty()
         update_motivation_and_progress()  # Ensure motivation is updated based on current stats
         
         renpy.retain_after_load()
 
+    # Python function to calculate motivation and progress
+    def update_motivation_and_progress():
+        global motivation, thesis_progress, autonomy, competence, relatedness
+        global nutrition, physical_activity, sleep
+        
+        # Motivation is the lowest stat among psychological and physical needs
+        # This reflects that if any basic need is not met, motivation suffers
+        all_stats = [autonomy, competence, relatedness, nutrition, physical_activity, sleep]
+        motivation = min(all_stats)
+        
+        # Check for burnout
+        # if motivation <= 0:
+        #     renpy.jump("burnout")
+        
+        # Check for completion
+        # if thesis_progress >= 100:
+        #     renpy.jump("thesis_complete")
+
+init python:
     # Sleep Mechanic Functions (based on NHLBI Sleep-Wake Cycle research)
     # https://www.nhlbi.nih.gov/health/sleep/sleep-wake-cycle
-    
     def get_circadian_rhythm_factor():
         """
         Returns a factor (0.0-1.0) representing how aligned the current time is 
@@ -233,11 +264,9 @@ init python:
             # Mild penalty for 1-4 hours of debt
             if sleep_debt <= 4:
                 penalty = sleep_debt * 2
-                competence = max(0, competence - penalty)
             # Severe penalty for 4+ hours of debt
             else:
                 severe_debt = sleep_debt - 4
-                competence = max(0, competence - (8 + severe_debt * 5))
                 arousal = max(0, arousal - (severe_debt * 3))
                 valence = max(0, valence - (severe_debt * 2))
     
@@ -278,6 +307,8 @@ init python:
         
         renpy.retain_after_load()
 
+init python:
+    # Per activity motivation related functions
     _MOTIVATION_STATS_CAPPED = [
         "nutrition", "physical_activity", "autonomy", "competence",
         "relatedness", "valence", "arousal", "caffeine_level"
@@ -314,21 +345,3 @@ init python:
             delta = getattr(store, s) - before_uncapped[s]
             if delta != 0:
                 setattr(store, s, max(0, before_uncapped[s] + delta * mult))
-
-    # Python function to calculate motivation and progress
-    def update_motivation_and_progress():
-        global motivation, thesis_progress, autonomy, competence, relatedness
-        global nutrition, physical_activity, sleep
-        
-        # Motivation is the lowest stat among psychological and physical needs
-        # This reflects that if any basic need is not met, motivation suffers
-        all_stats = [autonomy, competence, relatedness, nutrition, physical_activity, sleep]
-        motivation = min(all_stats)
-        
-        # Check for burnout
-        # if motivation <= 0:
-        #     renpy.jump("burnout")
-        
-        # Check for completion
-        # if thesis_progress >= 100:
-        #     renpy.jump("thesis_complete")
