@@ -12,7 +12,7 @@ screen main_stats():
             xalign 0.05
             yalign 0.05
             xsize 280
-            ysize 450
+            ysize 550
             background "#2c3e50cc"
             padding (15, 15)
             
@@ -57,14 +57,14 @@ screen main_stats():
                         spacing 3
                         text "Emosi" size 12 color "#ffffff"
                         text "[current_emotion.upper()]" size 16 color "#ffffff" bold True
-                        text "[emotion_info['description']]" size 11 color "#ffffff"
+                        #text "[emotion_info['description']]" size 11 color "#ffffff"
         
                 null height 1
                 # Score display
                 text "Skor" size 18 color "#ffffff"
                 text "[score]" size 18 color "#f39c12" bold True
 
-                null height 5
+                #null height 5
                 # Button to show detailed stats
                 textbutton "Lihat Statistik Detil" action ToggleVariable("show_detailed_stats") xsize 250 ysize 75
         
@@ -80,7 +80,7 @@ screen calendar_now():
             xalign 0.95
             yalign 0.05
             xsize 280
-            ysize 120
+            ysize 160
             background "#2c3e50cc"
             padding (15, 15)
             
@@ -89,7 +89,7 @@ screen calendar_now():
                 
                 text "[current_day]/[current_month]/[current_year]" size 28 color "#ffffff"
                 text "[format_time()]" size 28 color "#ffffff"
-                textbutton "{size=24}Lihat Kalender" action ToggleVariable("show_calendar") xsize 200 ysize 75
+                textbutton "{size=24}Lihat Kalender" action ToggleVariable("show_calendar")
         # Timer that affects stats every second
         if not in_cutscene:
             timer 1.0 repeat True action [
@@ -108,7 +108,7 @@ screen calendar_window():
             # Calendar window
             frame:
                 xalign 0.5
-                yalign 0.2
+                yalign 0.05
                 xsize 600
                 ysize 640
                 background "#34495e"

@@ -129,7 +129,9 @@ label start:
         "Sudah":
             "Bersiaplah."
         "Belum":
+            scene black with fade
             call tutorial_scene
+            scene kos with fade
     "Sekarang."
     # Show all screens
     show screen main_stats
@@ -192,6 +194,9 @@ label pilih_bidang:
                 "Kembali":
                     call pilih_bidang
                     return
+    $ renpy.scene()
+    $ renpy.show(selected_bidang.lower())
+    with fade
     n "[bidang_ilmu[selected_bidang]['nama']]"
     n "Laboratorium ini menawarkan bidang keahlian yang ditekankan pada kemampuan lulusan dalam [bidang_ilmu[selected_bidang]['deskripsi']]"
     n "Mata kuliah pada bidang ilmu ini adalah [bidang_ilmu[selected_bidang]['mata_kuliah']]."
@@ -200,8 +205,10 @@ label pilih_bidang:
     menu:
         "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
         "Ya":
+            scene kos with fade
             return
         "Tidak":
+            scene kos with fade
             call pilih_bidang
             return
     return
@@ -286,18 +293,66 @@ label dapur:
     scene dapur with fade
     call screen interactive_dapur
 
-# Main gameplay loop
-label activity_kos:
+label activity_kos_kasur:
+    $ activity = None
+    menu:
+        "Mau Ngapain?"
+        
+        "Tidur":
+            $ activity = "tidur"
+
+        "Batal":
+            jump kos
+    call process_activity
+    jump kos
+
+label activity_kos_laptop:
     $ activity = None
     $ _m_thesis     = get_activity_motivation("skripsi")[1]
-    $ _m_olahraga   = get_activity_motivation("olahraga")[1]
-    $ _m_bimbingan  = get_activity_motivation("bimbingan")[1]
-    $ _m_sosialisasi  = get_activity_motivation("sosialisasi")[1]
     $ _m_workshop   = get_activity_motivation("workshop")[1]
     $ _m_selflearn  = get_activity_motivation("selflearn")[1]
     $ _m_jurnal     = get_activity_motivation("cari_jurnal")[1]
     $ _m_chat_online = get_activity_motivation("chat_online")[1]
     $ _m_main_game = get_activity_motivation("main_game")[1]
+    menu:
+        "Mau Ngapain?"
+
+        "Kerjakan Skripsi ([_m_thesis]) (Membutuhkan motivation > 30)":
+            if not dapat_topik:
+                "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
+                jump kos
+            if motivation <= 30:
+                "Motivasi kamu terlalu rendah untuk mengerjakan skripsi. Coba lakukan aktivitas lain untuk meningkatkan motivasimu."
+                jump kos
+            $ activity = "skripsi"
+
+        "Attend a workshop / Learn new skills ([_m_workshop])":
+            $ activity = "workshop"
+
+        "Practice self-directed learning ([_m_selflearn])":
+            $ activity = "selflearn"
+
+        "Cari Jurnal ([_m_jurnal])":
+            $ activity = "cari_jurnal"
+
+        "Chat Online ([_m_chat_online])":
+            $ activity = "chat_online"
+
+        "Main Game ([_m_main_game])":
+            $ activity = "main_game"
+
+        "Batal":
+            jump kos
+
+    call process_activity
+    jump kos
+
+# Main gameplay loop
+label activity_kos:
+    $ activity = None
+    $ _m_olahraga   = get_activity_motivation("olahraga")[1]
+    $ _m_bimbingan  = get_activity_motivation("bimbingan")[1]
+    $ _m_sosialisasi  = get_activity_motivation("sosialisasi")[1]
     menu:
         "Mau Ngapain?"
 
@@ -313,45 +368,11 @@ label activity_kos:
         "Sosialisasi dengan teman ([_m_sosialisasi])":
             $ activity = "sosialisasi"
 
-        "Tidur":
-            $ activity = "tidur"
-
         # "Just rest and do nothing":
         #     $ activity = "rest"
 
         "Skip time":
             $ activity = "skip"
-
-        "Selanjutnya":
-            menu:
-                "Mau Ngapain?"
-
-                "Kerjakan Skripsi ([_m_thesis]) (Membutuhkan motivation > 30)":
-                    if not dapat_topik:
-                        "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
-                        jump kos
-                    if motivation <= 30:
-                        "Motivasi kamu terlalu rendah untuk mengerjakan skripsi. Coba lakukan aktivitas lain untuk meningkatkan motivasimu."
-                        jump kos
-                    $ activity = "skripsi"
-
-                "Attend a workshop / Learn new skills ([_m_workshop])":
-                    $ activity = "workshop"
-
-                "Practice self-directed learning ([_m_selflearn])":
-                    $ activity = "selflearn"
-
-                "Cari Jurnal ([_m_jurnal])":
-                    $ activity = "cari_jurnal"
-
-                "Chat Online ([_m_chat_online])":
-                    $ activity = "chat_online"
-
-                "Main Game ([_m_main_game])":
-                    $ activity = "main_game"
-
-                "Batal":
-                    jump kos
 
         "Batal":
             jump kos

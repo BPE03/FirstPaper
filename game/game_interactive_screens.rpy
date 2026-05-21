@@ -1,22 +1,15 @@
 # Imagemap for interactive areas (always visible)
 screen interactive_kos():
+    zorder -1
     # Main room imagemap
     imagemap:
-        ground "bg kos"  # Your background image
-        hover "bg kos_hover"  # Optional: hover overlay image
+        ground "kos"  # Your background image
+        hover "kos_hover"  # Optional: hover overlay image
         
         # Define clickable hotspots (x, y, width, height)
         # Adjust these coordinates to match your background image
-        
-        # Example: Click on desk area to open activity menu
-        hotspot (800, 400, 200, 150) action SetVariable("show_activity_menu", True)
-        
-        # You can add more hotspots for different interactions
-        # Example: Click on bed for rest activities
-        # hotspot (100, 300, 150, 200) action Jump("rest_activities")
-        
-        # Example: Click on bookshelf for academic activities
-        # hotspot (1200, 200, 180, 300) action Jump("academic_activities")
+        hotspot (0, 0, 900, 1080) action Jump("activity_kos_kasur") sensitive not (show_detailed_stats or show_calendar)
+        hotspot (1050, 500, 450, 300) action Jump("activity_kos_laptop") sensitive not (show_detailed_stats or show_calendar)
     
     # Optional: Show a button overlay if you want a visible button
     # You can remove this if you want just invisible hotspots
@@ -34,6 +27,7 @@ screen interactive_kos():
         xsize 200
         ysize 60
         text_size 22
+        sensitive not (show_detailed_stats or show_calendar)
         action Jump("activity_kos")
 
     textbutton "Map":
@@ -42,52 +36,29 @@ screen interactive_kos():
         xsize 200
         ysize 60
         text_size 22
+        sensitive not (show_detailed_stats or show_calendar)
         action Show("game_maps")
 
 # Imagemap for interactive areas (always visible)
 screen interactive_dapur():
+    zorder -1
     # Main room imagemap
     imagemap:
-        ground "bg dapur"  # Your background image
-        hover "bg dapur_hover"  # Optional: hover overlay image
+        ground "dapur"  # Your background image
+        hover "dapur_hover"  # Optional: hover overlay image
         
         # Define clickable hotspots (x, y, width, height)
         # Adjust these coordinates to match your background image
-        
-        # Example: Click on desk area to open activity menu
-        hotspot (800, 400, 200, 150) action SetVariable("show_activity_menu", True)
-        
-        # You can add more hotspots for different interactions
-        # Example: Click on bed for rest activities
-        # hotspot (100, 300, 150, 200) action Jump("rest_activities")
-        
-        # Example: Click on bookshelf for academic activities
-        # hotspot (1200, 200, 180, 300) action Jump("academic_activities")
-    
-    # Optional: Show a button overlay if you want a visible button
-    # You can remove this if you want just invisible hotspots
-    # imagebutton:
-    #     xalign 0.95
-    #     yalign 0.95
-    #     idle "gui/button/do_something_idle.png"  # Replace with your image
-    #     hover "gui/button/do_something_hover.png"  # Replace with your image
-    #     action SetVariable("show_activity_menu", True)
+        hotspot (0, 610, 1220, 470) action Jump("activity_dapur") sensitive not (show_detailed_stats or show_calendar)
     
     # Alternative text button (remove if using image button above)
-    textbutton "Lakukan Sesuatu":
-        xalign 0.95
-        yalign 0.95
-        xsize 200
-        ysize 60
-        text_size 22
-        action Jump("activity_dapur")
-
     textbutton "Map":
         xalign 0.95
         yalign 0.85
         xsize 200
         ysize 60
         text_size 22
+        sensitive not (show_detailed_stats or show_calendar)
         action Show("game_maps")
 
 screen game_maps():
