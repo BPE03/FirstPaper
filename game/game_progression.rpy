@@ -8,6 +8,7 @@ default max_stat = 100
 default dapat_topik = False
 default dosen_acc = False
 default selected_bidang = None
+default phase = 1 # 1 = proposal, 2 = proposal acced
 
 # Level system and progression functions
 init python:
@@ -33,6 +34,14 @@ init python:
         practical_level = get_level_from_xp(practical_xp)
         writing_level = get_level_from_xp(writing_xp)
     
+    def get_thesis_progress_rate():
+        """Returns per-minute thesis progress. Higher writing/practical level = faster progress."""
+        level_mult = 1.0 + (writing_level - 1) * 0.10 + (practical_level - 1) * 0.05
+        if phase == 1:
+            return (1 / 60) * level_mult
+        else:
+            return (1 / 120) * level_mult
+
     def calculate_thesis_score():
         """Calculate score gained when writing thesis based on emotion, levels, and XP."""
         global score, valence, arousal, practical_level, writing_level, practical_xp, writing_xp

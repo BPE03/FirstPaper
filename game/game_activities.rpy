@@ -57,12 +57,12 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 120
     },
-    "selflearn": {
-        "name": "Practice self-directed learning",
+    "belajar_mandiri": {
+        "name": "Belajar dan Praktek secara mandiri",
         "min_duration": 60,
-        "default_duration_hours": 1,
+        "default_duration_hours": 4,
         "default_duration_minutes": 0,
-        "max_duration": 1440
+        "max_duration": 240
     },
     "rest": {
         "name": "Just rest and do nothing",
@@ -176,9 +176,16 @@ init python:
         store.competence = min(store.max_stat, store.competence + 60/60)
         store.arousal = max(0, store.arousal - 10/60)
 
-    def _activity_selflearn():
-        store.autonomy = min(store.max_stat, store.autonomy + 20/60)
-        store.writing_xp += 8/60
+    def _activity_belajar_mandiri():
+        store.autonomy = min(store.max_stat, store.autonomy - 10/60)
+        store.competence = min(store.max_stat, store.competence + 5/60)
+        relatedness_modifier = store.relatedness * 0.02
+        store.relatedness = max(0, store.relatedness - relatedness_modifier/60)
+        pa_modifier = store.physical_activity * 0.05
+        store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
+        store.arousal = max(0, store.arousal - 6/60)
+        store.valence = max(0, store.valence - 6/60)
+        store.practical_xp += 20/60
 
     def _activity_cari_jurnal():
         store.writing_xp += 20/60
@@ -201,6 +208,7 @@ init python:
         pa_modifier = store.physical_activity * 0.05
         store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
         store.valence = min(store.max_stat, store.valence + 10/60)
+        store.arousal = min(store.max_stat, store.arousal + 5/60)
 
     def _activity_main_game():
         store.autonomy = min(store.max_stat, store.autonomy + 5/60)
@@ -208,6 +216,7 @@ init python:
         store.relatedness = min(store.max_stat, store.relatedness + 10/60)
         store.physical_activity = max(0, store.physical_activity - 5/60)
         store.valence = min(store.max_stat, store.valence + 15/60)
+        store.arousal = min(store.max_stat, store.arousal + 15/60)
 
     ACTIVITY_DISPATCH = {
         "skripsi":        _activity_skripsi,
@@ -219,7 +228,7 @@ init python:
         "sosialisasi":    _activity_sosialisasi,
         "nap":            _activity_nap,
         "workshop":       _activity_workshop,
-        "selflearn":      _activity_selflearn,
+        "belajar_mandiri":      _activity_belajar_mandiri,
         "rest":           _activity_rest,
         "cari_jurnal":    _activity_cari_jurnal,
         "chat_online":    _activity_chat_online,

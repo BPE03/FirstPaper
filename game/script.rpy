@@ -361,7 +361,7 @@ label activity_kos_laptop:
     $ activity = None
     $ _m_thesis     = get_activity_motivation("skripsi")[1]
     $ _m_workshop   = get_activity_motivation("workshop")[1]
-    $ _m_selflearn  = get_activity_motivation("selflearn")[1]
+    $ _m_belajar_mandiri  = get_activity_motivation("belajar_mandiri")[1]
     $ _m_jurnal     = get_activity_motivation("cari_jurnal")[1]
     $ _m_chat_online = get_activity_motivation("chat_online")[1]
     $ _m_main_game = get_activity_motivation("main_game")[1]
@@ -380,8 +380,8 @@ label activity_kos_laptop:
         "Attend a workshop / Learn new skills ([_m_workshop])":
             $ activity = "workshop"
 
-        "Practice self-directed learning ([_m_selflearn])":
-            $ activity = "selflearn"
+        "Belajar Mandiri ([_m_belajar_mandiri])":
+            $ activity = "belajar_mandiri"
 
         "Cari Jurnal ([_m_jurnal])":
             $ activity = "cari_jurnal"
@@ -516,7 +516,7 @@ label process_activity:
                 if activity == "skripsi":
                     if motivation > 30:
                         mult = store.current_motivation_mult
-                        store.thesis_progress = min(100, store.thesis_progress + (1/60) * mult)
+                        store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate() * mult)
                         ACTIVITY_DISPATCH["skripsi"]()  # Apply thesis-specific effects
                         earned_score += calculate_thesis_score() * mult
                     else:
@@ -560,7 +560,7 @@ label process_activity:
         $ activity_last_done[activity] = get_total_game_minutes()
 
     # Update levels and motivation after loop
-    if activity in ["skripsi", "bimbingan", "workshop", "selflearn"]:
+    if activity in ["skripsi", "bimbingan", "workshop", "belajar_mandiri"]:
         $ update_levels()
     
     $ update_motivation_and_progress()
@@ -608,7 +608,7 @@ label process_activity:
     elif activity == "workshop":
         "Kamu menghadiri sebuah workshop selama [minutes_activity] menit. Kemampuanmu meningkat!"
     
-    elif activity == "selflearn":
+    elif activity == "belajar_mandiri":
         "Kamu belajar secara mandiri selama [minutes_activity] menit. Kamu merasa lebih punya kendali!"
     
     elif activity == "rest":
