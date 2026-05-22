@@ -233,7 +233,7 @@ init python:
         Returns: (sleep_stat_gained, adenosine_reduction)
         """
         # Base recovery: ~20 points per hour of sleep
-        base_recovery = hours_slept * 20
+        base_recovery = hours_slept * 12.5
         
         # Apply circadian factor for quality
         quality_factor = get_sleep_quality_factor()

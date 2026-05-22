@@ -182,8 +182,14 @@ init python:
 
     def _activity_cari_jurnal():
         store.writing_xp += 20/60
-        store.competence = min(store.max_stat, store.competence + 15/60)
-        store.nutrition = max(0, store.nutrition - 5/60)
+        store.autonomy = min(store.max_stat, store.autonomy - 10/60)
+        store.competence = min(store.max_stat, store.competence - 10/60)
+        relatedness_modifier = store.relatedness * 0.02
+        store.relatedness = max(0, store.relatedness - relatedness_modifier/60)
+        pa_modifier = store.physical_activity * 0.05
+        store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
+        store.arousal = max(0, store.arousal - 6/60)
+        store.valence = max(0, store.valence - 6/60)
 
     def _activity_rest():
         store.arousal = min(store.max_stat, store.arousal + 10/60)

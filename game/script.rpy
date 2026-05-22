@@ -95,32 +95,8 @@ label start:
             call prologue_lanjut
         "Lanjut besok aja":
             call prologue_lanjut_besok
-    show text "First Paper"
-    $ renpy.pause(5.0, hard=True) # Matches the transition time
-    show text "Dikembangkan oleh: Bimantara Putra Ernandra" with fade
-    $ renpy.pause(5.0, hard=True) # Matches the transition time
+
     scene kos with fade
-    "Sabtu, 13 Desember 2025."
-    p "....."
-    p "Bangun pagi, ku terus...."
-    p "Ngerjain skripsi."
-    p "...."
-    p "Oalah pantes aja."
-    p "Gua ga nemu-nemu topik yang pas itu bukan karena gua ga nyari di tempat yang bener."
-    p "Tapi emang gua aja yang ga tau kemampuan ama minat gua."
-    p "Kalo gua ga minat apa-apa dapet topik gimana coba."
-    p "Hmm terus gimana dah."
-    p "...."
-    p "Bentar."
-    p "...."
-    p "Di Informatika kan ada beberapa bidang ilmu yak."
-    p "Mungkin gua bisa riset dari situ dulu, baru gua cari topik yang lebih spesifik lagi."
-    "Paijo pun mencari tahu bidang ilmu apa saja yang ada di Teknik Informatika."
-    p "Okeh, gua dah nemu semua nih, sekarang bidang ilmu mana dulu yang pengen gua telusuri?"
-    call pilih_bidang
-    p "Oke, kayaknya Lab [selected_bidang] ini yang paling menarik deh buat gua."
-    p "Berarti next step gua cari jurnal ama topik yang berhubungan sama bidang ilmu ini."
-    p "Oke, gua dah tau apa yang harus gua lakuin, saatnya eksekusi!"
     "...."
     "Eits, bentar dulu."
     "Apakah kamu sudah paham bagaimana cara memainkan game ini?"
@@ -151,6 +127,56 @@ label prologue_lanjut:
     scene kos with fade
     "Keesokan paginya, Paijo merasa sangat lelah dan tidak memiliki energi untuk melanjutkan pencarian referensi untuk proposalnya."
     "Sehingga dengan berat hati, dia memutuskan untuk berhenti dan tidur sebelum kondisi kesehatannya memburuk."
+    scene black with fade
+    show text "First Paper"
+    $ renpy.pause(5.0, hard=True) # Matches the transition time
+    show text "Dikembangkan oleh: Bimantara Putra Ernandra" with fade
+    $ renpy.pause(5.0, hard=True) # Matches the transition time
+    "Sabtu, 13 Desember 2025."
+    p "...."
+    p "Hahh...."
+    p "Tidur berapa jam gua?"
+    p "Cape banget rasanya, kaya ga tidur semaleman."
+    "Kan emang begadang."
+    p "Duh gua harus ngapain ya."
+    p "Bener-bener ga kepikiran apa-apa buat skripsi nanti."
+    "Paijo langsung menyalakan laptopnya kembali."
+    p "Hmmm gimana ya."
+    "Dia bergegas mencari jurnal lagi tanpa arah yang jelas."
+    "Hal ini pun berlangsung selama beberapa menit."
+    p "Udah baca ulang jurnal yang sama pun masih ga masuk."
+    p "Ueueueueue..."
+    p "...."
+    p "...."
+    p "Apa langkah gua salah ya?"
+    p "...."
+    p "...."
+    "notif.sfx"
+    p "Notif apalagi nih."
+    j "\"Jo, gimana skripsi lu? udah ngerjain kah?\""
+    p "\"Belum Jok, masih bingung cari topik euy.\""
+    j "\"Bingung gimana? cari topik yang sesuai sama apa yang lu suka aja.\""
+    j "\"Ga mungkin kalo ga ada. Banyak kok yang bisa lu jadikan topik riset.\""
+    p "\"Nah itu masalahnya, gua ga tau apa yang gua suka.\""
+    j "\"Yee elu sih kupu-kupu, jadi bingung kan.\""
+    j "\"Hmmm... mungkin kalo gua jadi lu sih gua coba main-main di beberapa bidang ilmu dulu deh.\""
+    j "\"Di Informatika kan topik skripsinya harus ngikut lab yang ada.\""
+    j "\"Cobain satu-satu lu bikin program kek, atau belajar yang berhubungan sama lab itu dah.\""
+    j "\"Sumpah lu ginian udah telat banget Jo, tapi kalo lu mau lulus ya cuma itu caranya.\""
+    p "Hmmm... pelajari tiap bidang ilmu ya...."
+    p "\"Oke Jok, saran yang mantap.\""
+    j "\"Buruan jangan nunda-nunda lagi lu.\""
+
+    p "Hmm, bidang ilmu ya."
+    p "Okelah gua cari deh satu-satu."
+    "......"
+    scene kos with fade
+    p "Okeh, gua dah nemu semua nih, sekarang bidang ilmu mana dulu yang pengen gua telusuri?"
+    call pilih_bidang
+    p "Oke, kayaknya Lab [selected_bidang] ini yang paling menarik deh buat gua."
+    p "Berarti next step gua cari jurnal ama topik yang berhubungan sama bidang ilmu ini."
+    p "Oke, gua dah tau apa yang harus gua lakuin, saatnya eksekusi!"
+
     $ valence = 20
     $ arousal = 80
     $ physical_activity = 20
@@ -159,7 +185,6 @@ label prologue_lanjut:
     $ competence = 20
     $ sleep = 50
     $ current_hour = 12
-    scene black with fade
     return
 
 label prologue_lanjut_besok:
@@ -167,6 +192,32 @@ label prologue_lanjut_besok:
     "Tentu saja hal ini tidak membuatnya merasa lebih baik, karena dia tahu bahwa deadline seminar proposal semakin dekat."
     "Namun, dia merasa bahwa dia tidak bisa memaksakan dirinya untuk terus mencari referensi ketika dia sudah sangat lelah."
     scene black with fade
+    show text "First Paper"
+    $ renpy.pause(5.0, hard=True) # Matches the transition time
+    show text "Dikembangkan oleh: Bimantara Putra Ernandra" with fade
+    $ renpy.pause(5.0, hard=True) # Matches the transition time
+    "Sabtu, 13 Desember 2025."
+    p "....."
+    p "Bangun pagi, ku terus...."
+    p "Ngerjain skripsi."
+    p "...."
+    p "Oalah pantes aja."
+    p "Gua ga nemu-nemu topik yang pas itu bukan karena gua ga nyari di tempat yang bener."
+    p "Tapi emang gua aja yang ga tau kemampuan ama minat gua."
+    p "Kalo gua ga minat apa-apa dapet topik gimana coba."
+    p "Hmm terus gimana dah."
+    p "...."
+    p "Bentar."
+    p "...."
+    p "Di Informatika kan ada beberapa bidang ilmu yak."
+    p "Mungkin gua bisa riset dari situ dulu, baru gua cari topik yang lebih spesifik lagi."
+    "......"
+    scene kos with fade
+    p "Okeh, gua dah nemu semua nih, sekarang bidang ilmu mana dulu yang pengen gua telusuri?"
+    call pilih_bidang
+    p "Oke, kayaknya Lab [selected_bidang] ini yang paling menarik deh buat gua."
+    p "Berarti next step gua cari jurnal ama topik yang berhubungan sama bidang ilmu ini."
+    p "Oke, gua dah tau apa yang harus gua lakuin, saatnya eksekusi!"
     return
 
 label pilih_bidang:
