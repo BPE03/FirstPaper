@@ -132,7 +132,9 @@ label prologue_lanjut:
     $ renpy.pause(5.0, hard=True) # Matches the transition time
     show text "Dikembangkan oleh: Bimantara Putra Ernandra" with fade
     $ renpy.pause(5.0, hard=True) # Matches the transition time
+    scene black with fade
     "Sabtu, 13 Desember 2025."
+    scene kos with fade
     p "...."
     p "Hahh...."
     p "Tidur berapa jam gua?"
@@ -196,7 +198,9 @@ label prologue_lanjut_besok:
     $ renpy.pause(5.0, hard=True) # Matches the transition time
     show text "Dikembangkan oleh: Bimantara Putra Ernandra" with fade
     $ renpy.pause(5.0, hard=True) # Matches the transition time
+    scene black with fade
     "Sabtu, 13 Desember 2025."
+    scene kos with fade
     p "....."
     p "Bangun pagi, ku terus...."
     p "Ngerjain skripsi."

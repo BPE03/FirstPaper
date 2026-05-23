@@ -70,3 +70,19 @@ init python:
         score += final_score
         
         return final_score
+
+    def calculate_writing_xp(xp):
+        # Get current emotion and its multiplier from emotions_data
+        current_emotion = get_current_emotion()
+        emotion_data = emotions_data[current_emotion]
+        emotion_multiplier = emotion_data.get("score_multiplier", 1.0)
+
+        store.writing_xp += xp * emotion_multiplier
+
+    def calculate_practical_xp(xp):
+        # Get current emotion and its multiplier from emotions_data
+        current_emotion = get_current_emotion()
+        emotion_data = emotions_data[current_emotion]
+        emotion_multiplier = emotion_data.get("score_multiplier", 1.0)
+
+        store.practical_xp += xp * emotion_multiplier

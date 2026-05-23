@@ -126,7 +126,7 @@ init python:
         store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
         store.arousal = max(0, store.arousal - 6/60)
         store.valence = max(0, store.valence - 6/60)
-        store.writing_xp += 20/60
+        calculate_writing_xp(20/60)
 
     def _activity_makan_bergizi():
         store.nutrition = min(store.max_stat, store.nutrition + 70/20)
@@ -157,8 +157,8 @@ init python:
         store.relatedness = min(store.max_stat, store.relatedness + 20/60)
         store.valence = min(store.max_stat, store.valence + 15/60)
         store.arousal = min(store.max_stat, store.arousal + 10/60)
-        store.writing_xp += 10/60
-        store.practical_xp += 5/60
+        calculate_writing_xp(10/60)
+        calculate_practical_xp(5/60)
 
     def _activity_sosialisasi():
         store.autonomy = min(store.max_stat, store.autonomy + 8/60)
@@ -171,8 +171,8 @@ init python:
         store.valence = min(store.max_stat, store.valence + 10/60)  # normalized from flat +10
 
     def _activity_workshop():
-        store.practical_xp += 15/60
-        store.writing_xp += 10/60
+        calculate_practical_xp(15/60)
+        calculate_writing_xp(10/60)
         store.competence = min(store.max_stat, store.competence + 60/60)
         store.arousal = max(0, store.arousal - 10/60)
 
@@ -185,10 +185,10 @@ init python:
         store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
         store.arousal = max(0, store.arousal - 6/60)
         store.valence = max(0, store.valence - 6/60)
-        store.practical_xp += 20/60
+        calculate_practical_xp(20/60)
 
     def _activity_cari_jurnal():
-        store.writing_xp += 20/60
+        calculate_writing_xp(20/60)
         store.autonomy = min(store.max_stat, store.autonomy - 10/60)
         store.competence = min(store.max_stat, store.competence - 10/60)
         relatedness_modifier = store.relatedness * 0.02
