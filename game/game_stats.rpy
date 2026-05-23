@@ -19,8 +19,8 @@ default total_hours_awake = 0  # Track how long character has been awake
 
 # Per activity motivation
 default activity_last_done = {}
-default current_motivation_mult = 1.0
-default current_motivation_label = "Bersemangat"
+default current_motivation_value = 0.0
+default current_motivation_label = "Butuh"
 
 # Emotion system based on (valence, arousal) and stats
 init python:
@@ -315,33 +315,48 @@ init python:
     ]
     _MOTIVATION_STATS_UNCAPPED = ["writing_xp", "practical_xp"]
 
-    def get_activity_motivation(activity_key):
-        """Returns (multiplier, label) based on how long ago the activity was last done."""
-        last_done = getattr(store, 'activity_last_done', {})
-        if activity_key not in last_done:
-            return 1.2, "Bersemangat"
-        minutes_since = get_total_game_minutes() - last_done[activity_key]
-        if minutes_since >= 480:
-            return 1.2, "Bersemangat"
-        elif minutes_since >= 240:
-            return 1.0, "Siap"
-        elif minutes_since >= 120:
-            return 0.85, "Kurang Semangat"
-        elif minutes_since >= 60:
-            return 0.7, "Lelah"
-        else:
-            return 0.5, "Kelelahan"
+    # Stats whose deficit drives motivation for each activity.
+    # Low stat value = high deficit = high motivation to do that activity.
+    _ACTIVITY_NEEDS = {
+        "skripsi":         ["autonomy", "competence"],
+        "cari_jurnal":     ["autonomy", "competence"],
+        "olahraga":        ["physical_activity"],
+        "bimbingan":       ["competence", "relatedness"],
+        "sosialisasi":     ["relatedness"],
+        "nap":             ["sleep", "arousal"],
+        "tidur":           ["sleep", "arousal"],
+        "workshop":        ["competence"],
+        "belajar_mandiri": ["competence", "autonomy"],
+        "rest":            ["arousal", "valence"],
+        "chat_online":     ["relatedness", "valence"],
+        "main_game":       ["autonomy", "valence", "arousal"],
+        "makan_bergizi":   ["nutrition"],
+        "makan_enak":      ["nutrition", "valence"],
+        "minum_kopi":      ["arousal"],
+    }
 
-    def apply_with_motivation(fn, mult):
-        """Call an activity dispatch function and scale all stat deltas by mult."""
-        before_capped = {s: getattr(store, s) for s in _MOTIVATION_STATS_CAPPED}
-        before_uncapped = {s: getattr(store, s) for s in _MOTIVATION_STATS_UNCAPPED}
-        fn()
-        for s in _MOTIVATION_STATS_CAPPED:
-            delta = getattr(store, s) - before_capped[s]
-            if delta != 0:
-                setattr(store, s, max(0, min(store.max_stat, before_capped[s] + delta * mult)))
-        for s in _MOTIVATION_STATS_UNCAPPED:
-            delta = getattr(store, s) - before_uncapped[s]
-            if delta != 0:
-                setattr(store, s, max(0, before_uncapped[s] + delta * mult))
+    def get_activity_motivation(activity_key):
+        """
+        Returns (value, label) where value is in [-1, 1].
+        value >  0.0 : activity will be carried out
+        value >= -0.5: 50% chance the activity is carried out this minute
+        value <  -0.5: activity stops (need already satisfied)
+        """
+        needs = _ACTIVITY_NEEDS.get(activity_key, [])
+        if not needs:
+            return 0.5, "Butuh"
+
+        max_s = float(getattr(store, 'max_stat', 100))
+        avg_deficit = sum((max_s - getattr(store, s, max_s)) / max_s for s in needs) / len(needs)
+        value = avg_deficit * 2.0 - 1.0
+
+        if value >= 0.5:
+            label = "Sangat Butuh"
+        elif value >= 0.0:
+            label = "Butuh"
+        elif value >= -0.5:
+            label = "Ragu-ragu"
+        else:
+            label = "Tidak Berminat"
+
+        return round(value, 2), label

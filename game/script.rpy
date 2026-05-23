@@ -500,9 +500,9 @@ label process_activity:
     $ delay_batch = time_minutes // 60  # For activities longer than 1 hour, we can batch the time advancement
     if delay_batch < 1:
         $ delay_batch = 1  # Minimum batch of 1 minute to ensure UI updates
-    $ current_motivation_mult, current_motivation_label = get_activity_motivation(activity)
+    $ current_motivation_value, current_motivation_label = get_activity_motivation(activity)
     if activity not in ("skip", "tidur"):
-        "Motivasimu untuk aktivitas ini: [current_motivation_label] (x[current_motivation_mult])"
+        "Motivasimu untuk aktivitas ini: [current_motivation_label] ([current_motivation_value])"
     # Special handling for sleep activity - uses dedicated sleep mechanic
     if activity == "tidur":
         $ sleep_hours = time_minutes // 60
@@ -516,53 +516,56 @@ label process_activity:
             for minutes_activity in range(time_minutes+1):
                 advance_time(1)
                 decrease_stats(1)
-                
-                if activity == "skripsi":
-                    if motivation > 30:
-                        mult = store.current_motivation_mult
-                        store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate() * mult)
-                        ACTIVITY_DISPATCH["skripsi"]()  # Apply thesis-specific effects
-                        earned_score += calculate_thesis_score() * mult
-                    else:
-                        break
-                elif activity == "cari_jurnal":
-                    if not dapat_topik:
-                        xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
-                        required = get_required_for_level(store.practical_level)
-                        xp_ratio = xp_in_level / required
-                        # Each level above 1 adds 15% base; XP within the level adds up to 15% more
-                        chance = min(0.9, (store.practical_level - 1 + xp_ratio) * 0.15)
-                        if renpy.random.random() < chance:
-                            dapat_topik = True
-                            renpy.say(narrator, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
-                            renpy.say(narrator, "Segera bimbingan dengan dosen untuk memastikan apakah topik ini layak untuk dilanjutkan.")
-                    apply_with_motivation(ACTIVITY_DISPATCH.get(activity, lambda: None), store.current_motivation_mult)
-                elif activity == "bimbingan":
-                    if not dosen_acc:
-                        # 5% chance per minute to get acc, increased by competence and relatedness
-                        base_chance = 0.05
-                        competence_factor = store.competence / store.max_stat * 0.1  # up to +10%
-                        relatedness_factor = store.relatedness / store.max_stat * 0.1  # up to +10%
-                        total_chance = base_chance + competence_factor + relatedness_factor
-                        if renpy.random.random() < total_chance:
-                            dosen_acc = True
-                            renpy.say(narrator, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
-                    apply_with_motivation(ACTIVITY_DISPATCH.get(activity, lambda: None), store.current_motivation_mult)
+
+                # Re-evaluate need-based motivation each minute as stats change
+                mot_val = get_activity_motivation(activity)[0]
+                if mot_val > 0:
+                    do_minute = True
+                elif mot_val >= -0.5:
+                    do_minute = renpy.random.random() < 0.5
                 else:
-                    fn = ACTIVITY_DISPATCH.get(activity)
-                    if fn:
-                        apply_with_motivation(fn, store.current_motivation_mult)
+                    break  # Need satisfied; stop early
+
+                if do_minute:
+                    if activity == "skripsi":
+                        if motivation > 30:
+                            store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate())
+                            ACTIVITY_DISPATCH["skripsi"]()
+                            earned_score += calculate_thesis_score()
+                        else:
+                            break
+                    elif activity == "cari_jurnal":
+                        if not dapat_topik:
+                            xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
+                            required = get_required_for_level(store.practical_level)
+                            xp_ratio = xp_in_level / required
+                            # Each level above 1 adds 15% base; XP within the level adds up to 15% more
+                            chance = min(0.9, (store.practical_level - 1 + xp_ratio) * 0.15)
+                            if renpy.random.random() < chance:
+                                dapat_topik = True
+                                renpy.say(narrator, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
+                                renpy.say(narrator, "Segera bimbingan dengan dosen untuk memastikan apakah topik ini layak untuk dilanjutkan.")
+                        ACTIVITY_DISPATCH["cari_jurnal"]()
+                    elif activity == "bimbingan":
+                        if not dosen_acc:
+                            base_chance = 0.05
+                            competence_factor = store.competence / store.max_stat * 0.1
+                            relatedness_factor = store.relatedness / store.max_stat * 0.1
+                            total_chance = base_chance + competence_factor + relatedness_factor
+                            if renpy.random.random() < total_chance:
+                                dosen_acc = True
+                                renpy.say(narrator, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
+                        ACTIVITY_DISPATCH["bimbingan"]()
+                    else:
+                        fn = ACTIVITY_DISPATCH.get(activity)
+                        if fn:
+                            fn()
+
                 if (minutes_activity % delay_batch == 0):
-                    renpy.pause(delay=delay)  # Small pause to allow UI to update each minute
+                    renpy.pause(delay=delay)
                 if interrupted:
                     break
-            
-            # For skip, no effects
     
-    # Record when this activity was last done (for motivation tracking)
-    if activity not in ("skip", "tidur"):
-        $ activity_last_done[activity] = get_total_game_minutes()
-
     # Update levels and motivation after loop
     if activity in ["skripsi", "bimbingan", "workshop", "belajar_mandiri"]:
         $ update_levels()

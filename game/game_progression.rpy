@@ -8,7 +8,7 @@ default max_stat = 100
 default dapat_topik = False
 default dosen_acc = False
 default selected_bidang = None
-default phase = 1 # 1 = proposal, 2 = proposal acced
+default phase = 1 # 1 = proposal, 2 = lulus sidang proposal
 
 # Level system and progression functions
 init python:
