@@ -344,7 +344,12 @@ init python:
         """
         needs = _ACTIVITY_NEEDS.get(activity_key, [])
         if not needs:
-            return 1, ""
+            if motivation >= 70:
+                return motivation, "Termotivasi"
+            elif motivation >= 30:
+                return motivation, "Ragu-ragu"
+            else:
+                return motivation, "Tidak Berminat"
 
         max_s = float(getattr(store, 'max_stat', 100))
         avg_deficit = sum((max_s - getattr(store, s, max_s)) / max_s for s in needs) / len(needs)
