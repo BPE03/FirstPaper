@@ -373,7 +373,7 @@ label activity_kos_laptop:
     menu:
         "Mau Ngapain?"
 
-        "Kerjakan Skripsi ([_m_thesis]) (Membutuhkan motivation > 30)":
+        "Kerjakan Skripsi ([_m_thesis])":
             if not dapat_topik:
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
                 jump kos
@@ -518,24 +518,16 @@ label process_activity:
                 advance_time(1)
                 decrease_stats(1)
 
-                # Re-evaluate need-based motivation each minute as stats change
-                mot_val = get_activity_motivation(activity)[0]
-                if mot_val > 0:
-                    do_minute = True
-                elif mot_val >= -0.5:
-                    do_minute = renpy.random.random() < 0.5
-                else:
-                    break  # Need satisfied; stop early
-
-                if do_minute:
+                if not interrupted:
                     if activity == "skripsi":
-                        if motivation > 30:
-                            store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate())
-                            ACTIVITY_DISPATCH["skripsi"]()
-                            earned_score += calculate_thesis_score()
-                        else:
+                        if get_common_motivation() == False:
                             break
+                        store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate())
+                        ACTIVITY_DISPATCH["skripsi"]()
+                        earned_score += calculate_thesis_score()
                     elif activity == "cari_jurnal":
+                        if get_common_motivation() == False:
+                            break
                         if not dapat_topik:
                             xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
                             required = get_required_for_level(store.practical_level)
@@ -547,6 +539,10 @@ label process_activity:
                                 renpy.say(narrator, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
                                 renpy.say(narrator, "Segera bimbingan dengan dosen untuk memastikan apakah topik ini layak untuk dilanjutkan.")
                         ACTIVITY_DISPATCH["cari_jurnal"]()
+                    elif activity == "belajar_mandiri":
+                        if get_common_motivation() == False:
+                            break
+                        ACTIVITY_DISPATCH["belajar_mandiri"]()
                     elif activity == "bimbingan":
                         if not dosen_acc:
                             base_chance = 0.05
@@ -558,13 +554,19 @@ label process_activity:
                                 renpy.say(narrator, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
                         ACTIVITY_DISPATCH["bimbingan"]()
                     else:
+                        # Re-evaluate need-based motivation each minute as stats change
+                        if current_motivation_value < 0.3:
+                            interrupted = True
+                            break
+                        elif current_motivation_value < 0.6:
+                            interrupted = renpy.random.random() < 0.5
+                            break
                         fn = ACTIVITY_DISPATCH.get(activity)
                         if fn:
                             fn()
-
                 if (minutes_activity % delay_batch == 0):
-                    renpy.pause(delay=delay)
-                if interrupted:
+                    renpy.pause(delay=delay)    
+                else:
                     break
     
     # Update levels and motivation after loop
@@ -638,7 +640,7 @@ label process_activity:
     
     # Check for random event (1% chance)
     #call check_random_event
-    
+    $ interrupted = False
     return
 
 # Random event system - 1% chance after any activity

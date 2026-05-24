@@ -137,7 +137,7 @@ define locations = {
 # Helper functions
 init python:
     def move_to_map(location_label):
-        renpy.hide_screen("game_maps")
+        store.show_map = False
         renpy.transition(fade)
         renpy.jump(location_label)  # or any Ren'Py function like renpy.show_screen
     def interact_environment(env_label):

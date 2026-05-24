@@ -74,30 +74,3 @@ screen interactive_dapur():
     #     text_size 22
     #     sensitive not (show_detailed_stats or show_calendar)
     #     action Show("game_maps")
-
-screen game_maps():
-    # zorder 2
-    # modal True
-    showif show_map:
-        frame:
-            background "#000000aa"
-            xfill True
-            yfill True
-            frame:
-                xalign 0.5 yalign 0.5
-                xsize 600
-                ysize 800
-                padding (20, 20)
-                
-                vbox:
-                    text "Tempat yang Dapat Dikunjungi" xalign 0.5 size 30
-                    null height 30
-                    
-                    for dest in locations[current_location]["explorable"]:
-                        $ loc_name = locations[dest]["name"]
-                        textbutton "[loc_name]" action Function(move_to_map, dest)
-                    
-                    null height 30
-                    textbutton "Tutup Map":
-                        action ToggleVariable("show_map")
-                        xalign 0.5

@@ -318,15 +318,15 @@ init python:
     # Stats whose deficit drives motivation for each activity.
     # Low stat value = high deficit = high motivation to do that activity.
     _ACTIVITY_NEEDS = {
-        "skripsi":         ["autonomy", "competence"],
-        "cari_jurnal":     ["autonomy", "competence"],
+        # "skripsi":         ["autonomy", "competence"],
+        # "cari_jurnal":     ["autonomy", "competence"],
         "olahraga":        ["physical_activity"],
-        "bimbingan":       ["competence", "relatedness"],
+        # "bimbingan":       ["competence", "relatedness"],
         "sosialisasi":     ["relatedness"],
         "nap":             ["sleep", "arousal"],
-        "tidur":           ["sleep", "arousal"],
-        "workshop":        ["competence"],
-        "belajar_mandiri": ["competence", "autonomy"],
+        # "tidur":           ["sleep", "arousal"],
+        # "workshop":        ["competence"],
+        # "belajar_mandiri": ["competence", "autonomy"],
         "rest":            ["arousal", "valence"],
         "chat_online":     ["relatedness", "valence"],
         "main_game":       ["autonomy", "valence", "arousal"],
@@ -337,26 +337,45 @@ init python:
 
     def get_activity_motivation(activity_key):
         """
-        Returns (value, label) where value is in [-1, 1].
-        value >  0.0 : activity will be carried out
-        value >= -0.5: 50% chance the activity is carried out this minute
-        value <  -0.5: activity stops (need already satisfied)
+        Returns (value, label) where value is in [0, 1].
+        value >=  0.6 : activity will be carried out
+        value >= 0.3: 80% chance the activity is carried out this minute
+        value <  0.3: activity stops (need already satisfied)
         """
         needs = _ACTIVITY_NEEDS.get(activity_key, [])
         if not needs:
-            return 0.5, "Butuh"
+            return 1, ""
 
         max_s = float(getattr(store, 'max_stat', 100))
         avg_deficit = sum((max_s - getattr(store, s, max_s)) / max_s for s in needs) / len(needs)
-        value = avg_deficit * 2.0 - 1.0
+        #value = avg_deficit * 2.0 - 1.0
 
-        if value >= 0.5:
-            label = "Sangat Butuh"
-        elif value >= 0.0:
-            label = "Butuh"
-        elif value >= -0.5:
+        # if value >= 0.5:
+        #     label = "Sangat Termotivasi"
+        # elif value >= 0.0:
+        #     label = "Termotivasi"
+        # elif value >= -0.5:
+        #     label = "Ragu-ragu"
+        # else:
+        #     label = "Tidak Berminat"
+
+        if avg_deficit >= 0.7:
+            label = "Termotivasi"
+        elif avg_deficit >= 0.3:
             label = "Ragu-ragu"
         else:
             label = "Tidak Berminat"
 
-        return round(value, 2), label
+        return round(avg_deficit, 2), label
+
+    # Returns True if the activity is carried
+    def get_common_motivation():
+        if motivation < 30:
+            if renpy.random.randint(1, 2) < 2:
+                interrupted = True
+                return False
+        elif motivation < 70:
+            if renpy.random.randint(1, 10) > 9:
+                interrupted = True
+                return False
+        return True
