@@ -8,8 +8,8 @@ screen interactive_kos():
         
         # Define clickable hotspots (x, y, width, height)
         # Adjust these coordinates to match your background image
-        hotspot (0, 0, 900, 1080) action Jump("activity_kos_kasur") sensitive not (show_detailed_stats or show_calendar)
-        hotspot (1050, 500, 450, 300) action Jump("activity_kos_laptop") sensitive not (show_detailed_stats or show_calendar)
+        hotspot (0, 0, 900, 1080) action Jump("activity_kos_kasur") sensitive not (show_detailed_stats or show_calendar or show_map)
+        hotspot (1050, 500, 450, 300) action Jump("activity_kos_laptop") sensitive not (show_detailed_stats or show_calendar or show_map)
     
     # Optional: Show a button overlay if you want a visible button
     # You can remove this if you want just invisible hotspots
@@ -30,14 +30,21 @@ screen interactive_kos():
         sensitive not (show_detailed_stats or show_calendar)
         action Jump("activity_kos")
 
-    textbutton "Map":
-        xalign 0.95
-        yalign 0.85
-        xsize 200
-        ysize 60
-        text_size 22
-        sensitive not (show_detailed_stats or show_calendar)
-        action Show("game_maps")
+    # textbutton "Map":
+    #     xalign 0.95
+    #     yalign 0.85
+    #     xsize 200
+    #     ysize 60
+    #     text_size 22
+    #     sensitive not (show_detailed_stats or show_calendar)
+    #     action Show("game_maps")
+
+    imagebutton:
+        xalign 0.78
+        yalign 0.1
+        idle "icon_map1.png"  # Replace with your image
+        hover "icon_map1.png"  # Replace with your image
+        action ToggleVariable("show_map")
 
 # Imagemap for interactive areas (always visible)
 screen interactive_dapur():
@@ -49,37 +56,48 @@ screen interactive_dapur():
         
         # Define clickable hotspots (x, y, width, height)
         # Adjust these coordinates to match your background image
-        hotspot (0, 610, 1220, 470) action Jump("activity_dapur") sensitive not (show_detailed_stats or show_calendar)
+        hotspot (0, 610, 1220, 470) action Jump("activity_dapur") sensitive not (show_detailed_stats or show_calendar or show_map)
     
+    imagebutton:
+        xalign 0.75
+        yalign 0.1
+        idle "icon_map1.png"  # Replace with your image
+        hover "icon_map1.png"  # Replace with your image
+        action ToggleVariable("show_map")
+
     # Alternative text button (remove if using image button above)
-    textbutton "Map":
-        xalign 0.95
-        yalign 0.85
-        xsize 200
-        ysize 60
-        text_size 22
-        sensitive not (show_detailed_stats or show_calendar)
-        action Show("game_maps")
+    # textbutton "Map":
+    #     xalign 0.95
+    #     yalign 0.85
+    #     xsize 200
+    #     ysize 60
+    #     text_size 22
+    #     sensitive not (show_detailed_stats or show_calendar)
+    #     action Show("game_maps")
 
 screen game_maps():
-    zorder 2
-    modal True
-
-    frame:
-        xalign 0.5 yalign 0.5
-        xsize 600
-        ysize 800
-        padding (20, 20)
-        
-        vbox:
-            text "Tempat yang Dapat Dikunjungi" xalign 0.5 size 30
-            null height 30
-            
-            for dest in locations[current_location]["explorable"]:
-                $ loc_name = locations[dest]["name"]
-                textbutton "[loc_name]" action Function(move_to_map, dest)
-            
-            null height 30
-            textbutton "Tutup Map":
-                action Hide("game_maps")
-                xalign 0.5
+    # zorder 2
+    # modal True
+    showif show_map:
+        frame:
+            background "#000000aa"
+            xfill True
+            yfill True
+            frame:
+                xalign 0.5 yalign 0.5
+                xsize 600
+                ysize 800
+                padding (20, 20)
+                
+                vbox:
+                    text "Tempat yang Dapat Dikunjungi" xalign 0.5 size 30
+                    null height 30
+                    
+                    for dest in locations[current_location]["explorable"]:
+                        $ loc_name = locations[dest]["name"]
+                        textbutton "[loc_name]" action Function(move_to_map, dest)
+                    
+                    null height 30
+                    textbutton "Tutup Map":
+                        action ToggleVariable("show_map")
+                        xalign 0.5

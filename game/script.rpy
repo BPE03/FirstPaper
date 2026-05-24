@@ -114,6 +114,7 @@ label start:
     show screen detailed_stats_window
     show screen calendar_now
     show screen calendar_window
+    show screen game_maps
     
     jump kos
 
