@@ -19,11 +19,25 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 240
     },
-    "olahraga": {
-        "name": "Olahraga",
+    "olahraga_ringan": {
+        "name": "Olahraga ringan",
+        "min_duration": 60,
+        "default_duration_hours": 2,
+        "default_duration_minutes": 0,
+        "max_duration": 240
+    },
+    "olahraga_sedang": {
+        "name": "Olahraga Sedang",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 30,
+        "max_duration": 240
+    },
+    "olahraga_berat": {
+        "name": "Olahraga Berat",
+        "min_duration": 60,
+        "default_duration_hours": 1,
+        "default_duration_minutes": 0,
         "max_duration": 240
     },
     "bimbingan": {
@@ -148,13 +162,27 @@ init python:
         store.caffeine_level = min(100, store.caffeine_level + 20/15)
         store.arousal = min(store.max_stat, store.arousal + 25/15)
 
-    def _activity_olahraga():
+    def _activity_olahraga_ringan():
+        store.autonomy = min(store.max_stat, store.autonomy + 3/60)
+        store.physical_activity = min(store.max_stat, store.physical_activity + 8/60)
+        nutrition_modifier = store.nutrition * 0.18
+        store.nutrition = max(0, store.nutrition - nutrition_modifier / 60)
+
+    def _activity_olahraga_sedang():
         store.physical_activity = min(store.max_stat, store.physical_activity + 30/60)
         store.competence = min(store.max_stat, store.competence + 2/60)
 
         nutrition_modifier = store.nutrition * 0.2
         store.nutrition = max(0, store.nutrition - nutrition_modifier / 60)
         store.arousal = min(store.max_stat, store.arousal + 15/60)
+
+    def _activity_olahraga_berat():
+        store.autonomy = max(0, store.autonomy - 6/60)
+        store.physical_activity = min(store.max_stat, store.physical_activity + 50/60)
+        store.competence = max(0, store.competence - 1/60)
+        nutrition_modifier = store.nutrition * 0.27
+        store.nutrition = max(0, store.nutrition - nutrition_modifier / 60)
+        store.arousal = min(store.max_stat, store.arousal + 25/60)
 
     def _activity_bimbingan():
         store.competence = min(store.max_stat, store.competence + 10/60)
@@ -227,7 +255,9 @@ init python:
         "makan_bergizi":  _activity_makan_bergizi,
         "makan_enak":     _activity_makan_enak,
         "minum_kopi":     _activity_minum_kopi,
-        "olahraga":       _activity_olahraga,
+        "olahraga_ringan":  _activity_olahraga_ringan,
+        "olahraga_sedang":  _activity_olahraga_sedang,
+        "olahraga_berat":   _activity_olahraga_berat,
         "bimbingan":      _activity_bimbingan,
         "sosialisasi":    _activity_sosialisasi,
         "nap":            _activity_nap,
@@ -238,3 +268,98 @@ init python:
         "chat_online":    _activity_chat_online,
         "main_game":      _activity_main_game,
     }
+
+    ACTIVITY_MOTIVATION_CURVES = {
+        "skripsi": {
+            "autonomy":    [(0.0, -0.4), (75, 0.0)],
+            "competence":  [(0.0, -0.4), (75, 0.0)],
+            "relatedness": [(0.0, -0.4), (75, 0.0)],
+            "physical_activity":          [(0.0, -0.4), (75, 0.0)],
+            "nutrition":   [(30, -1.0), (60,  0.0)],
+            "sleep":       [(30, -1.0), (60,  0.0)],
+        },
+        "sosialisasi": {
+            "relatedness": [(0.0, 0.5), (100, -0.2)],
+        },
+        "makan_bergizi": {
+            "autonomy":    [(0.0, 0.1), (50, 0.0)],
+            "competence":   [(0.0, 0.1), (50, 0.0)],
+            "relatedness":  [(0.0, 0.1), (50, 0.0)],
+            "nutrition":    [(50, 1), (60, 0.0), (80, -1)],
+            "physical_activity":          [(0.0, 0.1), (50, 0.0)],
+            "sleep":       [(0.0, 0.2), (30, 0.0)],
+        },
+        "makan_enak": {
+            "autonomy":    [(0.0, 0.2), (50, 0.0)],
+            "competence":   [(0.0, 0.2), (50, 0.0)],
+            "relatedness":  [(0.0, 0.2), (50, 0.0)],
+            "nutrition":    [(50, 1), (60, 0.0), (100, -0.6)],
+            "physical_activity":          [(0.0, 0.2), (50, 0.0)],
+            "sleep":       [(0.0, 0.4), (30, 0.0)],
+        },
+        "minum_kopi": {
+            "caffeine_level": [(0, 1), (100, 0.0)],
+        },
+        "olahraga_ringan": {
+            "physical_activity":          [(0.0, 0.5), (50, 0.0), (80, 0), (100, -0.5)],
+        },
+        "olahraga_sedang": {
+            "physical_activity":          [(0.0, -0.35), (50, 0.0), (80, 0), (100, -0.5)],
+        },
+        "olahraga_berat": {
+            "physical_activity":          [(0.0, -0.7), (50, 0.0), (80, 0), (100, -0.7)],
+        },
+        # "bimbingan":      _activity_bimbingan,
+        # "nap":            _activity_nap,
+        # "workshop":       _activity_workshop,
+        "belajar_mandiri": {
+            "autonomy":    [(0.0, -0.4), (75, 0.0)],
+            "competence":  [(0.0, -0.4), (75, 0.0)],
+            "relatedness": [(0.0, -0.4), (75, 0.0)],
+            "physical_activity":          [(0.0, -0.4), (75, 0.0)],
+            "nutrition":   [(30, -1.0), (60,  0.0)],
+            "sleep":       [(30, -1.0), (60,  0.0)],
+        },
+        #"rest":           _activity_rest,
+        "cari_jurnal": {
+            "autonomy":    [(0.0, -0.4), (75, 0.0)],
+            "competence":  [(0.0, -0.4), (75, 0.0)],
+            "relatedness": [(0.0, -0.4), (75, 0.0)],
+            "physical_activity":          [(0.0, -0.4), (75, 0.0)],
+            "nutrition":   [(30, -1.0), (60,  0.0)],
+            "sleep":       [(30, -1.0), (60,  0.0)],
+        },
+        "chat_online": {
+            "autonomy":    [(0.0, 1), (70, 0.0)],
+            "relatedness": [(0.0, 1), (70, 0.0)],
+            "nutrition":   [(0, -0.5), (40,  0.0)],
+            "sleep":       [(0, -0.5), (40,  0.0)],
+        },
+        "main_game": {
+            "autonomy":    [(0.0, 0.7), (70, 0.0)],
+            "competence":  [(0.0, 0.7), (70, 0.0)],
+            "relatedness": [(0.0, 0.5), (30, 0.3)],
+            "nutrition":   [(0, -2), (40,  0.0)],
+            "sleep":       [(0, -1), (40,  0.0)],
+        },
+    }
+
+    def get_activity_motivation(activity_name):
+        stats = {
+            "autonomy":    store.autonomy,
+            "competence":  store.competence,
+            "relatedness": store.relatedness,
+            "nutrition":   store.nutrition,
+            "physical_activity": store.physical_activity,
+            "sleep":       store.sleep,
+            "caffeine_level": store.caffeine_level,
+        }
+        base_motivation = store.motivation
+        curves = ACTIVITY_MOTIVATION_CURVES.get(activity_name, {})
+        if not curves:
+            return 100
+        total_modifier = 0.0
+        for stat_name, points in curves.items():
+            total_modifier += sample_curve(points, stats[stat_name])
+        result = base_motivation + total_modifier
+        return round(max(0.0, min(100, result)), 2)

@@ -9,6 +9,7 @@ default physical_activity = 50
 default sleep = 100
 default valence = 50  # Emotional positivity
 default arousal = 50  # Energy/alertness
+default max_stat = 100
 
 # Sleep mechanic variables (based on circadian rhythm and adenosine buildup)
 default sleep_debt = 0  # Hours of missed sleep, accumulates over time
@@ -103,7 +104,8 @@ init python:
         relatedness_modifier = store.relatedness * 0.015
         store.relatedness = max(0, store.relatedness - (relatedness_modifier/60 * time_minutes))
 
-        store.nutrition = max(0, store.nutrition - (5/48 * time_minutes)) # 50% / 8 hours
+        nutrition_modifier = store.nutrition * 0.15
+        store.nutrition = max(0, store.nutrition - (nutrition_modifier/60 * time_minutes)) # 50% / 8 hours
         
         pa_modifier = store.physical_activity * 0.025
         store.physical_activity = max(0, store.physical_activity - (pa_modifier/60 * time_minutes))
@@ -113,13 +115,14 @@ init python:
         
         # Sleep stat decreases faster based on adenosine level
         # If adenosine is high (high sleep pressure), sleep stat drops faster
-        adenosine_effect = (adenosine_level / 100) * 0.05  # Max 0.05 extra per minute
-        store.sleep = max(0, store.sleep - (0.0625 * time_minutes) - adenosine_effect)
+        #adenosine_effect = (adenosine_level / 100) * 0.05  # Max 0.05 extra per minute
+        sleep_modifier = store.sleep * 0.08
+        store.sleep = max(0, store.sleep - (sleep_modifier/60 * time_minutes))
         
         # Apply circadian rhythm effect: sleep stat decreases slower during optimal sleep times
-        circadian_factor = get_circadian_rhythm_factor()
-        if circadian_factor < 0.5:  # Daytime (poor sleep alignment)
-            store.sleep = max(0, store.sleep - (0.02 * time_minutes))  # Extra penalty during day
+        # circadian_factor = get_circadian_rhythm_factor()
+        # if circadian_factor < 0.5:  # Daytime (poor sleep alignment)
+        #     store.sleep = max(0, store.sleep - (0.02 * time_minutes))  # Extra penalty during day
         
         store.valence = max(0, store.valence - (6/60 * time_minutes))
         store.arousal = max(0, store.arousal - (6/60 * time_minutes))
@@ -135,21 +138,17 @@ init python:
 
     # Python function to calculate motivation and progress
     def update_motivation_and_progress():
-        global motivation, thesis_progress, autonomy, competence, relatedness
+        global motivation, autonomy, competence, relatedness
         global nutrition, physical_activity, sleep
         
+        min_stat_for_max_motivation = 72
+        min_stat_for_no_motivation = 12
         # Motivation is the lowest stat among psychological and physical needs
         # This reflects that if any basic need is not met, motivation suffers
         all_stats = [autonomy, competence, relatedness, nutrition, physical_activity, sleep]
-        motivation = min(all_stats)
-        
-        # Check for burnout
-        # if motivation <= 0:
-        #     renpy.jump("burnout")
-        
-        # Check for completion
-        # if thesis_progress >= 100:
-        #     renpy.jump("thesis_complete")
+        min_stats = min(all_stats)
+        motivation = (min_stats - min_stat_for_no_motivation) / (min_stat_for_max_motivation - min_stat_for_no_motivation) * 100
+        motivation = max(0, min(100, motivation))  # Ensure motivation is between 0 and 100
 
 init python:
     # Sleep Mechanic Functions (based on NHLBI Sleep-Wake Cycle research)
@@ -307,80 +306,79 @@ init python:
         
         renpy.retain_after_load()
 
-init python:
-    # Per activity motivation related functions
-    _MOTIVATION_STATS_CAPPED = [
-        "nutrition", "physical_activity", "autonomy", "competence",
-        "relatedness", "valence", "arousal", "caffeine_level"
-    ]
-    _MOTIVATION_STATS_UNCAPPED = ["writing_xp", "practical_xp"]
+# init python:
+    # # Per activity motivation related functions
+    # _MOTIVATION_STATS_CAPPED = [
+    #     "nutrition", "physical_activity", "autonomy", "competence",
+    #     "relatedness", "valence", "arousal", "caffeine_level"
+    # ]
+    # _MOTIVATION_STATS_UNCAPPED = ["writing_xp", "practical_xp"]
 
-    # Stats whose deficit drives motivation for each activity.
-    # Low stat value = high deficit = high motivation to do that activity.
-    _ACTIVITY_NEEDS = {
-        # "skripsi":         ["autonomy", "competence"],
-        # "cari_jurnal":     ["autonomy", "competence"],
-        "olahraga":        ["physical_activity"],
-        # "bimbingan":       ["competence", "relatedness"],
-        "sosialisasi":     ["relatedness"],
-        "nap":             ["sleep", "arousal"],
-        # "tidur":           ["sleep", "arousal"],
-        # "workshop":        ["competence"],
-        # "belajar_mandiri": ["competence", "autonomy"],
-        "rest":            ["arousal", "valence"],
-        "chat_online":     ["relatedness", "valence"],
-        "main_game":       ["autonomy", "valence", "arousal"],
-        "makan_bergizi":   ["nutrition"],
-        "makan_enak":      ["nutrition", "valence"],
-        "minum_kopi":      ["arousal"],
-    }
+    # # Each need is (stat_name, peak_value).
+    # # Contribution = max(0, 1 - |current - peak| / max_stat)
+    # #   = 1.0 at peak, 0.5 fifty units away, 0.0 at 100+ units away.
+    # _ACTIVITY_NEEDS = {
+    #     # "skripsi":         [("arousal", 65), ("autonomy", 20)],
+    #     # "cari_jurnal":     [("arousal", 60), ("autonomy", 20)],
+    #     "olahraga":        [("physical_activity", 100)],
+    #     # "bimbingan":       [("competence", 20), ("relatedness", 25)],
+    #     "sosialisasi":     [("relatedness", 10)],
+    #     "nap":             [("sleep", 20), ("arousal", 15)],
+    #     # "tidur":           [("sleep", 5),  ("arousal", 5)],
+    #     # "workshop":        [("competence", 25)],
+    #     # "belajar_mandiri": [("arousal", 60), ("competence", 25)],
+    #     "rest":            [("arousal", 15), ("valence", 15)],
+    #     "chat_online":     [("relatedness", 30), ("valence", 20)],
+    #     "main_game":       [("valence", 25), ("arousal", 40)],
+    #     "makan_bergizi":   [("nutrition", 40)],
+    #     "makan_enak":      [("nutrition", 40)],
+    #     "minum_kopi":      [("arousal", 10)],
+    # }
 
-    def get_activity_motivation(activity_key):
-        """
-        Returns (value, label) where value is in [0, 1].
-        value >=  0.6 : activity will be carried out
-        value >= 0.3: 80% chance the activity is carried out this minute
-        value <  0.3: activity stops (need already satisfied)
-        """
-        needs = _ACTIVITY_NEEDS.get(activity_key, [])
-        if not needs:
-            if motivation >= 70:
-                return motivation, "Termotivasi"
-            elif motivation >= 30:
-                return motivation, "Ragu-ragu"
-            else:
-                return motivation, "Tidak Berminat"
+    # def get_activity_motivation(activity_key):
+    #     """
+    #     Returns (value, label) where value is in [0, 1].
+    #     value >=  0.6 : activity will be carried out
+    #     value >= 0.3: 80% chance the activity is carried out this minute
+    #     value <  0.3: activity stops (need already satisfied)
+    #     """
+    #     needs = _ACTIVITY_NEEDS.get(activity_key, [])
+    #     if not needs:
+    #         if motivation >= 70:
+    #             return motivation, "Termotivasi"
+    #         elif motivation >= 30:
+    #             return motivation, "Ragu-ragu"
+    #         else:
+    #             return motivation, "Tidak Berminat"
 
-        max_s = float(getattr(store, 'max_stat', 100))
-        avg_deficit = sum((max_s - getattr(store, s, max_s)) / max_s for s in needs) / len(needs)
-        #value = avg_deficit * 2.0 - 1.0
+    #     max_s = float(getattr(store, 'max_stat', 100))
+    #     total = 0.0
+    #     for stat, peak in needs:
+    #         if activity_key == "olahraga":
+    #             current = float(getattr(store, stat, max_s))
+    #             total += max(0.0, 1.0 - abs(current - peak) / max_s)
+    #         else:
+    #             current = float(getattr(store, stat, max_s))
+    #             total += max(0.0, 1.0 - abs(current - peak) / max_s)
+    #     value = total / len(needs)
 
-        # if value >= 0.5:
-        #     label = "Sangat Termotivasi"
-        # elif value >= 0.0:
-        #     label = "Termotivasi"
-        # elif value >= -0.5:
-        #     label = "Ragu-ragu"
-        # else:
-        #     label = "Tidak Berminat"
+    #     if value >= 0.7:
+    #         label = "Termotivasi"
+    #     elif value >= 0.3:
+    #         label = "Ragu-ragu"
+    #     else:
+    #         label = "Tidak Berminat"
 
-        if avg_deficit >= 0.7:
-            label = "Termotivasi"
-        elif avg_deficit >= 0.3:
-            label = "Ragu-ragu"
-        else:
-            label = "Tidak Berminat"
+    #     return round(value, 2), label
 
-        return round(avg_deficit, 2), label
-
-    # Returns True if the activity is carried
-    def get_common_motivation():
-        if motivation < 30:
-            if renpy.random.randint(1, 2) < 2:
-                store.interrupted = True
-                return False
-        elif motivation < 70:
-            if renpy.random.randint(1, 10) > 9:
-                store.interrupted = True
-                return False
-        return True
+    # # Returns True if the activity is carried
+    # def get_common_motivation():
+    #     if motivation < 30:
+    #         if renpy.random.randint(1, 2) < 2:
+    #             store.interrupted = True
+    #             return False
+    #     elif motivation < 70:
+    #         if renpy.random.randint(1, 10) > 9:
+    #             store.interrupted = True
+    #             return False
+    #     return True

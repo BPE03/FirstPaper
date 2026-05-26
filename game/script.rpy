@@ -351,12 +351,11 @@ label dapur:
 
 label activity_kos_kasur:
     $ activity = None
+    $ _m_tidur = get_activity_motivation("tidur")
     menu:
         "Mau Ngapain?"
-        
-        "Tidur":
+        "Tidur (Motivasi: [_m_tidur]/[max_stat])":
             $ activity = "tidur"
-
         "Batal":
             jump kos
     call process_activity
@@ -364,58 +363,24 @@ label activity_kos_kasur:
 
 label activity_kos_laptop:
     $ activity = None
-    $ _m_thesis     = get_activity_motivation("skripsi")[1]
-    $ _m_workshop   = get_activity_motivation("workshop")[1]
-    $ _m_belajar_mandiri  = get_activity_motivation("belajar_mandiri")[1]
-    $ _m_jurnal     = get_activity_motivation("cari_jurnal")[1]
-    $ _m_chat_online = get_activity_motivation("chat_online")[1]
-    $ _m_main_game = get_activity_motivation("main_game")[1]
+    $ _m_thesis     = get_activity_motivation("skripsi")
+    #$ _m_workshop   = get_activity_motivation("workshop")
+    $ _m_belajar_mandiri  = get_activity_motivation("belajar_mandiri")
+    $ _m_jurnal     = get_activity_motivation("cari_jurnal")
+    $ _m_chat_online = get_activity_motivation("chat_online")
+    $ _m_main_game = get_activity_motivation("main_game")
     menu:
         "Mau Ngapain?"
-
-        "Kerjakan Skripsi ([_m_thesis])":
+        "Kerjakan Skripsi (Motivasi: [_m_thesis]/[max_stat])":
             if not dapat_topik:
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
                 jump kos
-            if motivation <= 30:
-                "Motivasi kamu terlalu rendah untuk mengerjakan skripsi. Coba lakukan aktivitas lain untuk meningkatkan motivasimu."
-                jump kos
             $ activity = "skripsi"
-
-        "Attend a workshop / Learn new skills ([_m_workshop])":
+        "Attend a workshop / Learn new skills":
             $ activity = "workshop"
-
-        "Belajar Mandiri ([_m_belajar_mandiri])":
+        "Belajar Mandiri (Motivasi [_m_belajar_mandiri]/[max_stat])":
             $ activity = "belajar_mandiri"
-
-        "Cari Jurnal ([_m_jurnal])":
-            $ activity = "cari_jurnal"
-
-        "Chat Online ([_m_chat_online])":
-            $ activity = "chat_online"
-
-        "Main Game ([_m_main_game])":
-            $ activity = "main_game"
-
-        "Batal":
-            jump kos
-
-    call process_activity
-    jump kos
-
-# Main gameplay loop
-label activity_kos:
-    $ activity = None
-    $ _m_olahraga   = get_activity_motivation("olahraga")[1]
-    $ _m_bimbingan  = get_activity_motivation("bimbingan")[1]
-    $ _m_sosialisasi  = get_activity_motivation("sosialisasi")[1]
-    menu:
-        "Mau Ngapain?"
-
-        "Olahraga ([_m_olahraga])":
-            $ activity = "olahraga"
-
-        "Bimbingan dengan dosen ([_m_bimbingan])":
+        "Ajukan Bimbingan Dengan Dosen":
             if not dapat_topik:
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa bimbingan."
                 jump kos
@@ -436,6 +401,39 @@ label activity_kos:
                         jump kos
                     "Tidak":
                         jump kos
+            else:
+                "Kamu telah mengajukan jadwal bimbingan dengan dosen."
+                "Kamu dapat melakukan bimbingan pada menu aktivitas di kos."
+                jump kos
+        "Cari Jurnal (Motivasi [_m_jurnal]/[max_stat])":
+            $ activity = "cari_jurnal"
+        "Chat Online (Motivasi [_m_chat_online]/[max_stat])":
+            $ activity = "chat_online"
+        "Main Game (Motivasi [_m_main_game]/[max_stat])":
+            $ activity = "main_game"
+        "Batal":
+            jump kos
+
+    call process_activity
+    jump kos
+
+# Main gameplay loop
+label activity_kos:
+    $ activity = None
+    $ _m_olahraga_ringan   = get_activity_motivation("olahraga_ringan")
+    $ _m_olahraga_sedang   = get_activity_motivation("olahraga_sedang")
+    $ _m_olahraga_berat    = get_activity_motivation("olahraga_berat")
+    #$ _m_bimbingan  = get_activity_motivation("bimbingan")
+    $ _m_sosialisasi  = get_activity_motivation("sosialisasi")
+    menu:
+        "Mau Ngapain?"
+        "Olahraga Ringan (Motivasi [_m_olahraga_ringan]/[max_stat])":
+            $ activity = "olahraga_ringan"
+        "Olahraga Sedang (Motivasi [_m_olahraga_sedang]/[max_stat])":
+            $ activity = "olahraga_sedang"
+        "Olahraga Berat (Motivasi [_m_olahraga_berat]/[max_stat])":
+            $ activity = "olahraga_berat"
+        "Bimbingan dengan dosen":
             python:
                 _sched_days = (bimbingan_year - 2025) * 365 + (bimbingan_month - 1) * 30 + bimbingan_day
                 _bimbingan_sched = _sched_days * 1440 + 10 * 60
@@ -467,16 +465,12 @@ label activity_kos:
                 "Dosen pembimbingmu terlihat tidak senang dengan keterlambatanmu."
             $ booked_bimbingan = False
             $ activity = "bimbingan"
-
-        "Sosialisasi dengan teman ([_m_sosialisasi])":
+        "Sosialisasi dengan teman (Motivasi [_m_sosialisasi]/[max_stat])":
             $ activity = "sosialisasi"
-
         # "Just rest and do nothing":
         #     $ activity = "rest"
-
         "Skip time":
             $ activity = "skip"
-
         "Batal":
             jump kos
     
@@ -485,21 +479,17 @@ label activity_kos:
 
 label activity_dapur:
     $ activity = None
-    $ _m_bergizi = get_activity_motivation("makan_bergizi")[1]
-    $ _m_enak    = get_activity_motivation("makan_enak")[1]
-    $ _m_kopi    = get_activity_motivation("minum_kopi")[1]
+    $ _m_bergizi = get_activity_motivation("makan_bergizi")
+    $ _m_enak    = get_activity_motivation("makan_enak")
+    $ _m_kopi    = get_activity_motivation("minum_kopi")
     menu:
         "Mau ngapain?"
-
-        "Makan Bergizi ([_m_bergizi])":
+        "Makan Bergizi (Motivasi [_m_bergizi]/[max_stat])":
             $ activity = "makan_bergizi"
-
-        "Makan Enak Sembarangan ([_m_enak])":
+        "Makan Enak Sembarangan (Motivasi [_m_enak]/[max_stat])":
             $ activity = "makan_enak"
-
-        "Minum Kopi ([_m_kopi])":
+        "Minum Kopi (Motivasi [_m_kopi]/[max_stat])":
             $ activity = "minum_kopi"
-
         "Ga jadi":
             jump dapur
 
@@ -513,6 +503,14 @@ label process_activity:
     $ max_dur = activity_data["max_duration"]
     $ def_h = activity_data["default_duration_hours"]
     $ def_m = activity_data["default_duration_minutes"]
+    $ current_motivation_value = get_activity_motivation(activity)
+    if current_motivation_value < 20:
+        "Kamu tidak termotivasi untuk melakukan aktivitas ini."
+        return
+    elif current_motivation_value < 50:
+        if renpy.random.random() < 0.2:
+            "Kamu tidak termotivasi untuk melakukan aktivitas ini."
+            return
         
     if min_dur == max_dur:
         $ time_minutes = min_dur
@@ -545,12 +543,9 @@ label process_activity:
         "Tidak":
             return
     $ minutes_activity = 1
-    $ delay_batch = time_minutes // 60  # For activities longer than 1 hour, we can batch the time advancement
+    $ delay_batch = time_minutes // 30  # For activities longer than 30 minutes, batch the time advancement
     if delay_batch < 1:
         $ delay_batch = 1  # Minimum batch of 1 minute to ensure UI updates
-    $ current_motivation_value, current_motivation_label = get_activity_motivation(activity)
-    if activity not in ("skip", "tidur"):
-        "Motivasimu untuk aktivitas ini: [current_motivation_label] ([current_motivation_value])"
     # Special handling for sleep activity - uses dedicated sleep mechanic
     if activity == "tidur":
         $ sleep_hours = time_minutes // 60
@@ -562,19 +557,15 @@ label process_activity:
     else:
         python:
             for minutes_activity in range(time_minutes+1):
-                advance_time(1)
-                decrease_stats(1)
-
                 if not interrupted:
+                    advance_time(1)
+                    #decrease_stats(1)
+                    update_motivation_and_progress()
                     if activity == "skripsi":
-                        if get_common_motivation() == False:
-                            break
                         store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate())
                         ACTIVITY_DISPATCH["skripsi"]()
                         earned_score += calculate_thesis_score()
                     elif activity == "cari_jurnal":
-                        if get_common_motivation() == False:
-                            break
                         if not dapat_topik:
                             xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
                             required = get_required_for_level(store.practical_level)
@@ -582,14 +573,10 @@ label process_activity:
                             # Each level above 1 adds 15% base; XP within the level adds up to 15% more
                             chance = min(0.9, (store.practical_level - 1 + xp_ratio) * 0.15)
                             if renpy.random.random() < chance:
-                                dapat_topik = True
+                                store.dapat_topik = True
                                 renpy.say(narrator, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
                                 renpy.say(narrator, "Segera bimbingan dengan dosen untuk memastikan apakah topik ini layak untuk dilanjutkan.")
                         ACTIVITY_DISPATCH["cari_jurnal"]()
-                    elif activity == "belajar_mandiri":
-                        if get_common_motivation() == False:
-                            break
-                        ACTIVITY_DISPATCH["belajar_mandiri"]()
                     elif activity == "bimbingan":
                         if not dosen_acc:
                             base_chance = 0.05
@@ -606,21 +593,22 @@ label process_activity:
                                 renpy.say(narrator, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
                         ACTIVITY_DISPATCH["bimbingan"]()
                     else:
-                        # Re-evaluate need-based motivation each minute as stats change
-                        current_motivation_value = get_activity_motivation(activity)[0]
-                        if current_motivation_value < 0.3:
-                            interrupted = True
-                            break
-                        elif current_motivation_value < 0.6:
-                            interrupted = renpy.random.random() < 0.2
-                            break
                         fn = ACTIVITY_DISPATCH.get(activity)
                         if fn:
                             fn()
-                if (minutes_activity % delay_batch == 0):
-                    renpy.pause(delay=delay)    
                 else:
                     break
+                if (minutes_activity % delay_batch == 0):
+                    renpy.pause(delay=delay)
+
+                # Re-evaluate need-based motivation each minute as stats change
+                # current_motivation_value = get_activity_motivation(activity)
+                # if current_motivation_value < 20:
+                #     interrupted = True
+                #     break
+                # elif current_motivation_value < 50:
+                #     interrupted = renpy.random.random() < 0.2
+                #     break
     
     # Update levels and motivation after loop
     if activity in ["skripsi", "bimbingan", "workshop", "belajar_mandiri"]:
@@ -633,10 +621,12 @@ label process_activity:
         "Kamu mengerjakan skripsi selama [minutes_activity] menit."
         "Kamu mendapatkan [earned_score] poin!"
         $ earned_score = 0  # Reset earned score after showing message
-    
-    elif activity == "olahraga":
-        "Kamu olahraga selama [minutes_activity] menit. Kamu merasa lebih segar!"
-    
+    elif activity == "olahraga_ringan":
+        "Kamu olahraga ringan selama [minutes_activity] menit. Kamu merasa lebih segar!"
+    elif activity == "olahraga_sedang":
+        "Kamu olahraga sedang selama [minutes_activity] menit. Kamu merasa lebih segar!"
+    elif activity == "olahraga_berat":
+        "Kamu olahraga berat selama [minutes_activity] menit. Kamu merasa lebih segar!"
     elif activity == "bimbingan":
         if not dosen_acc:
             "Kamu bimbingan dengan dosen selama [minutes_activity] menit, namun topikmu belum disetujui."
