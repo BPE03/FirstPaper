@@ -105,6 +105,11 @@ init python:
             display_month = 12
             display_year -= 1
 
+    def get_tomorrow():
+        today = datetime.date(current_year, current_month, current_day)
+        tomorrow = today + datetime.timedelta(days=1)
+        return tomorrow.day, tomorrow.month, tomorrow.year
+
     def add_calendar_event(day, month, year, title, description, avoid_duplicates=True):
         """
         Append a new event to the calendar.

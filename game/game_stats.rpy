@@ -377,10 +377,10 @@ init python:
     def get_common_motivation():
         if motivation < 30:
             if renpy.random.randint(1, 2) < 2:
-                interrupted = True
+                store.interrupted = True
                 return False
         elif motivation < 70:
             if renpy.random.randint(1, 10) > 9:
-                interrupted = True
+                store.interrupted = True
                 return False
         return True

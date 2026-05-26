@@ -419,6 +419,53 @@ label activity_kos:
             if not dapat_topik:
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa bimbingan."
                 jump kos
+            if not booked_bimbingan:
+                "Kamu belum mengajukan jadwal bimbingan dengan dosen."
+                menu:
+                    "Apakah kamu yakin ingin mengajukan jadwal bimbingan?"
+                    "Ya":
+                        python:
+                            bimbingan_day, bimbingan_month, bimbingan_year = get_tomorrow()
+                            add_calendar_event(
+                                bimbingan_day, bimbingan_month, bimbingan_year,
+                                "Bimbingan dengan Dosen",
+                                "Bimbingan dijadwalkan jam 10:00."
+                            )
+                            booked_bimbingan = True
+                        "Bimbingan dijadwalkan besok tanggal [bimbingan_day]/[bimbingan_month]/[bimbingan_year] pukul 10:00."
+                        jump kos
+                    "Tidak":
+                        jump kos
+            python:
+                _sched_days = (bimbingan_year - 2025) * 365 + (bimbingan_month - 1) * 30 + bimbingan_day
+                _bimbingan_sched = _sched_days * 1440 + 10 * 60
+                bimbingan_time_diff = get_total_game_minutes() - _bimbingan_sched
+            if bimbingan_time_diff < 0:
+                python:
+                    _wait_m = -bimbingan_time_diff
+                    _wait_str = "{} jam {} menit".format(_wait_m // 60, _wait_m % 60) if _wait_m >= 60 else "{} menit".format(_wait_m)
+                "Kamu menunggu [_wait_str] hingga waktu bimbingan tiba..."
+                python:
+                    advance_time(-bimbingan_time_diff)
+                    decrease_stats(-bimbingan_time_diff)
+            elif bimbingan_time_diff > 0:
+                python:
+                    _late_h = bimbingan_time_diff // 60
+                    _late_m = bimbingan_time_diff % 60
+                    _late_str = "{} jam {} menit".format(_late_h, _late_m) if _late_h > 0 else "{} menit".format(_late_m)
+                    if bimbingan_time_diff >= 60:
+                        store.competence = max(0, store.competence - 15)
+                        store.relatedness = max(0, store.relatedness - 10)
+                        store.valence = max(0, store.valence - 30)
+                    elif bimbingan_time_diff >= 30:
+                        store.competence = max(0, store.competence - 10)
+                        store.valence = max(0, store.valence - 20)
+                    else:
+                        store.competence = max(0, store.competence - 5)
+                        store.valence = max(0, store.valence - 10)
+                "Kamu terlambat [_late_str] dari jadwal bimbingan!"
+                "Dosen pembimbingmu terlihat tidak senang dengan keterlambatanmu."
+            $ booked_bimbingan = False
             $ activity = "bimbingan"
 
         "Sosialisasi dengan teman ([_m_sosialisasi])":
@@ -546,20 +593,26 @@ label process_activity:
                     elif activity == "bimbingan":
                         if not dosen_acc:
                             base_chance = 0.05
-                            competence_factor = store.competence / store.max_stat * 0.1
-                            relatedness_factor = store.relatedness / store.max_stat * 0.1
-                            total_chance = base_chance + competence_factor + relatedness_factor
+                            xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
+                            required = get_required_for_level(store.practical_level)
+                            xp_ratio = xp_in_level / required
+                            # Each level above 1 adds 10% base; XP within the level adds up to 10% more
+                            practical_skill_factor = (store.practical_level - 1 + xp_ratio) * 0.1
+                            competence_factor = store.competence / store.max_stat * 0.05
+                            relatedness_factor = store.relatedness / store.max_stat * 0.05
+                            total_chance = base_chance + practical_skill_factor + competence_factor + relatedness_factor
                             if renpy.random.random() < total_chance:
                                 dosen_acc = True
                                 renpy.say(narrator, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
                         ACTIVITY_DISPATCH["bimbingan"]()
                     else:
                         # Re-evaluate need-based motivation each minute as stats change
+                        current_motivation_value = get_activity_motivation(activity)[0]
                         if current_motivation_value < 0.3:
                             interrupted = True
                             break
                         elif current_motivation_value < 0.6:
-                            interrupted = renpy.random.random() < 0.5
+                            interrupted = renpy.random.random() < 0.2
                             break
                         fn = ACTIVITY_DISPATCH.get(activity)
                         if fn:

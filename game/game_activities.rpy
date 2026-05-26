@@ -1,4 +1,8 @@
-define interrupted = False
+default interrupted = False
+default booked_bimbingan = False
+default bimbingan_day = 0
+default bimbingan_month = 0
+default bimbingan_year = 0
 
 define activities = {
     "skripsi": {
