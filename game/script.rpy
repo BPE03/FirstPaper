@@ -341,16 +341,19 @@ label post_sidang_akhir:
 
 label kos:
     $ current_location = "kos"
+    $ time_stop = False
     scene kos with fade
     call screen interactive_kos
 
 label dapur:
     $ current_location = "dapur"
+    $ time_stop = False
     scene dapur with fade
     call screen interactive_dapur
 
 label activity_kos_kasur:
     $ activity = None
+    $ time_stop = True
     $ _m_tidur = get_activity_motivation("tidur")
     menu:
         "Mau Ngapain?"
@@ -363,6 +366,7 @@ label activity_kos_kasur:
 
 label activity_kos_laptop:
     $ activity = None
+    $ time_stop = True
     $ _m_thesis     = get_activity_motivation("skripsi")
     #$ _m_workshop   = get_activity_motivation("workshop")
     $ _m_belajar_mandiri  = get_activity_motivation("belajar_mandiri")
@@ -420,6 +424,7 @@ label activity_kos_laptop:
 # Main gameplay loop
 label activity_kos:
     $ activity = None
+    $ time_stop = True
     $ _m_olahraga_ringan   = get_activity_motivation("olahraga_ringan")
     $ _m_olahraga_sedang   = get_activity_motivation("olahraga_sedang")
     $ _m_olahraga_berat    = get_activity_motivation("olahraga_berat")
@@ -442,6 +447,14 @@ label activity_kos:
                 python:
                     _wait_m = -bimbingan_time_diff
                     _wait_str = "{} jam {} menit".format(_wait_m // 60, _wait_m % 60) if _wait_m >= 60 else "{} menit".format(_wait_m)
+                "Kamu masih ada waktu [_wait_str] sebelum bimbingan."
+                "Apakah kamu ingin menunggu hingga waktu bimbingan tiba?"
+                menu:
+                    "Apakah kamu ingin menunggu hingga waktu bimbingan tiba?"
+                    "Ya":
+                        pass
+                    "Tidak":
+                        jump kos
                 "Kamu menunggu [_wait_str] hingga waktu bimbingan tiba..."
                 python:
                     advance_time(-bimbingan_time_diff)
@@ -534,14 +547,15 @@ label process_activity:
                 $ minutes = minutes % 60
             $ time_minutes = hours * 60 + minutes
             $ time_minutes = max(min_dur, min(max_dur, time_minutes))
-    "Yakin mau melakukan aktivitas ini?"
-    menu:
+    if activity not in ["bimbingan"]:
         "Yakin mau melakukan aktivitas ini?"
-        "Yakin":
-            #Continue to next line
-            pass
-        "Tidak":
-            return
+        menu:
+            "Yakin mau melakukan aktivitas ini?"
+            "Yakin":
+                #Continue to next line
+                pass
+            "Tidak":
+                return
     $ minutes_activity = 1
     $ delay_batch = time_minutes // 30  # For activities longer than 30 minutes, batch the time advancement
     if delay_batch < 1:
@@ -559,7 +573,7 @@ label process_activity:
             for minutes_activity in range(time_minutes+1):
                 if not interrupted:
                     advance_time(1)
-                    #decrease_stats(1)
+                    decrease_stats(1)
                     update_motivation_and_progress()
                     if activity == "skripsi":
                         store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate())

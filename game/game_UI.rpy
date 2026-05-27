@@ -44,7 +44,7 @@ screen main_stats():
                     ysize 22
                     left_bar "#2ecc71"
                     right_bar "#34495e"
-                text "[thesis_progress]%" size 14 color "#bdc3c7"
+                text "[thesis_progress:.02f]%" size 14 color "#bdc3c7"
 
                 frame:
                     xsize 250
@@ -68,7 +68,7 @@ screen main_stats():
                 textbutton "Lihat Statistik Detil" action ToggleVariable("show_detailed_stats") xsize 250 ysize 75
         
         # Timer that affects stats every second
-        if not in_cutscene:
+        if not time_stop:
             timer 1.0 repeat True action [
                 Function(decrease_stats, 1), 
             ]
@@ -90,7 +90,7 @@ screen calendar_now():
                 text "[format_time()]" size 28 color "#ffffff"
                 textbutton "{size=24}Lihat Kalender" action ToggleVariable("show_calendar")
         # Timer that affects stats every second
-        if not in_cutscene:
+        if not time_stop:
             timer 1.0 repeat True action [
                 Function(advance_time, 1)
             ]

@@ -3,6 +3,23 @@ define p = Character("Paijo", color="#77ff77")
 define j = Character("Joko", color="#c9982f")
 define n = Character(None, kind=nvl)
 
+# Variable to track if it's a cutscene or interactive gameplay
+default in_cutscene = False
+default time_stop = False
+
+# Exploration specific flags
+default current_location = "kos"  # Start in dorm room
+define locations = {
+    "kos": {
+        "explorable": ["dapur"],
+        "name": "Kos",
+    },
+    "dapur": {
+        "explorable": ["kos"],
+        "name": "Dapur",
+    },
+}
+
 define bidang_ilmu = {
     "KCV": {
         "nama": "Komputasi Cerdas dan Visi",
@@ -118,22 +135,6 @@ define bidang_ilmu = {
     # Add more fields as needed
 }
 
-# Variable to track if it's a cutscene or interactive gameplay
-default in_cutscene = False
-
-# Exploration specific flags
-default current_location = "kos"  # Start in dorm room
-define locations = {
-    "kos": {
-        "explorable": ["dapur"],
-        "name": "Kos",
-    },
-    "dapur": {
-        "explorable": ["kos"],
-        "name": "Dapur",
-    },
-}
-
 # Helper functions
 init python:
     def move_to_map(location_label):
@@ -147,7 +148,7 @@ init python:
     def format_duration(minutes):
         hours = minutes // 60
         mins = minutes % 60
-        return "{} hours {} minutes".format(hours, mins)
+        return "{} jam {} menit".format(hours, mins)
     def fade_music_transition(new_track=None, fade_out=1.0, fade_in=0.0, music_volume=1.0):
         """
         Fades out current music, stops it, and optionally plays a new track with fade in.
@@ -170,8 +171,9 @@ init python:
 
     # Hide all screens during cutscenes, show during interactive gameplay
     def set_cutscene_mode(is_cutscene):
-        global in_cutscene, show_calendar, show_detailed_stats
+        global in_cutscene, show_calendar, show_detailed_stats, time_stop
         in_cutscene = is_cutscene
+        time_stop = is_cutscene
         show_calendar = False  # Ensure calendar is hidden during cutscenes
         show_detailed_stats = False  # Ensure detailed stats are hidden during cutscenes
         renpy.retain_after_load()  # Ensure this state persists after loading

@@ -142,7 +142,7 @@ init python:
         store.relatedness = max(0, store.relatedness - relatedness_modifier/60)
         pa_modifier = store.physical_activity * 0.05
         store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
-        store.arousal = max(0, store.arousal - 6/60)
+        store.arousal = max(0, store.arousal + 6/60)
         store.valence = max(0, store.valence - 6/60)
         calculate_writing_xp(20/60)
 
@@ -150,6 +150,7 @@ init python:
         store.nutrition = min(store.max_stat, store.nutrition + 70/20)
         store.autonomy = max(0, store.autonomy - 35/60)
         store.valence = max(0, store.valence - 6/20)
+        store.arousal = min(store.max_stat, store.arousal + 10/20)
 
     def _activity_makan_enak():
         store.nutrition = min(store.max_stat, store.nutrition + 60/20)
@@ -160,7 +161,7 @@ init python:
 
     def _activity_minum_kopi():
         store.caffeine_level = min(100, store.caffeine_level + 20/15)
-        store.arousal = min(store.max_stat, store.arousal + 25/15)
+        store.arousal = min(store.max_stat, store.arousal + 45/15)
 
     def _activity_olahraga_ringan():
         store.autonomy = min(store.max_stat, store.autonomy + 3/60)
@@ -174,7 +175,7 @@ init python:
 
         nutrition_modifier = store.nutrition * 0.2
         store.nutrition = max(0, store.nutrition - nutrition_modifier / 60)
-        store.arousal = min(store.max_stat, store.arousal + 15/60)
+        store.arousal = min(store.max_stat, store.arousal + 20/60)
 
     def _activity_olahraga_berat():
         store.autonomy = max(0, store.autonomy - 6/60)
@@ -182,7 +183,7 @@ init python:
         store.competence = max(0, store.competence - 1/60)
         nutrition_modifier = store.nutrition * 0.27
         store.nutrition = max(0, store.nutrition - nutrition_modifier / 60)
-        store.arousal = min(store.max_stat, store.arousal + 25/60)
+        store.arousal = min(store.max_stat, store.arousal + 35/60)
 
     def _activity_bimbingan():
         store.competence = min(store.max_stat, store.competence + 10/60)
@@ -197,6 +198,7 @@ init python:
         store.relatedness = min(store.max_stat, store.relatedness + 20/60)
         store.competence = min(store.max_stat, store.competence + 1/60)
         store.valence = min(store.max_stat, store.valence + 20/60)
+        store.arousal = min(store.max_stat, store.arousal + 20/60)
 
     def _activity_nap():
         store.arousal = min(store.max_stat, store.arousal + 25/60)
@@ -215,7 +217,7 @@ init python:
         store.relatedness = max(0, store.relatedness - relatedness_modifier/60)
         pa_modifier = store.physical_activity * 0.05
         store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
-        store.arousal = max(0, store.arousal - 6/60)
+        store.arousal = max(0, store.arousal + 6/60)
         store.valence = max(0, store.valence - 6/60)
         calculate_practical_xp(20/60)
 
@@ -227,7 +229,7 @@ init python:
         store.relatedness = max(0, store.relatedness - relatedness_modifier/60)
         pa_modifier = store.physical_activity * 0.05
         store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
-        store.arousal = max(0, store.arousal - 6/60)
+        store.arousal = max(0, store.arousal + 6/60)
         store.valence = max(0, store.valence - 6/60)
 
     def _activity_rest():
@@ -317,8 +319,8 @@ init python:
             "competence":  [(0.0, -0.4), (75, 0.0)],
             "relatedness": [(0.0, -0.4), (75, 0.0)],
             "physical_activity":          [(0.0, -0.4), (75, 0.0)],
-            "nutrition":   [(30, -1.0), (60,  0.0)],
-            "sleep":       [(30, -1.0), (60,  0.0)],
+            "nutrition":   [(0, -1.0), (50,  0.0)],
+            "sleep":       [(0, -1.0), (50,  0.0)],
         },
         #"rest":           _activity_rest,
         "cari_jurnal": {
@@ -326,8 +328,8 @@ init python:
             "competence":  [(0.0, -0.4), (75, 0.0)],
             "relatedness": [(0.0, -0.4), (75, 0.0)],
             "physical_activity":          [(0.0, -0.4), (75, 0.0)],
-            "nutrition":   [(30, -1.0), (60,  0.0)],
-            "sleep":       [(30, -1.0), (60,  0.0)],
+            "nutrition":   [(0, -1.0), (50,  0.0)],
+            "sleep":       [(0, -1.0), (50,  0.0)],
         },
         "chat_online": {
             "autonomy":    [(0.0, 1), (70, 0.0)],
