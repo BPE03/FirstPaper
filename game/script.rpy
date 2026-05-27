@@ -492,6 +492,7 @@ label activity_kos:
 
 label activity_dapur:
     $ activity = None
+    $ time_stop = True
     $ _m_bergizi = get_activity_motivation("makan_bergizi")
     $ _m_enak    = get_activity_motivation("makan_enak")
     $ _m_kopi    = get_activity_motivation("minum_kopi")

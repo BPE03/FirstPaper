@@ -39,7 +39,7 @@ init python:
         "stres": {"valence": 12.5, "arousal": 80.9, "color": "#c0392b", "description": "Anxious and overwhelmed", "score_multiplier": 0.5}, #Stressed
         "grogi": {"valence": 28.6, "arousal": 69.9, "color": "#e67e22", "description": "Anxious and alert", "score_multiplier": 0.8}, # Nervous
         "tegang": {"valence": 32.0, "arousal": 69.1, "color": "#d35400", "description": "Tense and activated", "score_multiplier": 0.7}, # Tense
-        "neutral": {"valence": 50.0, "arousal": 50.0, "color": "#7f8c8d", "description": "Neutral and balanced", "score_multiplier": 1.0} # Neutral
+        "kosong": {"valence": 50.0, "arousal": 50.0, "color": "#7f8c8d", "description": "Neutral and balanced", "score_multiplier": 1.0} # Neutral
     }
     
     def get_emotion_distance(v1, a1, v2, a2):
@@ -305,80 +305,3 @@ init python:
         advance_time(int(hours_to_sleep * 60))
         
         renpy.retain_after_load()
-
-# init python:
-    # # Per activity motivation related functions
-    # _MOTIVATION_STATS_CAPPED = [
-    #     "nutrition", "physical_activity", "autonomy", "competence",
-    #     "relatedness", "valence", "arousal", "caffeine_level"
-    # ]
-    # _MOTIVATION_STATS_UNCAPPED = ["writing_xp", "practical_xp"]
-
-    # # Each need is (stat_name, peak_value).
-    # # Contribution = max(0, 1 - |current - peak| / max_stat)
-    # #   = 1.0 at peak, 0.5 fifty units away, 0.0 at 100+ units away.
-    # _ACTIVITY_NEEDS = {
-    #     # "skripsi":         [("arousal", 65), ("autonomy", 20)],
-    #     # "cari_jurnal":     [("arousal", 60), ("autonomy", 20)],
-    #     "olahraga":        [("physical_activity", 100)],
-    #     # "bimbingan":       [("competence", 20), ("relatedness", 25)],
-    #     "sosialisasi":     [("relatedness", 10)],
-    #     "nap":             [("sleep", 20), ("arousal", 15)],
-    #     # "tidur":           [("sleep", 5),  ("arousal", 5)],
-    #     # "workshop":        [("competence", 25)],
-    #     # "belajar_mandiri": [("arousal", 60), ("competence", 25)],
-    #     "rest":            [("arousal", 15), ("valence", 15)],
-    #     "chat_online":     [("relatedness", 30), ("valence", 20)],
-    #     "main_game":       [("valence", 25), ("arousal", 40)],
-    #     "makan_bergizi":   [("nutrition", 40)],
-    #     "makan_enak":      [("nutrition", 40)],
-    #     "minum_kopi":      [("arousal", 10)],
-    # }
-
-    # def get_activity_motivation(activity_key):
-    #     """
-    #     Returns (value, label) where value is in [0, 1].
-    #     value >=  0.6 : activity will be carried out
-    #     value >= 0.3: 80% chance the activity is carried out this minute
-    #     value <  0.3: activity stops (need already satisfied)
-    #     """
-    #     needs = _ACTIVITY_NEEDS.get(activity_key, [])
-    #     if not needs:
-    #         if motivation >= 70:
-    #             return motivation, "Termotivasi"
-    #         elif motivation >= 30:
-    #             return motivation, "Ragu-ragu"
-    #         else:
-    #             return motivation, "Tidak Berminat"
-
-    #     max_s = float(getattr(store, 'max_stat', 100))
-    #     total = 0.0
-    #     for stat, peak in needs:
-    #         if activity_key == "olahraga":
-    #             current = float(getattr(store, stat, max_s))
-    #             total += max(0.0, 1.0 - abs(current - peak) / max_s)
-    #         else:
-    #             current = float(getattr(store, stat, max_s))
-    #             total += max(0.0, 1.0 - abs(current - peak) / max_s)
-    #     value = total / len(needs)
-
-    #     if value >= 0.7:
-    #         label = "Termotivasi"
-    #     elif value >= 0.3:
-    #         label = "Ragu-ragu"
-    #     else:
-    #         label = "Tidak Berminat"
-
-    #     return round(value, 2), label
-
-    # # Returns True if the activity is carried
-    # def get_common_motivation():
-    #     if motivation < 30:
-    #         if renpy.random.randint(1, 2) < 2:
-    #             store.interrupted = True
-    #             return False
-    #     elif motivation < 70:
-    #         if renpy.random.randint(1, 10) > 9:
-    #             store.interrupted = True
-    #             return False
-    #     return True

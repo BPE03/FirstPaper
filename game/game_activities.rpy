@@ -154,7 +154,7 @@ init python:
 
     def _activity_makan_enak():
         store.nutrition = min(store.max_stat, store.nutrition + 60/20)
-        store.valence = min(store.max_stat, store.valence + 40/20)
+        store.valence = min(store.max_stat, store.valence + 20/20)
         store.autonomy = min(store.max_stat, store.autonomy + 40/60)
         store.physical_activity = max(0, store.physical_activity - 4/20)
         store.sleep = max(0, store.sleep - 4/20)
