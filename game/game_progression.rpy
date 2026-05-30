@@ -36,10 +36,11 @@ init python:
     def get_thesis_progress_rate():
         """Returns per-minute thesis progress. Higher writing/practical level = faster progress."""
         level_mult = 1.0 + (writing_level - 1) * 0.10 + (practical_level - 1) * 0.05
+        base_progress_per_hour = 1
         if phase == 1:
-            return (1 / 60) * level_mult
+            return (base_progress_per_hour / 60) * level_mult
         else:
-            return (1 / 120) * level_mult
+            return (base_progress_per_hour / 120) * level_mult
 
     def calculate_thesis_score():
         """Calculate score gained when writing thesis based on emotion, levels, and XP."""
@@ -53,10 +54,7 @@ init python:
         # Level bonuses
         level_bonus = (practical_level * 0.5) + (writing_level * 0.5)
         
-        # XP experience bonus (more XP = more experienced = better score)
-        xp_bonus = (practical_xp / 1000.0) + (writing_xp / 1000.0)
-        
-        # Base score per thesis work session
+        # Base score per minute of work
         base_score = 1
         
         # Calculate final score
