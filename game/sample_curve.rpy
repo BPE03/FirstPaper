@@ -1,7 +1,6 @@
 init python:
     def sample_curve(points, stat_value):
         # points is a list of (x, y) tuples, sorted by x
-        # stat_value is 0.0–1.0 (divide your 0-100 stat by 100 before passing in)
         if stat_value <= points[0][0]:
             return points[0][1] * 100
         if stat_value >= points[-1][0]:
