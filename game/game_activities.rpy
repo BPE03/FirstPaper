@@ -66,7 +66,7 @@ define activities = {
         "min_duration": 240,
         "default_duration_hours": 8,
         "default_duration_minutes": 0,
-        "max_duration": 600
+        "max_duration": 720
     },
     "workshop": {
         "name": "Attend a workshop",
@@ -131,6 +131,13 @@ define activities = {
         "default_duration_hours": 0,
         "default_duration_minutes": 15,
         "max_duration": 15
+    },
+    "meditasi": {
+        "name": "Meditasi",
+        "min_duration": 10,
+        "default_duration_hours": 0,
+        "default_duration_minutes": 10,
+        "max_duration": 60
     }
 }
 
@@ -155,16 +162,16 @@ init python:
         arousal = min(max_stat, arousal + 10/20)
 
     def _activity_makan_enak():
-        global nutrition, valence, autonomy, physical_activity, sleep
+        global nutrition, valence, autonomy, physical_activity, process_s
         nutrition = min(max_stat, nutrition + 60/20)
         valence = min(max_stat, valence + 20/20)
         autonomy = min(max_stat, autonomy + 40/60)
         physical_activity = max(0, physical_activity - 4/20)
-        sleep = max(0, sleep - 4/20)
+        process_s = min(S_MAX, process_s + 0.02/20)
 
     def _activity_minum_kopi():
-        global caffeine_level, arousal
-        caffeine_level = min(100, caffeine_level + 20/15)
+        global arousal
+        caffeine_consume(0.4/15)
         arousal = min(max_stat, arousal + 45/15)
 
     def _activity_olahraga_ringan():
@@ -209,10 +216,10 @@ init python:
         valence = min(max_stat, valence + 20/60)
         arousal = min(max_stat, arousal + 20/60)
 
-    def _activity_nap():
-        global arousal, valence
-        arousal = min(max_stat, arousal + 25/60)
-        valence = min(max_stat, valence + 10/60)  # normalized from flat +10
+    # def _activity_nap():
+    #     global arousal, valence
+    #     arousal = min(max_stat, arousal + 25/60)
+    #     valence = min(max_stat, valence + 10/60)
 
     def _activity_workshop():
         global competence, arousal
@@ -245,10 +252,10 @@ init python:
         arousal = max(0, arousal + 6/60)
         valence = max(0, valence - 6/60)
 
-    def _activity_rest():
-        global arousal, valence
-        arousal = min(max_stat, arousal + 10/60)
-        valence = min(max_stat, valence + 5/60)
+    # def _activity_rest():
+    #     global arousal, valence
+    #     arousal = min(max_stat, arousal + 10/60)
+    #     valence = min(max_stat, valence + 5/60)
 
     def _activity_chat_online():
         global autonomy, relatedness, physical_activity, valence, arousal
@@ -268,6 +275,10 @@ init python:
         valence = min(max_stat, valence + 15/60)
         arousal = min(max_stat, arousal + 15/60)
 
+    def _activity_meditasi():
+        global arousal
+        arousal = max(0, arousal - 15/10)
+
     ACTIVITY_DISPATCH = {
         "skripsi":        _activity_skripsi,
         "makan_bergizi":  _activity_makan_bergizi,
@@ -278,13 +289,14 @@ init python:
         "olahraga_berat":   _activity_olahraga_berat,
         "bimbingan":      _activity_bimbingan,
         "sosialisasi":    _activity_sosialisasi,
-        "nap":            _activity_nap,
+        # "nap":            _activity_nap,
         "workshop":       _activity_workshop,
         "belajar_mandiri":      _activity_belajar_mandiri,
-        "rest":           _activity_rest,
+        # "rest":           _activity_rest,
         "cari_jurnal":    _activity_cari_jurnal,
         "chat_online":    _activity_chat_online,
         "main_game":      _activity_main_game,
+        "meditasi":      _activity_meditasi,
     }
 
     ACTIVITY_MOTIVATION_CURVES = {
@@ -316,7 +328,7 @@ init python:
             "sleep":       [(0.0, 0.4), (30, 0.0)],
         },
         "minum_kopi": {
-            "caffeine_level": [(0, 1), (100, 0.0)],
+            "caffeine_plasma_level": [(0.2, 1), (1.0, 0.0)],
         },
         "olahraga_ringan": {
             "physical_activity":          [(0.0, 0.5), (50, 0.0), (80, 0), (100, -0.5)],
@@ -327,9 +339,6 @@ init python:
         "olahraga_berat": {
             "physical_activity":          [(0.0, -0.7), (50, 0.0), (80, 0), (100, -0.7)],
         },
-        # "bimbingan":      _activity_bimbingan,
-        # "nap":            _activity_nap,
-        # "workshop":       _activity_workshop,
         "belajar_mandiri": {
             "autonomy":    [(0.0, -0.4), (75, 0.0)],
             "competence":  [(0.0, -0.4), (75, 0.0)],
@@ -338,7 +347,6 @@ init python:
             "nutrition":   [(0, -1.0), (50,  0.0)],
             "sleep":       [(0, -1.0), (50,  0.0)],
         },
-        #"rest":           _activity_rest,
         "cari_jurnal": {
             "autonomy":    [(0.0, -0.4), (75, 0.0)],
             "competence":  [(0.0, -0.4), (75, 0.0)],
@@ -360,6 +368,17 @@ init python:
             "nutrition":   [(0, -2), (40,  0.0)],
             "sleep":       [(0, -1), (40,  0.0)],
         },
+        "tidur": {
+            "autonomy":    [(0.0, -0.1), (30, 0.0)],
+            "competence":  [(0.0, -0.1), (30, 0.0)],
+            "relatedness": [(0.0, -0.1), (30, 0.0)],
+            "nutrition":   [(0.0, -2.0), (40, 0.0)],
+            "physical_activity": [(0.0, -0.2), (50, 0.0)],
+            "sleep":       [(30, 1.0), (70, -1.0)]
+        },
+        "meditasi": {
+            "arousal": [(0, -1.0), (50, 1.0)]
+        }
     }
 
     def get_activity_motivation(activity_name):
@@ -370,7 +389,8 @@ init python:
             "nutrition":   store.nutrition,
             "physical_activity": store.physical_activity,
             "sleep":       store.sleep,
-            "caffeine_level": store.caffeine_level,
+            "caffeine_plasma_level": store.caffeine_plasma_level,
+            "arousal":     store.arousal,
         }
         base_motivation = store.motivation
         curves = ACTIVITY_MOTIVATION_CURVES.get(activity_name, {})

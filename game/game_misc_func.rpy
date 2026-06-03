@@ -141,10 +141,9 @@ init python:
         store.show_map = False
         renpy.transition(fade)
         renpy.jump(location_label)  # or any Ren'Py function like renpy.show_screen
-    def interact_environment(env_label):
-        global can_move_places
-        can_move_places = 0
-        renpy.call(env_label)
+    # def interact_environment(env_label):
+    #     store.can_move_places = 0
+    #     renpy.call(env_label)
     def format_duration(minutes):
         hours = minutes // 60
         mins = minutes % 60
