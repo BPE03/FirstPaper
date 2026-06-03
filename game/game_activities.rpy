@@ -209,8 +209,8 @@ init python:
         relatedness = min(max_stat, relatedness + 20/60)
         valence = min(max_stat, valence + 15/60)
         arousal = min(max_stat, arousal + 10/60)
-        calculate_writing_xp(10/60)
-        calculate_practical_xp(5/60)
+        calculate_writing_xp(40/60)
+        calculate_practical_xp(20/60)
 
     def _activity_sosialisasi():
         global autonomy, relatedness, competence, valence, arousal
@@ -227,9 +227,9 @@ init python:
 
     def _activity_workshop():
         global competence, arousal
-        calculate_practical_xp(15/60)
+        calculate_practical_xp(40/60)
         calculate_writing_xp(10/60)
-        competence = min(max_stat, competence + 60/60)
+        competence = min(max_stat, competence + 20/60)
         arousal = max(0, arousal - 10/60)
 
     def _activity_belajar_mandiri():
