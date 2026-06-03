@@ -87,23 +87,23 @@ init python:
         global autonomy, competence, relatedness, nutrition, physical_activity, sleep, valence, arousal
         #global sleep_debt, adenosine_level
 
-        autonomy_modifier = store.autonomy * 0.015
-        if store.autonomy < 50:
-            store.autonomy = min(max_stat, store.autonomy + autonomy_modifier/60 * time_minutes)
+        autonomy_modifier = autonomy * 0.015
+        if autonomy < 50:
+            autonomy = min(max_stat, autonomy + autonomy_modifier/60 * time_minutes)
         else:
-            store.autonomy = max(0, store.autonomy - autonomy_modifier/60 * time_minutes)
+            autonomy = max(0, autonomy - autonomy_modifier/60 * time_minutes)
 
-        competence_modifier = store.competence * 0.015
-        store.competence = max(0, store.competence - (competence_modifier/60 * time_minutes))
+        competence_modifier = competence * 0.015
+        competence = max(0, competence - (competence_modifier/60 * time_minutes))
 
-        relatedness_modifier = store.relatedness * 0.015
-        store.relatedness = max(0, store.relatedness - (relatedness_modifier/60 * time_minutes))
+        relatedness_modifier = relatedness * 0.015
+        relatedness = max(0, relatedness - (relatedness_modifier/60 * time_minutes))
 
-        nutrition_modifier = store.nutrition * 0.15
-        store.nutrition = max(0, store.nutrition - (nutrition_modifier/60 * time_minutes)) # 50% / 8 hours
+        nutrition_modifier = nutrition * 0.15
+        nutrition = max(0, nutrition - (nutrition_modifier/60 * time_minutes)) # 50% / 8 hours
         
-        pa_modifier = store.physical_activity * 0.025
-        store.physical_activity = max(0, store.physical_activity - (pa_modifier/60 * time_minutes))
+        pa_modifier = physical_activity * 0.025
+        physical_activity = max(0, physical_activity - (pa_modifier/60 * time_minutes))
         
         # Update sleep-wake cycle: adenosine builds up, decreasing sleep stat
         #update_adenosine()
@@ -111,16 +111,16 @@ init python:
         # Sleep stat decreases faster based on adenosine level
         # If adenosine is high (high sleep pressure), sleep stat drops faster
         #adenosine_effect = (adenosine_level / 100) * 0.05  # Max 0.05 extra per minute
-        sleep_modifier = store.sleep * 0.08
-        store.sleep = max(0, store.sleep - (sleep_modifier/60 * time_minutes))
+        sleep_modifier = sleep * 0.08
+        sleep = max(0, sleep - (sleep_modifier/60 * time_minutes))
         
         # Apply circadian rhythm effect: sleep stat decreases slower during optimal sleep times
         # circadian_factor = get_circadian_rhythm_factor()
         # if circadian_factor < 0.5:  # Daytime (poor sleep alignment)
         #     store.sleep = max(0, store.sleep - (0.02 * time_minutes))  # Extra penalty during day
         
-        store.valence = max(0, store.valence - (6/60 * time_minutes))
-        store.arousal = max(0, store.arousal - (6/60 * time_minutes))
+        valence = max(0, valence - (6/60 * time_minutes))
+        arousal = max(0, arousal - (6/60 * time_minutes))
         
         # # Apply sleep deprivation penalties
         # if store.sleep <= 30:  # Only when really tired

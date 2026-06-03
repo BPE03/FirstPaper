@@ -562,12 +562,12 @@ label process_activity:
     if delay_batch < 1:
         $ delay_batch = 1  # Minimum batch of 1 minute to ensure UI updates
     # Special handling for sleep activity - uses dedicated sleep mechanic
-    if activity == "tidur":
-        $ sleep_hours = time_minutes // 60
-        "You head to bed for the night..."
-        "Zzzzzzz... [sleep_hours] hours of sleep..."
-        $ perform_sleep(sleep_hours)
-        scene black with fade
+    # if activity == "tidur":
+    #     $ sleep_hours = time_minutes // 60
+    #     "You head to bed for the night..."
+    #     "Zzzzzzz... [sleep_hours] hours of sleep..."
+    #     $ perform_sleep(sleep_hours)
+    #     scene black with fade
     # Loop through each minute for other activities
     else:
         python:
@@ -584,9 +584,8 @@ label process_activity:
                         if not dapat_topik:
                             xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
                             required = get_required_for_level(store.practical_level)
-                            xp_ratio = xp_in_level / required
                             # Each level above 1 adds 15% base; XP within the level adds up to 15% more
-                            chance = min(0.9, (store.practical_level - 1 + xp_ratio) * 0.15)
+                            chance = min(0.9, (store.practical_level - 1) * 0.15)
                             if renpy.random.random() < chance:
                                 store.dapat_topik = True
                                 renpy.say(narrator, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
@@ -597,9 +596,8 @@ label process_activity:
                             base_chance = 0.05
                             xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
                             required = get_required_for_level(store.practical_level)
-                            xp_ratio = xp_in_level / required
-                            # Each level above 1 adds 10% base; XP within the level adds up to 10% more
-                            practical_skill_factor = (store.practical_level - 1 + xp_ratio) * 0.1
+                            # Each level above 1 adds 10% base
+                            practical_skill_factor = (store.practical_level - 1) * 0.1
                             competence_factor = store.competence / store.max_stat * 0.05
                             relatedness_factor = store.relatedness / store.max_stat * 0.05
                             total_chance = base_chance + practical_skill_factor + competence_factor + relatedness_factor
@@ -701,124 +699,124 @@ label process_activity:
     $ interrupted = False
     return
 
-# Random event system - 1% chance after any activity
-label check_random_event:
-    $ random_chance = renpy.random.randint(1, 100)
-    if random_chance > 1:
-        call random_event
-    return
+# # Random event system - 1% chance after any activity
+# label check_random_event:
+#     $ random_chance = renpy.random.randint(1, 100)
+#     if random_chance > 1:
+#         call random_event
+#     return
 
-label random_event:
-    $ set_cutscene_mode(True)  # Enter cutscene mode to hide UI
-    $ event_type = renpy.random.choice(["lucky_find", "unexpected_visitors", "inspiration", "small_accident"])
+# label random_event:
+#     $ set_cutscene_mode(True)  # Enter cutscene mode to hide UI
+#     $ event_type = renpy.random.choice(["lucky_find", "unexpected_visitors", "inspiration", "small_accident"])
     
-    if event_type == "lucky_find":
-        "While going about your day, you find a useful reference article on the ground!"
-        "It turns out to be exactly what you needed for your thesis."
-        $ thesis_progress = min(100, thesis_progress + 3)
-        $ competence = min(max_stat, competence + 5)
-        "You gained 3 thesis progress and 5 competence!"
+#     if event_type == "lucky_find":
+#         "While going about your day, you find a useful reference article on the ground!"
+#         "It turns out to be exactly what you needed for your thesis."
+#         $ thesis_progress = min(100, thesis_progress + 3)
+#         $ competence = min(max_stat, competence + 5)
+#         "You gained 3 thesis progress and 5 competence!"
     
-    elif event_type == "unexpected_visitors":
-        "Someone knocks on your door - it's an old friend you haven't seen in a while!"
-        "They came to surprise you with a visit."
-        $ relatedness = min(max_stat, relatedness + 15)
-        $ valence = min(max_stat, valence + 10)
-        "You gained 15 relatedness and 10 valence!"
+#     elif event_type == "unexpected_visitors":
+#         "Someone knocks on your door - it's an old friend you haven't seen in a while!"
+#         "They came to surprise you with a visit."
+#         $ relatedness = min(max_stat, relatedness + 15)
+#         $ valence = min(max_stat, valence + 10)
+#         "You gained 15 relatedness and 10 valence!"
     
-    elif event_type == "inspiration":
-        "A sudden flash of inspiration hits you!"
-        "You feel motivated to work on your thesis right now."
-        $ motivation = min(100, motivation + 20)
-        $ competence = min(max_stat, competence + 5)
-        "You gained 20 motivation and 5 competence!"
+#     elif event_type == "inspiration":
+#         "A sudden flash of inspiration hits you!"
+#         "You feel motivated to work on your thesis right now."
+#         $ motivation = min(100, motivation + 20)
+#         $ competence = min(max_stat, competence + 5)
+#         "You gained 20 motivation and 5 competence!"
     
-    elif event_type == "small_accident":
-        "Oh no! You accidentally spilled water on your notes."
-        "You'll need to redo some of your work."
-        $ thesis_progress = max(0, thesis_progress - 2)
-        $ valence = max(0, valence - 10)
-        "You lost 2 thesis progress and 10 valence!"
+#     elif event_type == "small_accident":
+#         "Oh no! You accidentally spilled water on your notes."
+#         "You'll need to redo some of your work."
+#         $ thesis_progress = max(0, thesis_progress - 2)
+#         $ valence = max(0, valence - 10)
+#         "You lost 2 thesis progress and 10 valence!"
     
-    $ set_cutscene_mode(False)  # Exit cutscene mode after event
-    return
+#     $ set_cutscene_mode(False)  # Exit cutscene mode after event
+#     return
 
-# Burnout ending
-label burnout:
-    hide screen main_stats
-    hide screen detailed_stats_window
-    hide screen interactive_kos
-    hide screen calendar_now
-    hide screen calendar_window
+# # Burnout ending
+# label burnout:
+#     hide screen main_stats
+#     hide screen detailed_stats_window
+#     hide screen interactive_kos
+#     hide screen calendar_now
+#     hide screen calendar_window
     
-    scene black with dissolve
+#     scene black with dissolve
     
-    centered "{color=#e74c3c}{size=40}BURNOUT{/size}{/color}\n\nYou've experienced burnout and need to take a break from your thesis."
-    centered "Remember: Taking care of your wellbeing is essential for academic success!"
+#     centered "{color=#e74c3c}{size=40}BURNOUT{/size}{/color}\n\nYou've experienced burnout and need to take a break from your thesis."
+#     centered "Remember: Taking care of your wellbeing is essential for academic success!"
     
-    menu:
-        "Try again?"
+#     menu:
+#         "Try again?"
         
-        "Yes, restart":
-            $ motivation = 100
-            $ thesis_progress = 0
-            $ autonomy = 100
-            $ competence = 100
-            $ relatedness = 100
-            $ nutrition = 100
-            $ physical_activity = 100
-            $ valence = 100
-            $ arousal = 100
-            $ practical_xp = 0
-            $ writing_xp = 0
-            $ practical_level = 1
-            $ writing_level = 1
-            $ score = 0
-            jump start
+#         "Yes, restart":
+#             $ motivation = 100
+#             $ thesis_progress = 0
+#             $ autonomy = 100
+#             $ competence = 100
+#             $ relatedness = 100
+#             $ nutrition = 100
+#             $ physical_activity = 100
+#             $ valence = 100
+#             $ arousal = 100
+#             $ practical_xp = 0
+#             $ writing_xp = 0
+#             $ practical_level = 1
+#             $ writing_level = 1
+#             $ score = 0
+#             jump start
         
-        "No, quit":
-            "Thanks for playing!"
-            return
+#         "No, quit":
+#             "Thanks for playing!"
+#             return
 
-# Thesis completion ending
-label thesis_complete:
-    hide screen main_stats
-    hide screen detailed_stats_window
-    hide screen interactive_kos
-    hide screen calendar_now
-    hide screen calendar_window
+# # Thesis completion ending
+# label thesis_complete:
+#     hide screen main_stats
+#     hide screen detailed_stats_window
+#     hide screen interactive_kos
+#     hide screen calendar_now
+#     hide screen calendar_window
     
-    scene bg graduation with dissolve
+#     scene bg graduation with dissolve
     
-    centered "{color=#2ecc71}{size=50}CONGRATULATIONS!{/size}{/color}\n\nYou've completed your thesis!"
-    centered "Through managing your wellbeing and developing your skills,\nyou've achieved your academic goal!"
+#     centered "{color=#2ecc71}{size=50}CONGRATULATIONS!{/size}{/color}\n\nYou've completed your thesis!"
+#     centered "Through managing your wellbeing and developing your skills,\nyou've achieved your academic goal!"
     
-    "Final Stats:"
-    "Practical Skill Level: [practical_level]"
-    "Writing Skill Level: [writing_level]"
-    "Final Motivation: [motivation]"
-    "Final Score: [score]"
+#     "Final Stats:"
+#     "Practical Skill Level: [practical_level]"
+#     "Writing Skill Level: [writing_level]"
+#     "Final Motivation: [motivation]"
+#     "Final Score: [score]"
     
-    menu:
-        "Play again?"
+#     menu:
+#         "Play again?"
         
-        "Yes":
-            $ motivation = 100
-            $ thesis_progress = 0
-            $ autonomy = 100
-            $ competence = 100
-            $ relatedness = 100
-            $ nutrition = 100
-            $ physical_activity = 100
-            $ valence = 50
-            $ arousal = 50
-            $ practical_xp = 0
-            $ writing_xp = 0
-            $ practical_level = 1
-            $ writing_level = 1
-            $ score = 0
-            jump start
+#         "Yes":
+#             $ motivation = 100
+#             $ thesis_progress = 0
+#             $ autonomy = 100
+#             $ competence = 100
+#             $ relatedness = 100
+#             $ nutrition = 100
+#             $ physical_activity = 100
+#             $ valence = 50
+#             $ arousal = 50
+#             $ practical_xp = 0
+#             $ writing_xp = 0
+#             $ practical_level = 1
+#             $ writing_level = 1
+#             $ score = 0
+#             jump start
         
-        "No":
-            "Thanks for playing!"
-            return
+#         "No":
+#             "Thanks for playing!"
+#             return

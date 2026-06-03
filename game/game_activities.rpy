@@ -136,121 +136,137 @@ define activities = {
 
 init python:
     def _activity_skripsi():
-        store.autonomy = min(store.max_stat, store.autonomy - 10/60)
-        store.competence = min(store.max_stat, store.competence - 10/60)
-        relatedness_modifier = store.relatedness * 0.02
-        store.relatedness = max(0, store.relatedness - relatedness_modifier/60)
-        pa_modifier = store.physical_activity * 0.05
-        store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
-        store.arousal = max(0, store.arousal + 6/60)
-        store.valence = max(0, store.valence - 6/60)
+        global autonomy, competence, relatedness, physical_activity, arousal, valence
+        autonomy = min(max_stat, autonomy - 10/60)
+        competence = min(max_stat, competence - 10/60)
+        relatedness_modifier = relatedness * 0.02
+        relatedness = max(0, relatedness - relatedness_modifier/60)
+        pa_modifier = physical_activity * 0.05
+        physical_activity = max(0, physical_activity - pa_modifier/60)
+        arousal = max(0, arousal + 6/60)
+        valence = max(0, valence - 6/60)
         calculate_writing_xp(20/60)
 
     def _activity_makan_bergizi():
-        store.nutrition = min(store.max_stat, store.nutrition + 70/20)
-        store.autonomy = max(0, store.autonomy - 35/60)
-        store.valence = max(0, store.valence - 6/20)
-        store.arousal = min(store.max_stat, store.arousal + 10/20)
+        global autonomy, nutrition, valence, arousal
+        nutrition = min(max_stat, nutrition + 70/20)
+        autonomy = max(0, autonomy - 35/60)
+        valence = max(0, valence - 6/20)
+        arousal = min(max_stat, arousal + 10/20)
 
     def _activity_makan_enak():
-        store.nutrition = min(store.max_stat, store.nutrition + 60/20)
-        store.valence = min(store.max_stat, store.valence + 20/20)
-        store.autonomy = min(store.max_stat, store.autonomy + 40/60)
-        store.physical_activity = max(0, store.physical_activity - 4/20)
-        store.sleep = max(0, store.sleep - 4/20)
+        global nutrition, valence, autonomy, physical_activity, sleep
+        nutrition = min(max_stat, nutrition + 60/20)
+        valence = min(max_stat, valence + 20/20)
+        autonomy = min(max_stat, autonomy + 40/60)
+        physical_activity = max(0, physical_activity - 4/20)
+        sleep = max(0, sleep - 4/20)
 
     def _activity_minum_kopi():
-        store.caffeine_level = min(100, store.caffeine_level + 20/15)
-        store.arousal = min(store.max_stat, store.arousal + 45/15)
+        global caffeine_level, arousal
+        caffeine_level = min(100, caffeine_level + 20/15)
+        arousal = min(max_stat, arousal + 45/15)
 
     def _activity_olahraga_ringan():
-        store.autonomy = min(store.max_stat, store.autonomy + 3/60)
-        store.physical_activity = min(store.max_stat, store.physical_activity + 8/60)
-        nutrition_modifier = store.nutrition * 0.18
-        store.nutrition = max(0, store.nutrition - nutrition_modifier / 60)
+        global autonomy, physical_activity, nutrition
+        autonomy = min(max_stat, autonomy + 3/60)
+        physical_activity = min(max_stat, physical_activity + 8/60)
+        nutrition_modifier = nutrition * 0.18
+        nutrition = max(0, nutrition - nutrition_modifier / 60)
 
     def _activity_olahraga_sedang():
-        store.physical_activity = min(store.max_stat, store.physical_activity + 30/60)
-        store.competence = min(store.max_stat, store.competence + 2/60)
+        global physical_activity, competence, nutrition, arousal
+        physical_activity = min(max_stat, physical_activity + 30/60)
+        competence = min(max_stat, competence + 2/60)
 
-        nutrition_modifier = store.nutrition * 0.2
-        store.nutrition = max(0, store.nutrition - nutrition_modifier / 60)
-        store.arousal = min(store.max_stat, store.arousal + 20/60)
+        nutrition_modifier = nutrition * 0.2
+        nutrition = max(0, nutrition - nutrition_modifier / 60)
+        arousal = min(max_stat, arousal + 20/60)
 
     def _activity_olahraga_berat():
-        store.autonomy = max(0, store.autonomy - 6/60)
-        store.physical_activity = min(store.max_stat, store.physical_activity + 50/60)
-        store.competence = max(0, store.competence - 1/60)
-        nutrition_modifier = store.nutrition * 0.27
-        store.nutrition = max(0, store.nutrition - nutrition_modifier / 60)
-        store.arousal = min(store.max_stat, store.arousal + 35/60)
+        global autonomy, physical_activity, competence, nutrition, arousal
+        autonomy = max(0, autonomy - 6/60)
+        physical_activity = min(max_stat, physical_activity + 50/60)
+        competence = max(0, competence - 1/60)
+        nutrition_modifier = nutrition * 0.27
+        nutrition = max(0, nutrition - nutrition_modifier / 60)
+        arousal = min(max_stat, arousal + 35/60)
 
     def _activity_bimbingan():
-        store.competence = min(store.max_stat, store.competence + 10/60)
-        store.relatedness = min(store.max_stat, store.relatedness + 20/60)
-        store.valence = min(store.max_stat, store.valence + 15/60)
-        store.arousal = min(store.max_stat, store.arousal + 10/60)
+        global competence, relatedness, valence, arousal
+        competence = min(max_stat, competence + 10/60)
+        relatedness = min(max_stat, relatedness + 20/60)
+        valence = min(max_stat, valence + 15/60)
+        arousal = min(max_stat, arousal + 10/60)
         calculate_writing_xp(10/60)
         calculate_practical_xp(5/60)
 
     def _activity_sosialisasi():
-        store.autonomy = min(store.max_stat, store.autonomy + 8/60)
-        store.relatedness = min(store.max_stat, store.relatedness + 20/60)
-        store.competence = min(store.max_stat, store.competence + 1/60)
-        store.valence = min(store.max_stat, store.valence + 20/60)
-        store.arousal = min(store.max_stat, store.arousal + 20/60)
+        global autonomy, relatedness, competence, valence, arousal
+        autonomy = min(max_stat, autonomy + 8/60)
+        relatedness = min(max_stat, relatedness + 20/60)
+        competence = min(max_stat, competence + 1/60)
+        valence = min(max_stat, valence + 20/60)
+        arousal = min(max_stat, arousal + 20/60)
 
     def _activity_nap():
-        store.arousal = min(store.max_stat, store.arousal + 25/60)
-        store.valence = min(store.max_stat, store.valence + 10/60)  # normalized from flat +10
+        global arousal, valence
+        arousal = min(max_stat, arousal + 25/60)
+        valence = min(max_stat, valence + 10/60)  # normalized from flat +10
 
     def _activity_workshop():
+        global competence, arousal
         calculate_practical_xp(15/60)
         calculate_writing_xp(10/60)
-        store.competence = min(store.max_stat, store.competence + 60/60)
-        store.arousal = max(0, store.arousal - 10/60)
+        competence = min(max_stat, competence + 60/60)
+        arousal = max(0, arousal - 10/60)
 
     def _activity_belajar_mandiri():
-        store.autonomy = min(store.max_stat, store.autonomy - 10/60)
-        store.competence = min(store.max_stat, store.competence + 5/60)
-        relatedness_modifier = store.relatedness * 0.02
-        store.relatedness = max(0, store.relatedness - relatedness_modifier/60)
-        pa_modifier = store.physical_activity * 0.05
-        store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
-        store.arousal = max(0, store.arousal + 6/60)
-        store.valence = max(0, store.valence - 6/60)
+        global autonomy, competence, relatedness, physical_activity, arousal, valence
+        autonomy = min(max_stat, autonomy - 10/60)
+        competence = min(max_stat, competence + 5/60)
+        relatedness_modifier = relatedness * 0.02
+        relatedness = max(0, relatedness - relatedness_modifier/60)
+        pa_modifier = physical_activity * 0.05
+        physical_activity = max(0, physical_activity - pa_modifier/60)
+        arousal = max(0, arousal + 6/60)
+        valence = max(0, valence - 6/60)
         calculate_practical_xp(20/60)
 
     def _activity_cari_jurnal():
+        global autonomy, competence, relatedness, physical_activity, arousal, valence
         calculate_writing_xp(20/60)
-        store.autonomy = min(store.max_stat, store.autonomy - 10/60)
-        store.competence = min(store.max_stat, store.competence - 10/60)
-        relatedness_modifier = store.relatedness * 0.02
-        store.relatedness = max(0, store.relatedness - relatedness_modifier/60)
-        pa_modifier = store.physical_activity * 0.05
-        store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
-        store.arousal = max(0, store.arousal + 6/60)
-        store.valence = max(0, store.valence - 6/60)
+        autonomy = min(max_stat, autonomy - 10/60)
+        competence = min(max_stat, competence - 10/60)
+        relatedness_modifier = relatedness * 0.02
+        relatedness = max(0, relatedness - relatedness_modifier/60)
+        pa_modifier = physical_activity * 0.05
+        physical_activity = max(0, physical_activity - pa_modifier/60)
+        arousal = max(0, arousal + 6/60)
+        valence = max(0, valence - 6/60)
 
     def _activity_rest():
-        store.arousal = min(store.max_stat, store.arousal + 10/60)
-        store.valence = min(store.max_stat, store.valence + 5/60)
+        global arousal, valence
+        arousal = min(max_stat, arousal + 10/60)
+        valence = min(max_stat, valence + 5/60)
 
     def _activity_chat_online():
-        store.autonomy = min(store.max_stat, store.autonomy + 6.5/60)
-        store.relatedness = min(store.max_stat, store.relatedness + 4/60)
-        pa_modifier = store.physical_activity * 0.05
-        store.physical_activity = max(0, store.physical_activity - pa_modifier/60)
-        store.valence = min(store.max_stat, store.valence + 10/60)
-        store.arousal = min(store.max_stat, store.arousal + 5/60)
+        global autonomy, relatedness, physical_activity, valence, arousal
+        autonomy = min(max_stat, autonomy + 6.5/60)
+        relatedness = min(max_stat, relatedness + 4/60)
+        pa_modifier = physical_activity * 0.05
+        physical_activity = max(0, physical_activity - pa_modifier/60)
+        valence = min(max_stat, valence + 10/60)
+        arousal = min(max_stat, arousal + 5/60)
 
     def _activity_main_game():
-        store.autonomy = min(store.max_stat, store.autonomy + 5/60)
-        store.competence = min(store.max_stat, store.competence + 10/60)
-        store.relatedness = min(store.max_stat, store.relatedness + 10/60)
-        store.physical_activity = max(0, store.physical_activity - 5/60)
-        store.valence = min(store.max_stat, store.valence + 15/60)
-        store.arousal = min(store.max_stat, store.arousal + 15/60)
+        global autonomy, competence, relatedness, physical_activity, arousal, valence
+        autonomy = min(max_stat, autonomy + 5/60)
+        competence = min(max_stat, competence + 10/60)
+        relatedness = min(max_stat, relatedness + 10/60)
+        physical_activity = max(0, physical_activity - 5/60)
+        valence = min(max_stat, valence + 15/60)
+        arousal = min(max_stat, arousal + 15/60)
 
     ACTIVITY_DISPATCH = {
         "skripsi":        _activity_skripsi,

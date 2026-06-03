@@ -70,8 +70,9 @@ init python:
 
     def get_total_game_minutes():
         """Returns total elapsed game-minutes from a fixed reference (2025-01-01)."""
-        days = (store.current_year - 2025) * 365 + (store.current_month - 1) * 30 + store.current_day
-        return days * 1440 + store.current_hour * 60 + store.current_minute
+        global current_year, current_month, current_day, current_hour, current_minute
+        days = (current_year - 2025) * 365 + (current_month - 1) * 30 + current_day
+        return days * 1440 + current_hour * 60 + current_minute
 
     def format_time():
         return "{:02d}:{:02d}".format(current_hour, current_minute)
