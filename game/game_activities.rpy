@@ -3,6 +3,10 @@ default booked_bimbingan = False
 default bimbingan_day = 0
 default bimbingan_month = 0
 default bimbingan_year = 0
+default booked_workshop = False
+default workshop_day = 0
+default workshop_month = 0
+default workshop_year = 0
 
 define activities = {
     "skripsi": {
@@ -172,7 +176,7 @@ init python:
     def _activity_minum_kopi():
         global arousal
         caffeine_consume(0.4/15)
-        arousal = min(max_stat, arousal + 45/15)
+        arousal = min(max_stat, arousal + 25/15)
 
     def _activity_olahraga_ringan():
         global autonomy, physical_activity, nutrition

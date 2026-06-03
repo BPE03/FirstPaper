@@ -296,8 +296,8 @@ label tutorial_scene:
     n "Aktivitas fisik adalah kebutuhan untuk melakukan aktivitas fisik yang cukup."
     n "Aktivitas fisik dapat dipenuhi dengan berolahraga."
     n "Tidur adalah kebutuhan untuk mendapatkan tidur yang cukup."
-    n "Namun, mekanik tidur di dalam game ini tidak hanya sekadar mendapatkan tidur yang cukup, tetapi juga mendapatkan tidur yang berkualitas dengan memperhatikan faktor-faktor seperti siklus sirkadian dan utang tidur."
-    n "Secara umum, pemain hanya perlu untuk melakukan tidur dan bangun pada jam yang konsisten."
+    n "Namun, mekanik tidur di dalam game ini tidak hanya sekadar mendapatkan tidur yang cukup, tetapi juga mendapatkan tidur yang berkualitas dengan memperhatikan faktor-faktor seperti siklus sirkadian."
+    n "Secara umum, untuk mendapatkan tidur yang berkualitas, pemain perlu tidur di malam hari."
     nvl clear
 
     n "Emosi"
@@ -382,8 +382,28 @@ label activity_kos_laptop:
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
                 jump kos
             $ activity = "skripsi"
-        "Attend a workshop / Learn new skills":
-            $ activity = "workshop"
+        "Daftarkan Workshop":
+            if not booked_workshop:
+                "Kamu belum mendaftar ke workshop apapun."
+                menu:
+                    "Apakah kamu yakin ingin mendaftar workshop?"
+                    "Ya":
+                        python:
+                            workshop_day, workshop_month, workshop_year = get_tomorrow()
+                            add_calendar_event(
+                                workshop_day, workshop_month, workshop_year,
+                                "Workshop",
+                                "Workshop dijadwalkan jam 10:00."
+                            )
+                            booked_workshop = True
+                        "Workshop dijadwalkan besok tanggal [workshop_day]/[workshop_month]/[workshop_year] pukul 10:00."
+                        jump kos
+                    "Tidak":
+                        jump kos
+            else:
+                "Kamu telah mendaftar ke workshop."
+                "Kamu dapat menghadiri workshop pada menu aktivitas di kos."
+                jump kos
         "Belajar Mandiri (Motivasi [_m_belajar_mandiri]/[max_stat])":
             $ activity = "belajar_mandiri"
         "Ajukan Bimbingan Dengan Dosen":
@@ -395,6 +415,10 @@ label activity_kos_laptop:
                 menu:
                     "Apakah kamu yakin ingin mengajukan jadwal bimbingan?"
                     "Ya":
+                        if current_hour >= 18 and current_hour < 7:
+                            "Ga sopan amat ngechat dosen di luar jam kerja."
+                            "Kalo mau chat dosen usahakan di jam kerja ya (pukul 7-18), biar dosennya juga ga terganggu."
+                            jump kos
                         python:
                             bimbingan_day, bimbingan_month, bimbingan_year = get_tomorrow()
                             add_calendar_event(
@@ -441,7 +465,7 @@ label activity_kos:
             $ activity = "olahraga_sedang"
         "Olahraga Berat (Motivasi [_m_olahraga_berat]/[max_stat])":
             $ activity = "olahraga_berat"
-        "Bimbingan dengan dosen":
+        "Bimbingan dengan dosen" if booked_bimbingan:
             python:
                 _sched_days = (bimbingan_year - 2025) * 365 + (bimbingan_month - 1) * 30 + bimbingan_day
                 _bimbingan_sched = _sched_days * 1440 + 10 * 60
@@ -462,16 +486,24 @@ label activity_kos:
                 python:
                     advance_time(-bimbingan_time_diff)
                     decrease_stats(-bimbingan_time_diff)
+            elif bimbingan_time_diff >= 60:
+                python:
+                    _late_h = bimbingan_time_diff // 60
+                    _late_m = bimbingan_time_diff % 60
+                    _late_str = "{} jam {} menit".format(_late_h, _late_m)
+                    store.competence = max(0, store.competence - 20)
+                    store.relatedness = max(0, store.relatedness - 20)
+                    store.valence = max(0, store.valence - 40)
+                "Kamu terlambat [_late_str] dari jadwal bimbingan dan dosen sudah pergi!"
+                "Bimbingan dengan dosen dibatalkan. Dosen pembimbingmu tidak bisa menunggumu lebih lama lagi!"
+                $ booked_bimbingan = False
+                jump kos
             elif bimbingan_time_diff > 0:
                 python:
                     _late_h = bimbingan_time_diff // 60
                     _late_m = bimbingan_time_diff % 60
                     _late_str = "{} jam {} menit".format(_late_h, _late_m) if _late_h > 0 else "{} menit".format(_late_m)
-                    if bimbingan_time_diff >= 60:
-                        store.competence = max(0, store.competence - 15)
-                        store.relatedness = max(0, store.relatedness - 10)
-                        store.valence = max(0, store.valence - 30)
-                    elif bimbingan_time_diff >= 30:
+                    if bimbingan_time_diff >= 30:
                         store.competence = max(0, store.competence - 10)
                         store.valence = max(0, store.valence - 20)
                     else:
@@ -481,6 +513,49 @@ label activity_kos:
                 "Dosen pembimbingmu terlihat tidak senang dengan keterlambatanmu."
             $ booked_bimbingan = False
             $ activity = "bimbingan"
+        "Hadiri Workshop" if booked_workshop:
+            if not booked_workshop:
+                "Kamu belum daftar ke workshop. Daftarkan dulu melalui laptop."
+                jump kos
+            python:
+                _sched_days = (workshop_year - 2025) * 365 + (workshop_month - 1) * 30 + workshop_day
+                _workshop_sched = _sched_days * 1440 + 10 * 60
+                workshop_time_diff = get_total_game_minutes() - _workshop_sched
+            if workshop_time_diff < 0:
+                python:
+                    _wait_m = -workshop_time_diff
+                    _wait_str = "{} jam {} menit".format(_wait_m // 60, _wait_m % 60) if _wait_m >= 60 else "{} menit".format(_wait_m)
+                "Kamu masih ada waktu [_wait_str] sebelum workshop."
+                "Apakah kamu ingin menunggu hingga waktu workshop tiba?"
+                menu:
+                    "Apakah kamu ingin menunggu hingga waktu workshop tiba?"
+                    "Ya":
+                        pass
+                    "Tidak":
+                        jump kos
+                "Kamu menunggu [_wait_str] hingga waktu workshop tiba..."
+                python:
+                    advance_time(-workshop_time_diff)
+                    decrease_stats(-workshop_time_diff)
+            elif workshop_time_diff > 0:
+                python:
+                    _late_h = workshop_time_diff // 60
+                    _late_m = workshop_time_diff % 60
+                    _late_str = "{} jam {} menit".format(_late_h, _late_m) if _late_h > 0 else "{} menit".format(_late_m)
+                if workshop_time_diff >= 120:
+                    $ competence = max(0, competence - 25)
+                    "Workshop sudah selesai dan kamu sangat terlambat, lebih dari 2 jam!"
+                    jump kos
+                elif workshop_time_diff >= 60:
+                    $ competence = max(0, competence - 15)
+                elif workshop_time_diff >= 30:
+                    $ competence = max(0, competence - 10)
+                else:
+                    $ competence = max(0, competence - 5)
+                "Kamu terlambat [_late_str] dari jadwal workshop!"
+                "Kamu merasa sedikit tertinggal dari materi workshop."
+            $ booked_workshop = False
+            $ activity = "workshop"
         "Sosialisasi dengan teman (Motivasi [_m_sosialisasi]/[max_stat])":
             $ activity = "sosialisasi"
         # "Just rest and do nothing":
@@ -532,7 +607,11 @@ label process_activity:
             return
         
     if min_dur == max_dur:
-        $ time_minutes = min_dur
+        if activity == "workshop":
+            # Starts from 10 am to 12 am
+            $ time_minutes = (12-current_hour-1) * 60 + (60 - current_minute)
+        else: 
+            $ time_minutes = min_dur
     else:
         if activity == "tidur":
             $ hours_input = renpy.input("Kamu akan tidur berapa jam? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
@@ -553,7 +632,7 @@ label process_activity:
                 $ minutes = minutes % 60
             $ time_minutes = hours * 60 + minutes
             $ time_minutes = max(min_dur, min(max_dur, time_minutes))
-    if activity not in ["bimbingan"]:
+    if activity not in ["bimbingan", "workshop"]:
         "Yakin mau melakukan aktivitas ini?"
         menu:
             "Yakin mau melakukan aktivitas ini?"
