@@ -95,7 +95,7 @@ init python:
         base_score = 1
         
         # Calculate final score
-        final_score = int((base_score + level_bonus + xp_bonus) * emotion_multiplier)
+        final_score = int((base_score + level_bonus) * emotion_multiplier)
         
         # Ensure minimum score of 1
         final_score = max(1, final_score)
