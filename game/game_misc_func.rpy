@@ -148,7 +148,7 @@ init python:
         hours = minutes // 60
         mins = minutes % 60
         return "{} jam {} menit".format(hours, mins)
-    def fade_music_transition(new_track=None, fade_out=1.0, fade_in=0.0, music_volume=1.0):
+    def fade_music_transition(new_track=None, fade_out=1.0, fade_in=0.0, music_volume=1.0, mode=None):
         """
         Fades out current music, stops it, and optionally plays a new track with fade in.
         
@@ -157,11 +157,12 @@ init python:
         - fade_out: Time in seconds to fade out current music
         - fade_in: Time in seconds to fade in new music (0 for immediate)
         - music_volume: Target volume for new music (default 1.0)
-
+        - mode: The mode for the transition (e.g., 'cutscene', 'normal'), can be used to adjust fade times or volumes based on context
         Example usage: fade_music_transition('songname.ogg', fade_out=2.0, fade_in=1.0)
         """
         renpy.music.set_volume(volume=0.0, delay=fade_out, channel='music')
-        renpy.pause(fade_out)
+        if mode == 'cutscene':
+            renpy.pause(fade_out)
         renpy.music.stop(channel='music')
         
         if new_track:

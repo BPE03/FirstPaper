@@ -5,6 +5,7 @@ default current_year = 2025
 default current_hour = 9
 default current_minute = 0
 default delay = 1/30
+default time_of_day_state = "morning"
 
 # Calendar display variables
 default display_month = current_month
@@ -67,6 +68,8 @@ init python:
         if current_month > 12:
             current_month = 1
             current_year += 1
+
+        tod_fsm_step()
 
     def get_total_game_minutes():
         """Returns total elapsed game-minutes from a fixed reference (2025-01-01)."""
@@ -185,3 +188,35 @@ init python:
     def appt_dismiss(name):
         """Cancel or complete the appointment, resetting it to UNSCHEDULED."""
         setattr(store, "appt_{}_state".format(name), APPT_UNSCHEDULED)
+
+init python:
+    # ── Time-of-Day FSM states ────────────────────────────────────────
+    TOD_MORNING   = "morning"    # 06:00 – 14:59
+    TOD_AFTERNOON = "afternoon"  # 15:00 – 17:59
+    TOD_NIGHT     = "night"      # 18:00 – 05:59
+
+    TOD_MUSIC = {
+        TOD_MORNING:   "morning_theme.ogg",
+        TOD_AFTERNOON: "afternoon_theme.ogg",
+        TOD_NIGHT:     "night_theme.ogg",
+    }
+
+    def _tod_from_hour(hour):
+        if 6 <= hour < 15:
+            return TOD_MORNING
+        elif 15 <= hour < 18:
+            return TOD_AFTERNOON
+        else:
+            return TOD_NIGHT
+
+    def tod_fsm_step():
+        """Sync time_of_day_state with current_hour. Called from advance_time()."""
+        global time_of_day_state
+        new_state = _tod_from_hour(current_hour)
+        if new_state != time_of_day_state:
+            time_of_day_state = new_state
+            fade_music_transition(TOD_MUSIC[new_state], fade_out=2.0, fade_in=1.0)
+            renpy.scene() # Clears the current scene
+            cg = current_location + "_" + new_state
+            renpy.show(cg)
+            renpy.with_statement(fade)

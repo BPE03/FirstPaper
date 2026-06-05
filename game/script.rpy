@@ -32,7 +32,7 @@ label start:
     p "....."
     p "....."
     p "Ah ga tau lah, paling karena capek aja sih."
-    scene kos with fade
+    scene kos_afternoon with fade
     p "Hai istana, rajamu telah kembali."
     "Pause"
     p "Habis ngerjain EAS gini emang paling bener langsung tidur sih."
@@ -40,11 +40,11 @@ label start:
     p "Hadeh tapi lagi kaga ngantuk gua."
     "Paijo mengambil handphone-nya dan mulai membuka media sosial untuk menghabiskan waktu."
     "Scrolling-scrolling...."
-    scene kos with fade
+    scene kos_afternoon with fade
     "Postingan demi postingan..."
-    scene kos with fade
+    scene kos_afternoon with fade
     "Reels demi reels..."
-    scene kos with fade
+    scene kos_night with fade
     "Hal tersebut tanpa sadar sudah menghabiskan waktu selama 2 jam lamanya."
     p "Wkwkwk lah bisa gitu raut mukanya."
     "Notif.sfx"
@@ -96,7 +96,7 @@ label start:
         "Lanjut besok aja":
             call prologue_lanjut_besok
 
-    scene kos with fade
+    scene kos_morning with fade
     "...."
     "Eits, bentar dulu."
     "Apakah kamu sudah paham bagaimana cara memainkan game ini?"
@@ -107,7 +107,7 @@ label start:
         "Belum":
             scene black with fade
             call tutorial_scene
-            scene kos with fade
+            scene kos_morning with fade
     "Sekarang."
     # Show all screens
     show screen main_stats
@@ -125,7 +125,7 @@ label prologue_lanjut:
     p "Ngga dapet topik, ngga tidur."
     "Paijo terus mencari referensi topik yang dapat ia pahami."
     "Namun, semakin ia mencari, semakin ia merasa kelelahan dan kehilangan motivasi."
-    scene kos with fade
+    scene kos_morning with fade
     "Keesokan paginya, Paijo merasa sangat lelah dan tidak memiliki energi untuk melanjutkan pencarian referensi untuk proposalnya."
     "Sehingga dengan berat hati, dia memutuskan untuk berhenti dan tidur sebelum kondisi kesehatannya memburuk."
     scene black with fade
@@ -135,7 +135,7 @@ label prologue_lanjut:
     $ renpy.pause(5.0, hard=True) # Matches the transition time
     scene black with fade
     "Sabtu, 13 Desember 2025."
-    scene kos with fade
+    scene kos_morning with fade
     p "...."
     p "Hahh...."
     p "Tidur berapa jam gua?"
@@ -173,7 +173,7 @@ label prologue_lanjut:
     p "Hmm, bidang ilmu ya."
     p "Okelah gua cari deh satu-satu."
     "......"
-    scene kos with fade
+    scene kos_morning with fade
     p "Okeh, gua dah nemu semua nih, sekarang bidang ilmu mana dulu yang pengen gua telusuri?"
     call pilih_bidang
     p "Oke, kayaknya Lab [selected_bidang] ini yang paling menarik deh buat gua."
@@ -203,7 +203,7 @@ label prologue_lanjut_besok:
     $ renpy.pause(5.0, hard=True) # Matches the transition time
     scene black with fade
     "Sabtu, 13 Desember 2025."
-    scene kos with fade
+    scene kos_morning with fade
     p "....."
     p "Bangun pagi, ku terus...."
     p "Ngerjain skripsi."
@@ -219,7 +219,7 @@ label prologue_lanjut_besok:
     p "Di Informatika kan ada beberapa bidang ilmu yak."
     p "Mungkin gua bisa riset dari situ dulu, baru gua cari topik yang lebih spesifik lagi."
     "......"
-    scene kos with fade
+    scene kos_morning with fade
     p "Okeh, gua dah nemu semua nih, sekarang bidang ilmu mana dulu yang pengen gua telusuri?"
     call pilih_bidang
     p "Oke, kayaknya Lab [selected_bidang] ini yang paling menarik deh buat gua."
@@ -263,10 +263,10 @@ label pilih_bidang:
     menu:
         "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
         "Ya":
-            scene kos with fade
+            scene kos_morning with fade
             return
         "Tidak":
-            scene kos with fade
+            scene kos_morning with fade
             call pilih_bidang
             return
     return
@@ -346,13 +346,17 @@ label post_sidang_akhir:
 label kos:
     $ current_location = "kos"
     $ time_stop = False
-    scene kos with fade
+    $ cg = current_location + "_" + time_of_day_state
+    scene expression cg with fade
+    # $ renpy.show(cg.lower())
     call screen interactive_kos
 
 label dapur:
     $ current_location = "dapur"
     $ time_stop = False
-    scene dapur with fade
+    $ cg = current_location + "_" + time_of_day_state
+    scene expression cg with fade
+    # $ renpy.show(cg.lower())
     call screen interactive_dapur
 
 label activity_kos_kasur:

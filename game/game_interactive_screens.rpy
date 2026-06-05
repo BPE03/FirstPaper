@@ -1,10 +1,12 @@
 # Imagemap for interactive areas (always visible)
 screen interactive_kos():
+    $ _kos_bg    = "kos_" + time_of_day_state
+    $ _kos_hover = "kos_" + time_of_day_state + "_hover"
     zorder -1
     # Main room imagemap
     imagemap:
-        ground "kos"  # Your background image
-        hover "kos_hover"  # Optional: hover overlay image
+        ground _kos_bg
+        hover _kos_hover
         
         # Define clickable hotspots (x, y, width, height)
         # Adjust these coordinates to match your background image
@@ -48,11 +50,13 @@ screen interactive_kos():
 
 # Imagemap for interactive areas (always visible)
 screen interactive_dapur():
+    $ _dapur_bg    = "dapur_" + time_of_day_state
+    $ _dapur_hover = "dapur_" + time_of_day_state + "_hover"
     zorder -1
     # Main room imagemap
     imagemap:
-        ground "dapur"  # Your background image
-        hover "dapur_hover"  # Optional: hover overlay image
+        ground _dapur_bg
+        hover _dapur_hover
         
         # Define clickable hotspots (x, y, width, height)
         # Adjust these coordinates to match your background image
