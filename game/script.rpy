@@ -328,6 +328,7 @@ label sempro:
     "Paijo merasa sangat gugup dan tidak percaya diri karena dia belum menyelesaikan proposalnya."
     "Namun, dia tahu bahwa dia harus menghadapi kenyataan dan melakukan yang terbaik dalam seminar proposalnya."
     scene black with fade
+    $ thesis_advance_to(THESIS_POST_SEMPRO)
     return
 
 label post_sempro:
@@ -337,6 +338,7 @@ label post_sempro:
 
 label sidang_akhir:
     "Hari sidang akhir pun tiba."
+    $ thesis_advance_to(THESIS_DONE)
 
 label post_sidang_akhir:
     "Setelah sidang akhir, Paijo merasa sangat lega dan senang karena dia berhasil menyelesaikan sidang akhir dengan baik."
@@ -378,25 +380,18 @@ label activity_kos_laptop:
     menu:
         "Mau Ngapain?"
         "Kerjakan Skripsi (Motivasi: [_m_thesis]/[max_stat])":
-            if not dapat_topik:
+            if not thesis_can_write():
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
                 jump kos
             $ activity = "skripsi"
         "Daftarkan Workshop":
-            if not booked_workshop:
+            if not appt_is_booked("workshop"):
                 "Kamu belum mendaftar ke workshop apapun."
                 menu:
                     "Apakah kamu yakin ingin mendaftar workshop?"
                     "Ya":
-                        python:
-                            workshop_day, workshop_month, workshop_year = get_tomorrow()
-                            add_calendar_event(
-                                workshop_day, workshop_month, workshop_year,
-                                "Workshop",
-                                "Workshop dijadwalkan jam 10:00."
-                            )
-                            booked_workshop = True
-                        "Workshop dijadwalkan besok tanggal [workshop_day]/[workshop_month]/[workshop_year] pukul 10:00."
+                        $ appt_book("workshop")
+                        "Workshop dijadwalkan besok tanggal [appt_workshop_day]/[appt_workshop_month]/[appt_workshop_year] pukul 10:00."
                         jump kos
                     "Tidak":
                         jump kos
@@ -407,27 +402,20 @@ label activity_kos_laptop:
         "Belajar Mandiri (Motivasi [_m_belajar_mandiri]/[max_stat])":
             $ activity = "belajar_mandiri"
         "Ajukan Bimbingan Dengan Dosen":
-            if not dapat_topik:
+            if not thesis_has_topic():
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa bimbingan."
                 jump kos
-            if not booked_bimbingan:
+            if not appt_is_booked("bimbingan"):
                 "Kamu belum mengajukan jadwal bimbingan dengan dosen."
                 menu:
                     "Apakah kamu yakin ingin mengajukan jadwal bimbingan?"
                     "Ya":
-                        if current_hour >= 18 and current_hour < 7:
+                        if current_hour >= 18 or current_hour < 7:
                             "Ga sopan amat ngechat dosen di luar jam kerja."
                             "Kalo mau chat dosen usahakan di jam kerja ya (pukul 7-18), biar dosennya juga ga terganggu."
                             jump kos
-                        python:
-                            bimbingan_day, bimbingan_month, bimbingan_year = get_tomorrow()
-                            add_calendar_event(
-                                bimbingan_day, bimbingan_month, bimbingan_year,
-                                "Bimbingan dengan Dosen",
-                                "Bimbingan dijadwalkan jam 10:00."
-                            )
-                            booked_bimbingan = True
-                        "Bimbingan dijadwalkan besok tanggal [bimbingan_day]/[bimbingan_month]/[bimbingan_year] pukul 10:00."
+                        $ appt_book("bimbingan")
+                        "Bimbingan dijadwalkan besok tanggal [appt_bimbingan_day]/[appt_bimbingan_month]/[appt_bimbingan_year] pukul 10:00."
                         jump kos
                     "Tidak":
                         jump kos
@@ -465,14 +453,11 @@ label activity_kos:
             $ activity = "olahraga_sedang"
         "Olahraga Berat (Motivasi [_m_olahraga_berat]/[max_stat])":
             $ activity = "olahraga_berat"
-        "Bimbingan dengan dosen" if booked_bimbingan:
-            python:
-                _sched_days = (bimbingan_year - 2025) * 365 + (bimbingan_month - 1) * 30 + bimbingan_day
-                _bimbingan_sched = _sched_days * 1440 + 10 * 60
-                bimbingan_time_diff = get_total_game_minutes() - _bimbingan_sched
-            if bimbingan_time_diff < 0:
+        "Bimbingan dengan dosen" if appt_is_booked("bimbingan"):
+            $ _time_diff = appt_get_time_diff("bimbingan")
+            if _time_diff < 0:
                 python:
-                    _wait_m = -bimbingan_time_diff
+                    _wait_m = -_time_diff
                     _wait_str = "{} jam {} menit".format(_wait_m // 60, _wait_m % 60) if _wait_m >= 60 else "{} menit".format(_wait_m)
                 "Kamu masih ada waktu [_wait_str] sebelum bimbingan."
                 "Apakah kamu ingin menunggu hingga waktu bimbingan tiba?"
@@ -484,46 +469,40 @@ label activity_kos:
                         jump kos
                 "Kamu menunggu [_wait_str] hingga waktu bimbingan tiba..."
                 python:
-                    advance_time(-bimbingan_time_diff)
-                    decrease_stats(-bimbingan_time_diff)
-            elif bimbingan_time_diff >= 60:
+                    advance_time(-_time_diff)
+                    decrease_stats(-_time_diff)
+            elif _time_diff >= 60:
                 python:
-                    _late_h = bimbingan_time_diff // 60
-                    _late_m = bimbingan_time_diff % 60
+                    _late_h = _time_diff // 60
+                    _late_m = _time_diff % 60
                     _late_str = "{} jam {} menit".format(_late_h, _late_m)
-                    store.competence = max(0, store.competence - 20)
+                    store.competence  = max(0, store.competence  - 20)
                     store.relatedness = max(0, store.relatedness - 20)
-                    store.valence = max(0, store.valence - 40)
+                    store.valence     = max(0, store.valence     - 40)
                 "Kamu terlambat [_late_str] dari jadwal bimbingan dan dosen sudah pergi!"
                 "Bimbingan dengan dosen dibatalkan. Dosen pembimbingmu tidak bisa menunggumu lebih lama lagi!"
-                $ booked_bimbingan = False
+                $ appt_dismiss("bimbingan")
                 jump kos
-            elif bimbingan_time_diff > 0:
+            elif _time_diff > 0:
                 python:
-                    _late_h = bimbingan_time_diff // 60
-                    _late_m = bimbingan_time_diff % 60
+                    _late_h = _time_diff // 60
+                    _late_m = _time_diff % 60
                     _late_str = "{} jam {} menit".format(_late_h, _late_m) if _late_h > 0 else "{} menit".format(_late_m)
-                    if bimbingan_time_diff >= 30:
+                    if _time_diff >= 30:
                         store.competence = max(0, store.competence - 10)
-                        store.valence = max(0, store.valence - 20)
+                        store.valence    = max(0, store.valence    - 20)
                     else:
                         store.competence = max(0, store.competence - 5)
-                        store.valence = max(0, store.valence - 10)
+                        store.valence    = max(0, store.valence    - 10)
                 "Kamu terlambat [_late_str] dari jadwal bimbingan!"
                 "Dosen pembimbingmu terlihat tidak senang dengan keterlambatanmu."
-            $ booked_bimbingan = False
+            $ appt_dismiss("bimbingan")
             $ activity = "bimbingan"
-        "Hadiri Workshop" if booked_workshop:
-            if not booked_workshop:
-                "Kamu belum daftar ke workshop. Daftarkan dulu melalui laptop."
-                jump kos
-            python:
-                _sched_days = (workshop_year - 2025) * 365 + (workshop_month - 1) * 30 + workshop_day
-                _workshop_sched = _sched_days * 1440 + 10 * 60
-                workshop_time_diff = get_total_game_minutes() - _workshop_sched
-            if workshop_time_diff < 0:
+        "Hadiri Workshop" if appt_is_booked("workshop"):
+            $ _time_diff = appt_get_time_diff("workshop")
+            if _time_diff < 0:
                 python:
-                    _wait_m = -workshop_time_diff
+                    _wait_m = -_time_diff
                     _wait_str = "{} jam {} menit".format(_wait_m // 60, _wait_m % 60) if _wait_m >= 60 else "{} menit".format(_wait_m)
                 "Kamu masih ada waktu [_wait_str] sebelum workshop."
                 "Apakah kamu ingin menunggu hingga waktu workshop tiba?"
@@ -535,26 +514,27 @@ label activity_kos:
                         jump kos
                 "Kamu menunggu [_wait_str] hingga waktu workshop tiba..."
                 python:
-                    advance_time(-workshop_time_diff)
-                    decrease_stats(-workshop_time_diff)
-            elif workshop_time_diff > 0:
+                    advance_time(-_time_diff)
+                    decrease_stats(-_time_diff)
+            elif _time_diff > 0:
                 python:
-                    _late_h = workshop_time_diff // 60
-                    _late_m = workshop_time_diff % 60
+                    _late_h = _time_diff // 60
+                    _late_m = _time_diff % 60
                     _late_str = "{} jam {} menit".format(_late_h, _late_m) if _late_h > 0 else "{} menit".format(_late_m)
-                if workshop_time_diff >= 120:
+                if _time_diff >= 120:
                     $ competence = max(0, competence - 25)
                     "Workshop sudah selesai dan kamu sangat terlambat, lebih dari 2 jam!"
+                    $ appt_dismiss("workshop")
                     jump kos
-                elif workshop_time_diff >= 60:
+                elif _time_diff >= 60:
                     $ competence = max(0, competence - 15)
-                elif workshop_time_diff >= 30:
+                elif _time_diff >= 30:
                     $ competence = max(0, competence - 10)
                 else:
                     $ competence = max(0, competence - 5)
                 "Kamu terlambat [_late_str] dari jadwal workshop!"
                 "Kamu merasa sedikit tertinggal dari materi workshop."
-            $ booked_workshop = False
+            $ appt_dismiss("workshop")
             $ activity = "workshop"
         "Sosialisasi dengan teman (Motivasi [_m_sosialisasi]/[max_stat])":
             $ activity = "sosialisasi"
@@ -591,7 +571,6 @@ label activity_dapur:
     jump dapur
 
 label process_activity:
-    # Ask for time in hours and minutes
     $ activity_data = activities[activity]
     $ min_dur = activity_data["min_duration"]
     $ max_dur = activity_data["max_duration"]
@@ -605,19 +584,21 @@ label process_activity:
         if renpy.random.random() < 0.2:
             "Kamu tidak termotivasi untuk melakukan aktivitas ini."
             return
-        
+
     if min_dur == max_dur:
         if activity == "workshop":
-            # Starts from 10 am to 12 am
-            $ time_minutes = (12-current_hour-1) * 60 + (60 - current_minute)
-        else: 
+            $ time_minutes = (12 - current_hour - 1) * 60 + (60 - current_minute)
+        else:
             $ time_minutes = min_dur
     else:
         if activity == "tidur":
             $ hours_input = renpy.input("Kamu akan tidur berapa jam? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
+            $ minutes_input = renpy.input("Berapa menit?", default=str(def_m))
             $ hours = int(hours_input) if hours_input.isdigit() else def_h
-            $ hours = max(min_dur//60, min(max_dur//60, hours))
-            $ time_minutes = hours * 60
+            $ hours = max(min_dur // 60, min(max_dur // 60, hours))
+            $ minutes = int(minutes_input) if minutes_input.isdigit() else def_m
+            $ time_minutes = hours * 60 + minutes
+            $ time_minutes = max(min_dur, min(max_dur, time_minutes))
         else:
             $ hours_input = renpy.input("Kamu mau aktivitas selama berapa jam? (Min: {} - Max: {})".format(format_duration(min_dur), format_duration(max_dur)), default=str(def_h))
             $ minutes_input = renpy.input("Berapa menit?", default=str(def_m))
@@ -632,85 +613,33 @@ label process_activity:
                 $ minutes = minutes % 60
             $ time_minutes = hours * 60 + minutes
             $ time_minutes = max(min_dur, min(max_dur, time_minutes))
+
     if activity not in ["bimbingan", "workshop"]:
         "Yakin mau melakukan aktivitas ini?"
         menu:
             "Yakin mau melakukan aktivitas ini?"
             "Yakin":
-                #Continue to next line
                 pass
             "Tidak":
                 return
-    $ minutes_activity = 1
-    $ delay_batch = time_minutes // 30  # For activities longer than 30 minutes, batch the time advancement
-    if delay_batch < 1:
-        $ delay_batch = 1  # Minimum batch of 1 minute to ensure UI updates
+
+    $ delay_batch = max(1, time_minutes // 30)
 
     python:
-        if activity == "tidur":
-            go_to_sleep()
-        for minutes_activity in range(time_minutes+1):
-            if not interrupted:
-                advance_time(1)
-                decrease_stats(1)
-                if activity == "skripsi":
-                    store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate())
-                    ACTIVITY_DISPATCH["skripsi"]()
-                    earned_score += calculate_thesis_score()
-                elif activity == "cari_jurnal":
-                    if not dapat_topik:
-                        xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
-                        required = get_required_for_level(store.practical_level)
-                        # Each level above 1 adds 15% base; XP within the level adds up to 15% more
-                        chance = min(0.9, (store.practical_level - 1) * 0.15)
-                        if renpy.random.random() < chance:
-                            store.dapat_topik = True
-                            renpy.say(narrator, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
-                            renpy.say(narrator, "Segera bimbingan dengan dosen untuk memastikan apakah topik ini layak untuk dilanjutkan.")
-                    ACTIVITY_DISPATCH["cari_jurnal"]()
-                elif activity == "bimbingan":
-                    if not dosen_acc:
-                        base_chance = 0.05
-                        xp_in_level = get_xp_in_level(store.practical_xp, store.practical_level)
-                        required = get_required_for_level(store.practical_level)
-                        # Each level above 1 adds 10% base
-                        practical_skill_factor = (store.practical_level - 1) * 0.1
-                        competence_factor = store.competence / store.max_stat * 0.05
-                        relatedness_factor = store.relatedness / store.max_stat * 0.05
-                        total_chance = base_chance + practical_skill_factor + competence_factor + relatedness_factor
-                        if renpy.random.random() < total_chance:
-                            dosen_acc = True
-                            renpy.say(narrator, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
-                    ACTIVITY_DISPATCH["bimbingan"]()
-                else:
-                    fn = ACTIVITY_DISPATCH.get(activity)
-                    if fn:
-                        fn()
-            else:
+        activity_fsm_start(activity)
+        for minutes_activity in range(time_minutes + 1):
+            if interrupted:
                 break
-            if (minutes_activity % delay_batch == 0):
+            activity_fsm_tick()
+            if minutes_activity % delay_batch == 0:
                 renpy.pause(delay=delay)
+        activity_fsm_stop()
 
-            # Re-evaluate need-based motivation each minute as stats change
-            # current_motivation_value = get_activity_motivation(activity)
-            # if current_motivation_value < 20:
-            #     interrupted = True
-            #     break
-            # elif current_motivation_value < 50:
-            #     interrupted = renpy.random.random() < 0.2
-            #     break
-    
-    # Update levels and motivation after loop
-    if activity in ["skripsi", "bimbingan", "workshop", "belajar_mandiri"]:
-        $ update_levels()
-    
-    $ update_motivation_and_progress()
-    
-    # Show messages
+    # Show completion messages
     if activity == "skripsi":
         "Kamu mengerjakan skripsi selama [minutes_activity] menit."
         "Kamu mendapatkan [earned_score] poin!"
-        $ earned_score = 0  # Reset earned score after showing message
+        $ earned_score = 0
     elif activity == "olahraga_ringan":
         "Kamu olahraga ringan selama [minutes_activity] menit. Kamu merasa lebih segar!"
     elif activity == "olahraga_sedang":
@@ -718,60 +647,43 @@ label process_activity:
     elif activity == "olahraga_berat":
         "Kamu olahraga berat selama [minutes_activity] menit. Kamu merasa lebih segar!"
     elif activity == "bimbingan":
-        if not dosen_acc:
+        if not thesis_advisor_approved():
             "Kamu bimbingan dengan dosen selama [minutes_activity] menit, namun topikmu belum disetujui."
             "Dosen menyarankan untuk memperdalam pemahamanmu tentang topik yang kamu pilih dan kembali lagi nanti."
-            $ dapat_topik = False  # Ensure you don't get the benefits of having a topic until you actually get it
+            $ thesis_advance_to(THESIS_EXPLORING)
         else:
             "Kamu bimbingan dengan dosen selama [minutes_activity] menit. Kamu memperoleh kejelasan dan arah!"
-    
     elif activity == "sosialisasi":
         "Kamu menghabiskan waktu dengan teman-teman untuk [minutes_activity] menit. Kamu merasa terhubung dan bahagia!"
-    
     elif activity == "nap":
         "Kamu tidur siang selama [minutes_activity] menit. Kamu merasa lebih waspada sekarang!"
-
     elif activity == "makan_bergizi":
         "Kamu makan makanan bergizi selama [minutes_activity] menit. Nutrisimu meningkat!"
     elif activity == "makan_enak":
         "Kamu menikmati makanan enak selama [minutes_activity] menit. Mood kamu meningkat, namun kamu mendapatkan kalori lebih banyak."
-
     elif activity == "minum_kopi":
         "Kamu menikmati kopi selama [minutes_activity] menit. Tingkat kafein dan kewaspadaan kamu meningkat!"
-    
     elif activity == "tidur":
-        $ wake_up(current_hour, current_minute)
-        $ sleep = get_sleep_need()
         "Kamu tidur selama [minutes_activity] menit."
-    
     elif activity == "workshop":
         "Kamu menghadiri sebuah workshop selama [minutes_activity] menit. Kemampuanmu meningkat!"
-    
     elif activity == "belajar_mandiri":
         "Kamu belajar secara mandiri selama [minutes_activity] menit. Kamu merasa lebih punya kendali!"
-    
     elif activity == "rest":
         "Kamu beristirahat selama [minutes_activity] menit."
-    
     elif activity == "skip":
         "Kamu melewatkan [minutes_activity] menit."
-
     elif activity == "cari_jurnal":
-        if not dapat_topik:
+        if not thesis_has_topic():
             "Kamu belum berhasil menemukan topik proposal yang kamu pahami."
         "Kamu mencari dan membaca jurnal selama [minutes_activity] menit. Kamu mendapatkan ilmu baru."
-
     elif activity == "chat_online":
         "Kamu mengobrol dengan teman-teman secara online selama [minutes_activity] menit. Kamu merasa lebih terhubung!"
-
     elif activity == "main_game":
         "Kamu bermain game selama [minutes_activity] menit. Kamu merasa lebih santai dan terhibur!"
-
     elif activity == "meditasi":
         "Kamu bermeditasi selama [minutes_activity] menit. Kamu merasa lebih tenang dan fokus!"
-    
-    # Check for random event (1% chance)
-    #call check_random_event
+
     $ interrupted = False
     return
 

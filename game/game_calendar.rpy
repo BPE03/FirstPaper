@@ -140,3 +140,48 @@ init python:
         calendar_events.append(event)
         renpy.retain_after_load()
         return True
+
+init python:
+    # ── Appointment FSM states ────────────────────────────────────────
+    APPT_UNSCHEDULED = "unscheduled"
+    APPT_SCHEDULED   = "scheduled"
+
+    APPT_HOUR = {
+        "bimbingan": 10,
+        "workshop":  10,
+    }
+
+    _APPT_CALENDAR_TITLE = {
+        "bimbingan": "Bimbingan dengan Dosen",
+        "workshop":  "Workshop",
+    }
+
+    _APPT_CALENDAR_DESC = {
+        "bimbingan": "Bimbingan dijadwalkan jam 10:00.",
+        "workshop":  "Workshop dijadwalkan jam 10:00.",
+    }
+
+    def appt_is_booked(name):
+        return getattr(store, "appt_{}_state".format(name)) == APPT_SCHEDULED
+
+    def appt_book(name):
+        """Schedule appointment for tomorrow at APPT_HOUR[name] and add a calendar event."""
+        day, month, year = get_tomorrow()
+        setattr(store, "appt_{}_day".format(name),   day)
+        setattr(store, "appt_{}_month".format(name), month)
+        setattr(store, "appt_{}_year".format(name),  year)
+        setattr(store, "appt_{}_state".format(name), APPT_SCHEDULED)
+        add_calendar_event(day, month, year, _APPT_CALENDAR_TITLE[name], _APPT_CALENDAR_DESC[name])
+
+    def appt_get_time_diff(name):
+        """Returns minutes elapsed since scheduled time. Negative means player arrived early."""
+        day   = getattr(store, "appt_{}_day".format(name))
+        month = getattr(store, "appt_{}_month".format(name))
+        year  = getattr(store, "appt_{}_year".format(name))
+        sched_days    = (year - 2025) * 365 + (month - 1) * 30 + day
+        sched_minutes = sched_days * 1440 + APPT_HOUR[name] * 60
+        return get_total_game_minutes() - sched_minutes
+
+    def appt_dismiss(name):
+        """Cancel or complete the appointment, resetting it to UNSCHEDULED."""
+        setattr(store, "appt_{}_state".format(name), APPT_UNSCHEDULED)

@@ -1,12 +1,12 @@
 default interrupted = False
-default booked_bimbingan = False
-default bimbingan_day = 0
-default bimbingan_month = 0
-default bimbingan_year = 0
-default booked_workshop = False
-default workshop_day = 0
-default workshop_month = 0
-default workshop_year = 0
+default appt_bimbingan_state = "unscheduled"
+default appt_bimbingan_day   = 0
+default appt_bimbingan_month = 0
+default appt_bimbingan_year  = 0
+default appt_workshop_state  = "unscheduled"
+default appt_workshop_day    = 0
+default appt_workshop_month  = 0
+default appt_workshop_year   = 0
 
 define activities = {
     "skripsi": {
@@ -405,3 +405,92 @@ init python:
             total_modifier += sample_curve(points, stats[stat_name])
         result = base_motivation + total_modifier
         return round(max(0.0, min(100, result)), 2)
+
+default activity_fsm_state = "idle"
+
+init python:
+    ACTIVITY_IDLE = "idle"
+
+    # ── On-enter hooks ────────────────────────────────────────────────
+    def _on_enter_tidur():
+        go_to_sleep()
+
+    def _on_enter_skripsi():
+        store.earned_score = 0
+
+    ACTIVITY_ON_ENTER = {
+        "tidur":   _on_enter_tidur,
+        "skripsi": _on_enter_skripsi,
+    }
+
+    # ── On-exit hooks ─────────────────────────────────────────────────
+    def _on_exit_tidur():
+        wake_up(current_hour, current_minute)
+        store.sleep = get_sleep_need()
+
+    def _on_exit_skill_activity():
+        update_levels()
+
+    ACTIVITY_ON_EXIT = {
+        "tidur":          _on_exit_tidur,
+        "skripsi":        _on_exit_skill_activity,
+        "bimbingan":      _on_exit_skill_activity,
+        "workshop":       _on_exit_skill_activity,
+        "belajar_mandiri": _on_exit_skill_activity,
+    }
+
+    # ── Enhanced per-minute tick functions ────────────────────────────
+    def _activity_tick_skripsi():
+        store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate())
+        _activity_skripsi()
+        store.earned_score += calculate_thesis_score()
+        _thesis_on_writing_tick()
+
+    def _activity_tick_cari_jurnal():
+        if thesis_fsm_state == THESIS_EXPLORING:
+            chance = min(0.9, (store.practical_level - 1) * 0.15)
+            if renpy.random.random() < chance:
+                thesis_advance_to(THESIS_TOPIC_FOUND)
+                renpy.say(None, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
+                renpy.say(None, "Segera bimbingan dengan dosen untuk memastikan apakah topik ini layak untuk dilanjutkan.")
+        _activity_cari_jurnal()
+
+    def _activity_tick_bimbingan():
+        if thesis_fsm_state == THESIS_TOPIC_FOUND:
+            practical_skill_factor = (store.practical_level - 1) * 0.1
+            competence_factor      = store.competence / store.max_stat * 0.05
+            relatedness_factor     = store.relatedness / store.max_stat * 0.05
+            total_chance = 0.05 + practical_skill_factor + competence_factor + relatedness_factor
+            if renpy.random.random() < total_chance:
+                thesis_advance_to(THESIS_SUPERVISED)
+                renpy.say(None, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
+        _activity_bimbingan()
+
+    # ACTIVITY_TICK extends ACTIVITY_DISPATCH with special-case overrides
+    ACTIVITY_TICK = dict(ACTIVITY_DISPATCH)
+    ACTIVITY_TICK["skripsi"]     = _activity_tick_skripsi
+    ACTIVITY_TICK["cari_jurnal"] = _activity_tick_cari_jurnal
+    ACTIVITY_TICK["bimbingan"]   = _activity_tick_bimbingan
+
+    # ── FSM lifecycle ─────────────────────────────────────────────────
+    def activity_fsm_start(activity_name):
+        global activity_fsm_state
+        activity_fsm_state = activity_name
+        enter_fn = ACTIVITY_ON_ENTER.get(activity_name)
+        if enter_fn:
+            enter_fn()
+
+    def activity_fsm_tick():
+        advance_time(1)
+        decrease_stats(1)
+        tick_fn = ACTIVITY_TICK.get(activity_fsm_state)
+        if tick_fn:
+            tick_fn()
+
+    def activity_fsm_stop():
+        global activity_fsm_state
+        exit_fn = ACTIVITY_ON_EXIT.get(activity_fsm_state)
+        if exit_fn:
+            exit_fn()
+        update_motivation_and_progress()
+        activity_fsm_state = ACTIVITY_IDLE

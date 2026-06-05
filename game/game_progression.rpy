@@ -4,10 +4,8 @@ default practical_level = 1
 default writing_level = 1
 default score = 0
 default earned_score = 0
-default dapat_topik = False
-default dosen_acc = False
 default selected_bidang = None
-default phase = 1 # 1 = proposal, 2 = lulus sidang proposal
+default thesis_fsm_state = "exploring"
 
 # Level system and progression functions
 init python:
@@ -32,12 +30,51 @@ init python:
         global practical_level, writing_level
         practical_level = get_level_from_xp(practical_xp)
         writing_level = get_level_from_xp(writing_xp)
-    
+
+    # ── Thesis FSM states ─────────────────────────────────────────────
+    THESIS_EXPLORING    = "exploring"
+    THESIS_TOPIC_FOUND  = "topic_found"
+    THESIS_SUPERVISED   = "supervised"
+    THESIS_WRITING      = "writing"
+    THESIS_SEMPRO_READY = "sempro_ready"
+    THESIS_POST_SEMPRO  = "post_sempro"
+    THESIS_DONE         = "done"
+
+    def thesis_advance_to(new_state):
+        global thesis_fsm_state
+        thesis_fsm_state = new_state
+
+    def thesis_can_write():
+        """True when player has a topic and can work on the thesis."""
+        return thesis_fsm_state not in (THESIS_EXPLORING, THESIS_DONE)
+
+    def thesis_has_topic():
+        """True when player has found a topic candidate."""
+        return thesis_fsm_state != THESIS_EXPLORING
+
+    def thesis_advisor_approved():
+        """True when advisor has approved the topic."""
+        return thesis_fsm_state in (
+            THESIS_SUPERVISED, THESIS_WRITING, THESIS_SEMPRO_READY,
+            THESIS_POST_SEMPRO, THESIS_DONE,
+        )
+
+    def thesis_get_phase():
+        """Returns 1 (proposal) or 2 (full thesis) for progress-rate calculation."""
+        return 2 if thesis_fsm_state in (THESIS_POST_SEMPRO, THESIS_DONE) else 1
+
+    def _thesis_on_writing_tick():
+        """Auto-advance writing sub-states; called each skripsi tick."""
+        if thesis_fsm_state == THESIS_SUPERVISED and store.thesis_progress > 0:
+            thesis_advance_to(THESIS_WRITING)
+        elif thesis_fsm_state == THESIS_WRITING and store.thesis_progress >= 100:
+            thesis_advance_to(THESIS_SEMPRO_READY)
+
     def get_thesis_progress_rate():
         """Returns per-minute thesis progress. Higher writing/practical level = faster progress."""
         level_mult = 1.0 + (writing_level - 1) * 0.10 + (practical_level - 1) * 0.05
         base_progress_per_hour = 1
-        if phase == 1:
+        if thesis_get_phase() == 1:
             return (base_progress_per_hour / 60) * level_mult
         else:
             return (base_progress_per_hour / 120) * level_mult

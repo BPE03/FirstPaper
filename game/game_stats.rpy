@@ -9,6 +9,7 @@ default physical_activity = 80
 default sleep = 80
 default valence = 50  # Emotional positivity
 default arousal = 50  # Energy/alertness
+default current_emotion_state = "kosong"
 default max_stat = 100
 
 # Emotion system based on (valence, arousal) and stats
@@ -33,23 +34,47 @@ init python:
     def get_emotion_distance(v1, a1, v2, a2):
         """Calculate Euclidean distance between two (valence, arousal) points."""
         return ((v1 - v2) ** 2 + (a1 - a2) ** 2) ** 0.5
-    
+
+    # ── Emotion FSM ───────────────────────────────────────────────────
+    EMOTION_HYSTERESIS = 5.0  # min distance-improvement needed to leave current state
+
+    EMOTION_ON_ENTER = {
+        # Populated with narrative triggers as story content is added.
+        # e.g. "stres": lambda: renpy.notify("Kamu mulai merasa stres...")
+    }
+
+    def _emotion_find_nearest():
+        """Scan all centroids; return (name, distance) of the nearest to current (v, a)."""
+        best_name = "kosong"
+        best_dist = float('inf')
+        for name, data in emotions_data.items():
+            d = get_emotion_distance(valence, arousal, data["valence"], data["arousal"])
+            if d < best_dist:
+                best_dist = d
+                best_name = name
+        return best_name, best_dist
+
+    def emotion_fsm_step():
+        """Advance the EmotionFSM one step with hysteresis. Call once per game-minute."""
+        global current_emotion_state
+        nearest, d_nearest = _emotion_find_nearest()
+        if nearest == current_emotion_state:
+            return
+        d_current = get_emotion_distance(
+            valence, arousal,
+            emotions_data[current_emotion_state]["valence"],
+            emotions_data[current_emotion_state]["arousal"],
+        )
+        if d_current - d_nearest < EMOTION_HYSTERESIS:
+            return
+        current_emotion_state = nearest
+        trigger = EMOTION_ON_ENTER.get(nearest)
+        if trigger:
+            trigger()
+
     def get_current_emotion():
-        """Find the emotion closest to current valence and arousal values."""
-        min_distance = float('inf')
-        closest_emotion = "neutral"
-        
-        for emotion_name, emotion_data in emotions_data.items():
-            distance = get_emotion_distance(
-                valence, arousal,
-                emotion_data["valence"],
-                emotion_data["arousal"]
-            )
-            if distance < min_distance:
-                min_distance = distance
-                closest_emotion = emotion_name
-        
-        return closest_emotion
+        """Return the current stable emotion state (hysteresis-filtered)."""
+        return current_emotion_state
     
     def get_emotion_info(emotion_name):
         """Get information about a specific emotion."""
@@ -64,12 +89,13 @@ init python:
         return list(emotions_data.keys())
     
     def set_emotion(emotion_name):
-        """Set valence and arousal to match a specific emotion."""
-        global valence, arousal
+        """Set valence and arousal to match a specific emotion and sync FSM state immediately."""
+        global valence, arousal, current_emotion_state
         if emotion_name in emotions_data:
             emotion = emotions_data[emotion_name]
             valence = emotion["valence"]
             arousal = emotion["arousal"]
+            current_emotion_state = emotion_name
             return True
         return False
 
@@ -106,7 +132,9 @@ init python:
         
         valence = max(0, valence - (6/60 * time_minutes))
         arousal = max(0, arousal - (6/60 * time_minutes))
-        
+
+        emotion_fsm_step()
+
         update_motivation_and_progress()  # Ensure motivation is updated based on current stats
         
         renpy.retain_after_load()
