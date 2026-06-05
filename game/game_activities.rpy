@@ -7,6 +7,10 @@ default appt_workshop_state  = "unscheduled"
 default appt_workshop_day    = 0
 default appt_workshop_month  = 0
 default appt_workshop_year   = 0
+default bimbingan_last_thesis_progress = 0
+default bimbingan_count = 0
+default bimbingan_bonus_active = False
+default bimbingan_bonus_start_progress = 0
 
 define activities = {
     "skripsi": {
@@ -419,9 +423,21 @@ init python:
     def _on_enter_skripsi():
         store.earned_score = 0
 
+    def _on_enter_bimbingan():
+        in_writing_phase = store.thesis_fsm_state in (
+            THESIS_SUPERVISED, THESIS_WRITING, THESIS_SEMPRO_READY, THESIS_POST_SEMPRO
+        )
+        if store.bimbingan_count > 0 and in_writing_phase:
+            progress_diff = store.thesis_progress - store.bimbingan_last_thesis_progress
+            if progress_diff <= 5:
+                store.competence = max(0, store.competence - 20)
+                store.valence    = max(0, store.valence - 20)
+                store.arousal    = min(store.max_stat, store.arousal + 25)
+
     ACTIVITY_ON_ENTER = {
-        "tidur":   _on_enter_tidur,
-        "skripsi": _on_enter_skripsi,
+        "tidur":     _on_enter_tidur,
+        "skripsi":   _on_enter_skripsi,
+        "bimbingan": _on_enter_bimbingan,
     }
 
     # ── On-exit hooks ─────────────────────────────────────────────────
@@ -432,19 +448,45 @@ init python:
     def _on_exit_skill_activity():
         update_levels()
 
+    def _on_exit_bimbingan():
+        update_levels()
+        store.bimbingan_last_thesis_progress = store.thesis_progress
+        store.bimbingan_count += 1
+        store.bimbingan_bonus_active = True
+        store.bimbingan_bonus_start_progress = store.thesis_progress
+
     ACTIVITY_ON_EXIT = {
-        "tidur":          _on_exit_tidur,
-        "skripsi":        _on_exit_skill_activity,
-        "bimbingan":      _on_exit_skill_activity,
-        "workshop":       _on_exit_skill_activity,
+        "tidur":           _on_exit_tidur,
+        "skripsi":         _on_exit_skill_activity,
+        "bimbingan":       _on_exit_bimbingan,
+        "workshop":        _on_exit_skill_activity,
         "belajar_mandiri": _on_exit_skill_activity,
     }
 
     # ── Enhanced per-minute tick functions ────────────────────────────
+    BIMBINGAN_BONUS_MULT = 1.5
+
     def _activity_tick_skripsi():
-        store.thesis_progress = min(100, store.thesis_progress + get_thesis_progress_rate())
+        rate = get_thesis_progress_rate()
+        bonus_active = False
+        if store.bimbingan_bonus_active:
+            if (store.thesis_progress - store.bimbingan_bonus_start_progress) < 10:
+                bonus_active = True
+                rate *= BIMBINGAN_BONUS_MULT
+            else:
+                store.bimbingan_bonus_active = False
+
+        store.thesis_progress = min(100, store.thesis_progress + rate)
         _activity_skripsi()
-        store.earned_score += calculate_thesis_score()
+        tick_score = calculate_thesis_score()
+
+        if bonus_active:
+            bonus_score = tick_score * (BIMBINGAN_BONUS_MULT - 1.0)
+            store.score += bonus_score
+            store.earned_score += tick_score + bonus_score
+        else:
+            store.earned_score += tick_score
+
         _thesis_on_writing_tick()
 
     def _activity_tick_cari_jurnal():
