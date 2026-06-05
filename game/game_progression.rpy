@@ -72,7 +72,7 @@ init python:
 
     def get_thesis_progress_rate():
         """Returns per-minute thesis progress. Higher writing/practical level = faster progress."""
-        level_mult = 1.0 + (writing_level - 1) * 0.10 + (practical_level - 1) * 0.05
+        level_mult = 1.0 + (writing_level - 1) * 0.20 + (practical_level - 1) * 0.1
         base_progress_per_hour = 1
         if thesis_get_phase() == 1:
             return (base_progress_per_hour / 60) * level_mult
@@ -89,13 +89,13 @@ init python:
         emotion_multiplier = emotion_data.get("score_multiplier", 1.0)
         
         # Level bonuses
-        level_bonus = (practical_level * 0.5) + (writing_level * 0.5)
+        level_bonus = (practical_level * 1) + (writing_level * 0.5)
         
         # Base score per minute of work
         base_score = 1
         
         # Calculate final score
-        final_score = int((base_score + level_bonus) * emotion_multiplier)
+        final_score = (base_score + level_bonus) * emotion_multiplier * get_thesis_progress_rate()
         
         # Ensure minimum score of 1
         final_score = max(1, final_score)

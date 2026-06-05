@@ -61,7 +61,7 @@ screen main_stats():
                 null height 1
                 # Score display
                 text "Skor" size 18 color "#ffffff"
-                text "[score]" size 18 color "#f39c12" bold True
+                text "[int(score)]" size 18 color "#f39c12" bold True
 
                 #null height 5
                 # Button to show detailed stats

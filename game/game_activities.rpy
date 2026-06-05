@@ -54,7 +54,7 @@ define activities = {
     "sosialisasi": {
         "name": "Sosialisasi dengan teman",
         "min_duration": 60,
-        "default_duration_hours": 1,
+        "default_duration_hours": 3,
         "default_duration_minutes": 0,
         "max_duration": 360
     },
@@ -159,11 +159,10 @@ init python:
         calculate_writing_xp(20/60)
 
     def _activity_makan_bergizi():
-        global autonomy, nutrition, valence, arousal
+        global autonomy, nutrition, arousal
         nutrition = min(max_stat, nutrition + 70/20)
         autonomy = max(0, autonomy - 35/60)
-        valence = max(0, valence - 6/20)
-        arousal = min(max_stat, arousal + 10/20)
+        arousal = min(max_stat, arousal + 5/20)
 
     def _activity_makan_enak():
         global nutrition, valence, autonomy, physical_activity, process_s
@@ -186,22 +185,24 @@ init python:
         nutrition = max(0, nutrition - nutrition_modifier / 60)
 
     def _activity_olahraga_sedang():
-        global physical_activity, competence, nutrition, arousal
+        global physical_activity, competence, nutrition, valence, arousal
         physical_activity = min(max_stat, physical_activity + 30/60)
         competence = min(max_stat, competence + 2/60)
 
         nutrition_modifier = nutrition * 0.2
         nutrition = max(0, nutrition - nutrition_modifier / 60)
-        arousal = min(max_stat, arousal + 20/60)
+        valence = min(max_stat, valence + 20/60)
+        arousal = min(max_stat, arousal + 15/60)
 
     def _activity_olahraga_berat():
-        global autonomy, physical_activity, competence, nutrition, arousal
+        global autonomy, physical_activity, competence, nutrition, valence, arousal
         autonomy = max(0, autonomy - 6/60)
         physical_activity = min(max_stat, physical_activity + 50/60)
         competence = max(0, competence - 1/60)
         nutrition_modifier = nutrition * 0.27
         nutrition = max(0, nutrition - nutrition_modifier / 60)
-        arousal = min(max_stat, arousal + 35/60)
+        valence = min(max_stat, valence + 35/60)
+        arousal = min(max_stat, arousal + 25/60)
 
     def _activity_bimbingan():
         global competence, relatedness, valence, arousal
@@ -211,14 +212,6 @@ init python:
         arousal = min(max_stat, arousal + 10/60)
         calculate_writing_xp(40/60)
         calculate_practical_xp(20/60)
-
-    def _activity_sosialisasi():
-        global autonomy, relatedness, competence, valence, arousal
-        autonomy = min(max_stat, autonomy + 8/60)
-        relatedness = min(max_stat, relatedness + 20/60)
-        competence = min(max_stat, competence + 1/60)
-        valence = min(max_stat, valence + 20/60)
-        arousal = min(max_stat, arousal + 20/60)
 
     # def _activity_nap():
     #     global arousal, valence
@@ -270,11 +263,19 @@ init python:
         valence = min(max_stat, valence + 10/60)
         arousal = min(max_stat, arousal + 5/60)
 
+    def _activity_sosialisasi():
+        global autonomy, relatedness, competence, valence, arousal
+        autonomy = min(max_stat, autonomy + 8/60)
+        relatedness = min(max_stat, relatedness + 20/60)
+        competence = min(max_stat, competence + 1/60)
+        valence = min(max_stat, valence + 20/60)
+        arousal = min(max_stat, arousal + 20/60)
+
     def _activity_main_game():
         global autonomy, competence, relatedness, physical_activity, arousal, valence
         autonomy = min(max_stat, autonomy + 5/60)
         competence = min(max_stat, competence + 10/60)
-        relatedness = min(max_stat, relatedness + 10/60)
+        relatedness = min(max_stat, relatedness + 1/60)
         physical_activity = max(0, physical_activity - 5/60)
         valence = min(max_stat, valence + 15/60)
         arousal = min(max_stat, arousal + 15/60)
