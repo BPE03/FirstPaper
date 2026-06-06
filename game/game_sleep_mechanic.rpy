@@ -60,7 +60,7 @@ init python:
             c_shifted = (math.sin(primary_phase + phase_correction)
                         - 0.20 * math.sin(secondary_phase + phase_correction))
             c = (c_shifted + 1.20) / 2.40
-        print("DEBUG: process c={:.3f}".format(c))
+        #print("DEBUG: process c={:.3f}".format(c))
         return max(0.0, min(1.0, c))
 
     # ── Alertness & derived quantities ───────────────────────────────

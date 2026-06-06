@@ -138,9 +138,10 @@ define bidang_ilmu = {
 # Helper functions
 init python:
     def move_to_map(location_label):
+        store.time_stop = True
         store.show_map = False
         renpy.transition(fade)
-        renpy.jump(location_label)  # or any Ren'Py function like renpy.show_screen
+        renpy.jump(location_label)
     # def interact_environment(env_label):
     #     store.can_move_places = 0
     #     renpy.call(env_label)

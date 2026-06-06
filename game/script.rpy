@@ -345,17 +345,17 @@ label post_sidang_akhir:
 
 label kos:
     $ current_location = "kos"
-    $ time_stop = False
     $ cg = current_location + "_" + time_of_day_state
     scene expression cg with fade
+    $ time_stop = False
     # $ renpy.show(cg.lower())
     call screen interactive_kos
 
 label dapur:
     $ current_location = "dapur"
-    $ time_stop = False
     $ cg = current_location + "_" + time_of_day_state
     scene expression cg with fade
+    $ time_stop = False
     # $ renpy.show(cg.lower())
     call screen interactive_dapur
 
