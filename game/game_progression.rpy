@@ -74,10 +74,17 @@ init python:
 
     def get_thesis_progress_rate():
         global bimbingan_bonus_active, writing_level, practical_level
-        """Returns per-minute thesis progress. Higher writing/practical level = faster progress."""
+        """Returns per-minute thesis progress. Depends on levels, sleep, emotion, and bimbingan bonus."""
+
+        # Get current emotion and its multiplier from emotions_data
+        current_emotion = get_current_emotion()
+        emotion_data = emotions_data[current_emotion]
+        emotion_multiplier = emotion_data.get("score_multiplier", 1.0)
+
         level_mult = 1.0 + (writing_level - 1) * 0.20 + (practical_level - 1) * 0.1
         base_progress_per_hour = 1
-        progress_rate = base_progress_per_hour * level_mult * sleep_stat_multiplier()
+        # Minimum progress rate = 1 * 1 * 0.4 * 0.4 = 0.16 progress/hour, or 0.0027 progress/minute
+        progress_rate = base_progress_per_hour * level_mult * sleep_stat_multiplier() * emotion_multiplier
 
         if bimbingan_bonus_active:
             progress_rate *= BIMBINGAN_BONUS_MULT
@@ -88,13 +95,8 @@ init python:
             return progress_rate / 120
 
     def calculate_thesis_score():
-        """Calculate score gained when writing thesis based on emotion, levels, and XP."""
-        global score, valence, arousal, practical_level, writing_level, bimbingan_bonus_active
-        
-        # Get current emotion and its multiplier from emotions_data
-        current_emotion = get_current_emotion()
-        emotion_data = emotions_data[current_emotion]
-        emotion_multiplier = emotion_data.get("score_multiplier", 1.0)
+        """Calculate score gained when writing thesis based on emotion, progress done, levels, and bimbingan bonus."""
+        global score, valence, arousal, practical_level, writing_level
         
         # Level bonuses
         level_bonus = (practical_level * 1) + (writing_level * 0.5)
@@ -106,12 +108,12 @@ init python:
         progress_rate_bonus = get_thesis_progress_rate() * 60
         
         # Calculate final score
-        final_score = (base_score + level_bonus) * emotion_multiplier * progress_rate_bonus
-        if bimbingan_bonus_active:
-            final_score *= BIMBINGAN_BONUS_MULT
+        # Minimum score = (1 + 1.5) * 0.16 = 0.256, or about 1 point every 4 minutes at the very start, scaling up with levels, emotion, and alertness
+        # 0.256 * 625 * 60
+        final_score = (base_score + level_bonus) * progress_rate_bonus
         
         # Ensure minimum score of 1
-        final_score = max(1, final_score)
+        #final_score = max(1, final_score)
         
         # Add to total score
         score += final_score
@@ -124,7 +126,7 @@ init python:
         emotion_data = emotions_data[current_emotion]
         emotion_multiplier = emotion_data.get("score_multiplier", 1.0)
 
-        store.writing_xp += xp * emotion_multiplier
+        store.writing_xp += xp * emotion_multiplier * sleep_stat_multiplier()
 
     def calculate_practical_xp(xp):
         # Get current emotion and its multiplier from emotions_data
@@ -132,4 +134,4 @@ init python:
         emotion_data = emotions_data[current_emotion]
         emotion_multiplier = emotion_data.get("score_multiplier", 1.0)
 
-        store.practical_xp += xp * emotion_multiplier
+        store.practical_xp += xp * emotion_multiplier * sleep_stat_multiplier()

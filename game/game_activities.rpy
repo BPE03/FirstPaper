@@ -343,10 +343,10 @@ init python:
             "physical_activity":          [(0.0, 0.5), (50, 0.0), (80, 0), (100, -0.5)],
         },
         "olahraga_sedang": {
-            "physical_activity":          [(0.0, -0.15), (50, 0.0), (80, 0), (100, -0.5)],
+            "physical_activity":          [(0.0, -0.2), (50, 0.0), (80, 0), (100, -0.5)],
         },
         "olahraga_berat": {
-            "physical_activity":          [(0.0, -0.35), (50, 0.0), (80, 0), (100, -0.7)],
+            "physical_activity":          [(0.0, -0.5), (50, 0.0), (80, 0), (100, -0.7)],
         },
         "belajar_mandiri": {
             "autonomy":    [(0.0, -0.4), (75, 0.0)],
@@ -450,6 +450,8 @@ init python:
 
     def _on_exit_bimbingan():
         update_levels()
+        if not thesis_advisor_approved():
+            return
         store.bimbingan_last_thesis_progress = store.thesis_progress
         store.bimbingan_count += 1
         store.bimbingan_bonus_active = True
@@ -478,7 +480,7 @@ init python:
 
     def _activity_tick_cari_jurnal():
         if thesis_fsm_state == THESIS_EXPLORING:
-            chance = min(0.9, (store.practical_level - 1) * 0.15)
+            chance = min(0.9, (store.practical_level) * 0.15) / 60
             if renpy.random.random() < chance:
                 thesis_advance_to(THESIS_TOPIC_FOUND)
                 renpy.say(None, "Kamu berhasil mendapatkan topik proposal yang kamu pahami!")
@@ -487,10 +489,11 @@ init python:
 
     def _activity_tick_bimbingan():
         if thesis_fsm_state == THESIS_TOPIC_FOUND:
-            practical_skill_factor = (store.practical_level - 1) * 0.1
+            practical_skill_factor = (store.practical_level) * 0.15
             competence_factor      = store.competence / store.max_stat * 0.05
             relatedness_factor     = store.relatedness / store.max_stat * 0.05
             total_chance = 0.05 + practical_skill_factor + competence_factor + relatedness_factor
+            total_chance = min(0.9, total_chance) / 10
             if renpy.random.random() < total_chance:
                 thesis_advance_to(THESIS_SUPERVISED)
                 renpy.say(None, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
