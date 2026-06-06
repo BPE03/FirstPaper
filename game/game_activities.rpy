@@ -464,28 +464,15 @@ init python:
     }
 
     # ── Enhanced per-minute tick functions ────────────────────────────
-    BIMBINGAN_BONUS_MULT = 1.5
-
     def _activity_tick_skripsi():
-        rate = get_thesis_progress_rate()
-        bonus_active = False
         if store.bimbingan_bonus_active:
-            if (store.thesis_progress - store.bimbingan_bonus_start_progress) < 10:
-                bonus_active = True
-                rate *= BIMBINGAN_BONUS_MULT
-            else:
+            if (store.thesis_progress - store.bimbingan_bonus_start_progress) > 10:
                 store.bimbingan_bonus_active = False
+        rate = get_thesis_progress_rate()
 
         store.thesis_progress = min(100, store.thesis_progress + rate)
         _activity_skripsi()
-        tick_score = calculate_thesis_score()
-
-        if bonus_active:
-            bonus_score = tick_score * (BIMBINGAN_BONUS_MULT - 1.0)
-            store.score += bonus_score
-            store.earned_score += tick_score + bonus_score
-        else:
-            store.earned_score += tick_score
+        store.earned_score += calculate_thesis_score()
 
         _thesis_on_writing_tick()
 

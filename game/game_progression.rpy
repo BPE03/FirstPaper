@@ -70,18 +70,26 @@ init python:
         elif thesis_fsm_state == THESIS_WRITING and store.thesis_progress >= 100:
             thesis_advance_to(THESIS_SEMPRO_READY)
 
+    BIMBINGAN_BONUS_MULT = 1.5
+
     def get_thesis_progress_rate():
+        global bimbingan_bonus_active, writing_level, practical_level
         """Returns per-minute thesis progress. Higher writing/practical level = faster progress."""
         level_mult = 1.0 + (writing_level - 1) * 0.20 + (practical_level - 1) * 0.1
         base_progress_per_hour = 1
+        progress_rate = base_progress_per_hour * level_mult
+
+        if bimbingan_bonus_active:
+            progress_rate *= BIMBINGAN_BONUS_MULT
+
         if thesis_get_phase() == 1:
-            return (base_progress_per_hour / 60) * level_mult
+            return progress_rate / 60
         else:
-            return (base_progress_per_hour / 120) * level_mult
+            return progress_rate / 120
 
     def calculate_thesis_score():
         """Calculate score gained when writing thesis based on emotion, levels, and XP."""
-        global score, valence, arousal, practical_level, writing_level, practical_xp, writing_xp
+        global score, valence, arousal, practical_level, writing_level, bimbingan_bonus_active
         
         # Get current emotion and its multiplier from emotions_data
         current_emotion = get_current_emotion()
@@ -93,9 +101,14 @@ init python:
         
         # Base score per minute of work
         base_score = 1
+
+        # Per progress rate bonus
+        progress_rate_bonus = get_thesis_progress_rate() * 60
         
         # Calculate final score
-        final_score = (base_score + level_bonus) * emotion_multiplier * get_thesis_progress_rate()
+        final_score = (base_score + level_bonus) * emotion_multiplier * progress_rate_bonus
+        if bimbingan_bonus_active:
+            final_score *= BIMBINGAN_BONUS_MULT
         
         # Ensure minimum score of 1
         final_score = max(1, final_score)

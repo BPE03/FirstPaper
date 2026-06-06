@@ -11,7 +11,7 @@ screen main_stats():
             xalign 0.05
             yalign 0.05
             xsize 280
-            ysize 550
+            ysize 600
             background "#2c3e50cc"
             padding (15, 15)
             
@@ -45,6 +45,17 @@ screen main_stats():
                     left_bar "#2ecc71"
                     right_bar "#34495e"
                 text "[thesis_progress:.02f]%" size 14 color "#bdc3c7"
+
+                if bimbingan_bonus_active:
+                    $ _bonus_remaining = max(0.0, 10.0 - (thesis_progress - bimbingan_bonus_start_progress))
+                    frame:
+                        xsize 250
+                        background "#27ae6099"
+                        padding (8, 6)
+                        vbox:
+                            spacing 2
+                            text "Bonus Bimbingan Aktif" size 12 color "#2ecc71" bold True
+                            text "Sisa [_bonus_remaining:.1f]% progress" size 11 color "#a9dfbf"
 
                 frame:
                     xsize 250
