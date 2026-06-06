@@ -1,6 +1,5 @@
 # Define stats
 default motivation = 30
-default thesis_progress = 0
 default autonomy = 80
 default competence = 80
 default relatedness = 80

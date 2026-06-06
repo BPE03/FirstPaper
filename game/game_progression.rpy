@@ -2,6 +2,7 @@ default practical_xp = 0
 default writing_xp = 0
 default practical_level = 1
 default writing_level = 1
+default thesis_progress = 0
 default score = 0
 default earned_score = 0
 default selected_bidang = None
@@ -37,8 +38,10 @@ init python:
     THESIS_SUPERVISED   = "supervised"
     THESIS_WRITING      = "writing"
     THESIS_SEMPRO_READY = "sempro_ready"
+    THESIS_SEMPRO_FAILED = "sempro_failed"
     THESIS_POST_SEMPRO  = "post_sempro"
     THESIS_DONE         = "done"
+    THESIS_FAILED       = "failed"
 
     def thesis_advance_to(new_state):
         global thesis_fsm_state
@@ -69,6 +72,8 @@ init python:
             thesis_advance_to(THESIS_WRITING)
         elif thesis_fsm_state == THESIS_WRITING and store.thesis_progress >= 100:
             thesis_advance_to(THESIS_SEMPRO_READY)
+        elif thesis_fsm_state == THESIS_POST_SEMPRO and store.thesis_progress >= 100:
+            thesis_advance_to(THESIS_DONE)
 
     BIMBINGAN_BONUS_MULT = 1.5
 

@@ -31,6 +31,9 @@ screen interactive_kos():
         text_size 22
         sensitive not (show_detailed_stats or show_calendar)
         action Jump("activity_kos")
+        background Frame("#1a1a1acc", 8, 8)
+        hover_background Frame("#3a3a3aee", 8, 8)
+        insensitive_background Frame("#1a1a1a66", 8, 8)
 
     # textbutton "Map":
     #     xalign 0.95

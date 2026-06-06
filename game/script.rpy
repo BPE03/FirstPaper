@@ -328,8 +328,49 @@ label sempro:
     "Paijo merasa sangat gugup dan tidak percaya diri karena dia belum menyelesaikan proposalnya."
     "Namun, dia tahu bahwa dia harus menghadapi kenyataan dan melakukan yang terbaik dalam seminar proposalnya."
     scene black with fade
+    if thesis_progress >= 100 or score > 40000:
+        call sempro_a
+    else:
+        if score >= 36000:
+            call sempro_ab
+        elif score >= 32000:
+            call sempro_b
+        elif score >= 28000:
+            call sempro_bc
+        elif score >= 24000:
+            call sempro_c
+        elif score >= 20000:
+            call sempro_d
+        else:
+            call sempro_e
+    if thesis_fsm_state == THESIS_SEMPRO_FAILED:
+        jump sempro_gagal
     $ thesis_advance_to(THESIS_POST_SEMPRO)
-    return
+    jump post_sempro
+
+label sempro_e:
+    $ thesis_advance_to(THESIS_SEMPRO_FAILED)
+label sempro_d:
+    $ thesis_advance_to(THESIS_SEMPRO_FAILED)
+label sempro_c:
+    "Paijo mendapatkan nilai C untuk seminar proposalnya."
+
+label sempro_bc:
+    "Paijo mendapatkan nilai BC untuk seminar proposalnya."
+
+label sempro_b:
+    "Paijo mendapatkan nilai B untuk seminar proposalnya."
+
+label sempro_ab:
+    "Paijo mendapatkan nilai AB untuk seminar proposalnya."
+
+label sempro_a:
+    "Paijo mendapatkan nilai A untuk seminar proposalnya."
+    "Dia merasa sangat senang dan bangga karena dia berhasil mendapatkan nilai yang sangat baik untuk seminar proposalnya."
+    jump post_sempro
+
+label sempro_gagal:
+    "Paijo"
 
 label post_sempro:
     "Setelah seminar proposal, Paijo merasa sangat lega dan senang karena dia berhasil melalui seminar proposal dengan baik."
@@ -386,6 +427,11 @@ label activity_kos_laptop:
         "Kerjakan Skripsi (Motivasi: [_m_thesis]/[max_stat])":
             if not thesis_can_write():
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
+                jump kos
+            elif thesis_fsm_state == THESIS_SEMPRO_READY:
+                "Kamu sudah menyelesaikan semua yang bisa kamu kerjakan untuk proposalmu."
+                "Kamu bisa langsung melewati waktu ke hari deadline proposal untuk lanjut ke seminar proposal."
+                "Atau kamu bisa tetap melakukan aktivitas lain untuk meningkatkan skill praktis dan menulismu."
                 jump kos
             $ activity = "skripsi"
         "Daftarkan Workshop":

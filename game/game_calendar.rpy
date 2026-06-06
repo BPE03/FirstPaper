@@ -12,15 +12,15 @@ default display_month = current_month
 default display_year = current_year
 
 # Calendar event data
-default calendar_events = [
-    {
+default calendar_events = {
+    "proposal_deadline": {
         "day": 9,
         "month": 1,
         "year": 2026,
         "title": "Deadline Pengumpulan Proposal",
         "description": "Batas akhir untuk mengumpulkan proposal penelitian tesis. Pastikan proposal sudah lengkap dan disetujui oleh dosen pembimbing sebelum tanggal ini."
     }
-]
+}
 default selected_calendar_event = None
 default show_event_details = False
 
@@ -71,6 +71,11 @@ init python:
 
         tod_fsm_step()
 
+        _dl = store.calendar_events.get("proposal_deadline")
+        if _dl and (current_year, current_month, current_day) >= (_dl["year"], _dl["month"], _dl["day"]) and \
+        store.thesis_fsm_state not in ("post_sempro", "done"):
+            renpy.jump("sempro")
+
     def get_total_game_minutes():
         """Returns total elapsed game-minutes from a fixed reference (2025-01-01)."""
         global current_year, current_month, current_day, current_hour, current_minute
@@ -81,11 +86,11 @@ init python:
         return "{:02d}:{:02d}".format(current_hour, current_minute)
 
     def get_calendar_events(day, month, year):
-        return [event for event in calendar_events if event["day"] == day and event["month"] == month and event["year"] == year]
+        return [e for e in calendar_events.values() if e["day"] == day and e["month"] == month and e["year"] == year]
 
     def get_next_calendar_event():
         today = datetime.date(current_year, current_month, current_day)
-        future_events = [event for event in calendar_events if datetime.date(event["year"], event["month"], event["day"]) >= today]
+        future_events = [e for e in calendar_events.values() if datetime.date(e["year"], e["month"], e["day"]) >= today]
         if not future_events:
             return None
         return sorted(future_events, key=lambda e: (e["year"], e["month"], e["day"]))[0]
@@ -114,33 +119,11 @@ init python:
         tomorrow = today + datetime.timedelta(days=1)
         return tomorrow.day, tomorrow.month, tomorrow.year
 
-    def add_calendar_event(day, month, year, title, description, avoid_duplicates=True):
-        """
-        Append a new event to the calendar.
-        
-        Args:
-            day (int): Day of the month (1-31)
-            month (int): Month (1-12)
-            year (int): Year
-            title (str): Event title
-            description (str): Event description
-            avoid_duplicates (bool): If True, won't add duplicate events on same date with same title
-        
-        Returns:
-            bool: True if event was added, False if it was a duplicate and skipped
-        
-        Example:
-            add_calendar_event(20, 5, 2026, "Advisor Meeting", "Discuss thesis progress.")
-        """
+    def add_calendar_event(event_id, day, month, year, title, description, avoid_duplicates=True):
         global calendar_events
-        event = {"day": day, "month": month, "year": year, "title": title, "description": description}
-        
-        if avoid_duplicates:
-            for e in calendar_events:
-                if (e["day"] == day and e["month"] == month and e["year"] == year and e["title"] == title):
-                    return False  # Duplicate found, skip
-        
-        calendar_events.append(event)
+        if avoid_duplicates and event_id in calendar_events:
+            return False
+        calendar_events[event_id] = {"day": day, "month": month, "year": year, "title": title, "description": description}
         renpy.retain_after_load()
         return True
 
@@ -170,11 +153,12 @@ init python:
     def appt_book(name):
         """Schedule appointment for tomorrow at APPT_HOUR[name] and add a calendar event."""
         day, month, year = get_tomorrow()
+        appt_id = "{}_{}_{}_{}".format(name, year, month, day)  # Unique ID based on name and date
         setattr(store, "appt_{}_day".format(name),   day)
         setattr(store, "appt_{}_month".format(name), month)
         setattr(store, "appt_{}_year".format(name),  year)
         setattr(store, "appt_{}_state".format(name), APPT_SCHEDULED)
-        add_calendar_event(day, month, year, _APPT_CALENDAR_TITLE[name], _APPT_CALENDAR_DESC[name])
+        add_calendar_event(appt_id, day, month, year, _APPT_CALENDAR_TITLE[name], _APPT_CALENDAR_DESC[name], avoid_duplicates=False)
 
     def appt_get_time_diff(name):
         """Returns minutes elapsed since scheduled time. Negative means player arrived early."""
