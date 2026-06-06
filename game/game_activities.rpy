@@ -315,7 +315,7 @@ init python:
             "relatedness": [(0.0, -0.4), (75, 0.0)],
             "physical_activity":          [(0.0, -0.4), (75, 0.0)],
             "nutrition":   [(30, -1.0), (60,  0.0)],
-            "sleep":       [(30, -1.0), (60,  0.0)],
+            "sleep":       [(0, -1.0), (30,  0.0)],
         },
         "sosialisasi": {
             "relatedness": [(0.0, 0.5), (100, -0.2)],
@@ -354,7 +354,7 @@ init python:
             "relatedness": [(0.0, -0.4), (75, 0.0)],
             "physical_activity":          [(0.0, -0.4), (75, 0.0)],
             "nutrition":   [(0, -1.0), (50,  0.0)],
-            "sleep":       [(0, -1.0), (50,  0.0)],
+            "sleep":       [(0, -1.0), (30,  0.0)],
         },
         "cari_jurnal": {
             "autonomy":    [(0.0, -0.4), (75, 0.0)],
@@ -362,7 +362,7 @@ init python:
             "relatedness": [(0.0, -0.4), (75, 0.0)],
             "physical_activity":          [(0.0, -0.4), (75, 0.0)],
             "nutrition":   [(0, -1.0), (50,  0.0)],
-            "sleep":       [(0, -1.0), (50,  0.0)],
+            "sleep":       [(0, -1.0), (30,  0.0)],
         },
         "chat_online": {
             "autonomy":    [(0.0, 1), (70, 0.0)],

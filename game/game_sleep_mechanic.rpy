@@ -86,10 +86,10 @@ init python:
 
     # ── FSM internals ────────────────────────────────────────────────
     def _sleep_alertness_to_state(a):
-        if   a >= 0.6:  return SLEEP_PEAK
-        elif a >= 0.3:  return SLEEP_NORMAL
-        elif a >= 0.0:  return SLEEP_FATIGUED
-        elif a >= -0.3: return SLEEP_EXHAUSTED
+        if   a >= 0.5:  return SLEEP_PEAK
+        elif a >= 0.0:  return SLEEP_NORMAL
+        elif a >= -0.3:  return SLEEP_FATIGUED
+        elif a >= -0.6: return SLEEP_EXHAUSTED
         else:           return SLEEP_CRASHED
 
     def _sleep_fsm_step():

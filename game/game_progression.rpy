@@ -77,7 +77,7 @@ init python:
         """Returns per-minute thesis progress. Higher writing/practical level = faster progress."""
         level_mult = 1.0 + (writing_level - 1) * 0.20 + (practical_level - 1) * 0.1
         base_progress_per_hour = 1
-        progress_rate = base_progress_per_hour * level_mult
+        progress_rate = base_progress_per_hour * level_mult * sleep_stat_multiplier()
 
         if bimbingan_bonus_active:
             progress_rate *= BIMBINGAN_BONUS_MULT

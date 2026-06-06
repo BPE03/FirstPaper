@@ -642,7 +642,7 @@ label process_activity:
     # Show completion messages
     if activity == "skripsi":
         "Kamu mengerjakan skripsi selama [minutes_activity] menit."
-        "Kamu mendapatkan [earned_score] poin!"
+        "Kamu mendapatkan [int(earned_score)] poin!"
         $ earned_score = 0
     elif activity == "olahraga_ringan":
         "Kamu olahraga ringan selama [minutes_activity] menit. Kamu merasa lebih segar!"

@@ -11,7 +11,7 @@ screen main_stats():
             xalign 0.05
             yalign 0.05
             xsize 280
-            ysize 600
+            ysize 660
             background "#2c3e50cc"
             padding (15, 15)
             
@@ -69,6 +69,26 @@ screen main_stats():
                         text "[current_emotion.upper()]" size 16 color "#ffffff" bold True
                         #text "[emotion_info['description']]" size 11 color "#ffffff"
         
+                null height 1
+                # Alertness display
+                $ _aw_label, _aw_color = {
+                    "sleeping":  ("Tidur",     "#687279"),
+                    "peak":      ("Puncak",    "#2ecc71"),
+                    "normal":    ("Normal",    "#3498db"),
+                    "fatigued":  ("Lelah",     "#f39c12"),
+                    "exhausted": ("Kelelahan", "#e67e22"),
+                    "crashed":   ("Ambruk",   "#e74c3c"),
+                }.get(sleep_get_state(), ("Normal", "#3498db"))
+                frame:
+                    xsize 250
+                    ysize 40
+                    background "#2c3e50"
+                    padding (10, 8)
+                    hbox:
+                        spacing 8
+                        text "Kesadaran:" size 13 color "#bdc3c7" yalign 0.5
+                        text "[_aw_label]" size 14 color _aw_color bold True yalign 0.5
+
                 null height 1
                 # Score display
                 text "Skor" size 18 color "#ffffff"
@@ -355,6 +375,15 @@ screen detailed_stats_window():
                             text "Tidur" size 16 color "#ffffff"
                             bar value sleep range max_stat xsize 200 ysize 18 left_bar "#687279" right_bar "#2c3e50"
                             text "[sleep:.02f]/[max_stat]" size 14 color "#bdc3c7"
+                            $ _alertness_label = {
+                                "sleeping":  ("Tidur",     "#687279"),
+                                "peak":      ("Puncak",    "#2ecc71"),
+                                "normal":    ("Normal",    "#3498db"),
+                                "fatigued":  ("Lelah",     "#f39c12"),
+                                "exhausted": ("Kelelahan", "#e67e22"),
+                                "crashed":   ("Ambruk",   "#e74c3c"),
+                            }.get(sleep_get_state(), ("Normal", "#3498db"))
+                            text "Kesadaran: [_alertness_label[0]]" size 13 color _alertness_label[1] bold True
                     
                     null height 15
                     
