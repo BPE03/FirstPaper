@@ -32,21 +32,24 @@ define activities = {
         "min_duration": 60,
         "default_duration_hours": 2,
         "default_duration_minutes": 0,
-        "max_duration": 240
+        "max_duration": 240,
+        "completion_message": "Kamu olahraga ringan selama {minutes} menit. Kamu merasa lebih segar!"
     },
     "olahraga_sedang": {
         "name": "Olahraga Sedang",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 30,
-        "max_duration": 240
+        "max_duration": 240,
+        "completion_message": "Kamu olahraga sedang selama {minutes} menit. Kamu merasa lebih segar!"
     },
     "olahraga_berat": {
         "name": "Olahraga Berat",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
-        "max_duration": 240
+        "max_duration": 240,
+        "completion_message": "Kamu olahraga berat selama {minutes} menit. Kamu merasa lebih segar!"
     },
     "bimbingan": {
         "name": "Bimbingan dengan dosen",
@@ -60,63 +63,72 @@ define activities = {
         "min_duration": 60,
         "default_duration_hours": 3,
         "default_duration_minutes": 0,
-        "max_duration": 360
+        "max_duration": 360,
+        "completion_message": "Kamu menghabiskan waktu dengan teman-teman untuk {minutes} menit. Kamu merasa terhubung dan bahagia!"
     },
     "nap": {
         "name": "Take a nap",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
-        "max_duration": 1440
+        "max_duration": 1440,
+        "completion_message": "Kamu tidur siang selama {minutes} menit. Kamu merasa lebih waspada sekarang!"
     },
     "tidur": {
         "name": "Tidur",
-        "min_duration": 240,
+        "min_duration": 60,
         "default_duration_hours": 8,
         "default_duration_minutes": 0,
-        "max_duration": 720
+        "max_duration": 720,
+        "completion_message": "Kamu tidur selama {minutes} menit."
     },
     "workshop": {
         "name": "Attend a workshop",
         "min_duration": 120,
         "default_duration_hours": 2,
         "default_duration_minutes": 0,
-        "max_duration": 120
+        "max_duration": 120,
+        "completion_message": "Kamu menghadiri sebuah workshop selama {minutes} menit. Kemampuanmu meningkat!"
     },
     "belajar_mandiri": {
         "name": "Belajar dan Praktek secara mandiri",
         "min_duration": 60,
         "default_duration_hours": 4,
         "default_duration_minutes": 0,
-        "max_duration": 240
+        "max_duration": 240,
+        "completion_message": "Kamu belajar secara mandiri selama {minutes} menit. Kamu merasa lebih punya kendali!"
     },
     "rest": {
         "name": "Just rest and do nothing",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
-        "max_duration": 1440
+        "max_duration": 1440,
+        "completion_message": "Kamu beristirahat selama {minutes} menit."
     },
     "skip": {
         "name": "Skip time",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
-        "max_duration": 144000
+        "max_duration": 144000,
+        "completion_message": "Kamu melewatkan {minutes} menit."
     },
     "chat_online": {
         "name": "Chat Online dengan Teman",
         "min_duration": 60,
         "default_duration_hours": 3,
         "default_duration_minutes": 0,
-        "max_duration": 360
+        "max_duration": 360,
+        "completion_message": "Kamu mengobrol dengan teman-teman secara online selama {minutes} menit. Kamu merasa lebih terhubung!"
     },
     "main_game": {
         "name": "Main Game",
         "min_duration": 60,
         "default_duration_hours": 2,
         "default_duration_minutes": 0,
-        "max_duration": 360
+        "max_duration": 360,
+        "completion_message": "Kamu bermain game selama {minutes} menit. Kamu merasa lebih santai dan terhibur!"
     },
 
     "makan_bergizi": {
@@ -124,28 +136,32 @@ define activities = {
         "min_duration": 20,
         "default_duration_hours": 0,
         "default_duration_minutes": 20,
-        "max_duration": 20
+        "max_duration": 20,
+        "completion_message": "Kamu makan makanan bergizi selama {minutes} menit. Nutrisimu meningkat!"
     },
     "makan_enak": {
         "name": "Makan Enak Sembarangan",
         "min_duration": 20,
         "default_duration_hours": 0,
         "default_duration_minutes": 20,
-        "max_duration": 20
+        "max_duration": 20,
+        "completion_message": "Kamu menikmati makanan enak selama {minutes} menit. Mood kamu meningkat, namun kamu mendapatkan kalori lebih banyak."
     },
     "minum_kopi": {
         "name": "Minum Kopi",
         "min_duration": 15,
         "default_duration_hours": 0,
         "default_duration_minutes": 15,
-        "max_duration": 15
+        "max_duration": 15,
+        "completion_message": "Kamu menikmati kopi selama {minutes} menit. Tingkat kafein dan kewaspadaan kamu meningkat!"
     },
     "meditasi": {
         "name": "Meditasi",
         "min_duration": 10,
         "default_duration_hours": 0,
         "default_duration_minutes": 10,
-        "max_duration": 60
+        "max_duration": 60,
+        "completion_message": "Kamu bermeditasi selama {minutes} menit. Kamu merasa lebih tenang dan fokus!"
     }
 }
 

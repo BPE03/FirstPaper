@@ -690,12 +690,6 @@ label process_activity:
         "Kamu mengerjakan skripsi selama [minutes_activity] menit."
         "Kamu mendapatkan [int(earned_score)] poin!"
         $ earned_score = 0
-    elif activity == "olahraga_ringan":
-        "Kamu olahraga ringan selama [minutes_activity] menit. Kamu merasa lebih segar!"
-    elif activity == "olahraga_sedang":
-        "Kamu olahraga sedang selama [minutes_activity] menit. Kamu merasa lebih segar!"
-    elif activity == "olahraga_berat":
-        "Kamu olahraga berat selama [minutes_activity] menit. Kamu merasa lebih segar!"
     elif activity == "bimbingan":
         if not thesis_advisor_approved():
             "Kamu bimbingan dengan dosen selama [minutes_activity] menit, namun topikmu belum disetujui."
@@ -703,36 +697,12 @@ label process_activity:
             $ thesis_advance_to(THESIS_EXPLORING)
         else:
             "Kamu bimbingan dengan dosen selama [minutes_activity] menit. Kamu memperoleh kejelasan dan arah!"
-    elif activity == "sosialisasi":
-        "Kamu menghabiskan waktu dengan teman-teman untuk [minutes_activity] menit. Kamu merasa terhubung dan bahagia!"
-    elif activity == "nap":
-        "Kamu tidur siang selama [minutes_activity] menit. Kamu merasa lebih waspada sekarang!"
-    elif activity == "makan_bergizi":
-        "Kamu makan makanan bergizi selama [minutes_activity] menit. Nutrisimu meningkat!"
-    elif activity == "makan_enak":
-        "Kamu menikmati makanan enak selama [minutes_activity] menit. Mood kamu meningkat, namun kamu mendapatkan kalori lebih banyak."
-    elif activity == "minum_kopi":
-        "Kamu menikmati kopi selama [minutes_activity] menit. Tingkat kafein dan kewaspadaan kamu meningkat!"
-    elif activity == "tidur":
-        "Kamu tidur selama [minutes_activity] menit."
-    elif activity == "workshop":
-        "Kamu menghadiri sebuah workshop selama [minutes_activity] menit. Kemampuanmu meningkat!"
-    elif activity == "belajar_mandiri":
-        "Kamu belajar secara mandiri selama [minutes_activity] menit. Kamu merasa lebih punya kendali!"
-    elif activity == "rest":
-        "Kamu beristirahat selama [minutes_activity] menit."
-    elif activity == "skip":
-        "Kamu melewatkan [minutes_activity] menit."
     elif activity == "cari_jurnal":
         if not thesis_has_topic():
             "Kamu belum berhasil menemukan topik proposal yang kamu pahami."
         "Kamu mencari dan membaca jurnal selama [minutes_activity] menit. Kamu mendapatkan ilmu baru."
-    elif activity == "chat_online":
-        "Kamu mengobrol dengan teman-teman secara online selama [minutes_activity] menit. Kamu merasa lebih terhubung!"
-    elif activity == "main_game":
-        "Kamu bermain game selama [minutes_activity] menit. Kamu merasa lebih santai dan terhibur!"
-    elif activity == "meditasi":
-        "Kamu bermeditasi selama [minutes_activity] menit. Kamu merasa lebih tenang dan fokus!"
+    else:
+        $ renpy.say(None, activities[activity]["completion_message"].format(minutes=minutes_activity))
 
     $ interrupted = False
     return
