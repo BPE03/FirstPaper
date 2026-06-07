@@ -35,7 +35,7 @@ init python:
         return ((v1 - v2) ** 2 + (a1 - a2) ** 2) ** 0.5
 
     # ── Emotion FSM ───────────────────────────────────────────────────
-    EMOTION_HYSTERESIS = 5.0  # min distance-improvement needed to leave current state
+    EMOTION_HYSTERESIS = 2.0  # min distance-improvement needed to leave current state
 
     EMOTION_ON_ENTER = {
         # Populated with narrative triggers as story content is added.
@@ -117,8 +117,8 @@ init python:
         relatedness_modifier = relatedness * 0.015
         relatedness = max(0, relatedness - (relatedness_modifier/60 * time_minutes))
 
-        nutrition_modifier = nutrition * 0.15
-        nutrition = max(0, nutrition - (nutrition_modifier/60 * time_minutes)) # 50% / 8 hours
+        nutrition_modifier = nutrition * 0.12
+        nutrition = max(0, nutrition - (nutrition_modifier/60 * time_minutes))
         
         pa_modifier = physical_activity * 0.025
         physical_activity = max(0, physical_activity - (pa_modifier/60 * time_minutes))

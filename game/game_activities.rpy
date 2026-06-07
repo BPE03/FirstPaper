@@ -179,7 +179,7 @@ init python:
     def _activity_minum_kopi():
         global arousal
         caffeine_consume(0.4/15)
-        arousal = min(max_stat, arousal + 25/15)
+        arousal = min(max_stat, arousal + 10/15)
 
     def _activity_olahraga_ringan():
         global autonomy, physical_activity, nutrition
@@ -237,7 +237,7 @@ init python:
         relatedness = max(0, relatedness - relatedness_modifier/60)
         pa_modifier = physical_activity * 0.05
         physical_activity = max(0, physical_activity - pa_modifier/60)
-        arousal = max(0, arousal + 6/60)
+        #arousal = max(0, arousal + 6/60)
         valence = max(0, valence - 6/60)
         calculate_practical_xp(20/60)
 
