@@ -49,9 +49,9 @@ init python:
         Two-harmonic circadian alertness signal anchored to clock time.
         Primary peak ~10:00-12:00, post-lunch dip ~14:00-16:00, trough ~04:00-06:00.
         """
-        primary_phase   = ((total_daily_time / 60 - 5.0) / 24.0) * 2 * math.pi
+        primary_phase   = ((total_daily_time / 60.0 - 5.0) / 24.0) * 2 * math.pi
         primary         = math.sin(primary_phase)
-        secondary_phase = ((total_daily_time / 60 - 2.0) / 12.0) * 2 * math.pi
+        secondary_phase = ((total_daily_time / 60.0 - 2.0) / 12.0) * 2 * math.pi
         secondary       = 0.20 * math.sin(secondary_phase)
         raw             = primary - secondary
         c               = (raw + 1.20) / 2.40

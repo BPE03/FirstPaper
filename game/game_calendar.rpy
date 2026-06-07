@@ -19,6 +19,13 @@ default calendar_events = {
         "year": 2026,
         "title": "Deadline Pengumpulan Proposal",
         "description": "Batas akhir untuk mengumpulkan proposal penelitian tesis. Pastikan proposal sudah lengkap dan disetujui oleh dosen pembimbing sebelum tanggal ini."
+    },
+    "skripsi_deadline": {
+        "day": 22,
+        "month": 6,
+        "year": 2026,
+        "title": "Deadline Pengumpulan Skripsi",
+        "description": "Batas akhir untuk mengumpulkan skripsi penelitian tesis. Pastikan skripsi sudah lengkap sebelum tanggal ini."
     }
 }
 default selected_calendar_event = None
