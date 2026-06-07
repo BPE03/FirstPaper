@@ -34,13 +34,12 @@ init python:
         """Calculate Euclidean distance between two (valence, arousal) points."""
         return ((v1 - v2) ** 2 + (a1 - a2) ** 2) ** 0.5
 
-    # ── Emotion FSM ───────────────────────────────────────────────────
     EMOTION_HYSTERESIS = 2.0  # min distance-improvement needed to leave current state
 
-    EMOTION_ON_ENTER = {
-        # Populated with narrative triggers as story content is added.
-        # e.g. "stres": lambda: renpy.notify("Kamu mulai merasa stres...")
-    }
+    # EMOTION_ON_ENTER = {
+    #     # Populated with narrative triggers as story content is added.
+    #     # e.g. "stres": lambda: renpy.notify("Kamu mulai merasa stres...")
+    # }
 
     def _emotion_find_nearest():
         """Scan all centroids; return (name, distance) of the nearest to current (v, a)."""
@@ -53,8 +52,8 @@ init python:
                 best_name = name
         return best_name, best_dist
 
-    def emotion_fsm_step():
-        """Advance the EmotionFSM one step with hysteresis. Call once per game-minute."""
+    def emotion_step():
+        """Advance the Emotion one step with hysteresis. Called once per game-minute."""
         global current_emotion_state
         nearest, d_nearest = _emotion_find_nearest()
         if nearest == current_emotion_state:
@@ -67,9 +66,9 @@ init python:
         if d_current - d_nearest < EMOTION_HYSTERESIS:
             return
         current_emotion_state = nearest
-        trigger = EMOTION_ON_ENTER.get(nearest)
-        if trigger:
-            trigger()
+        # trigger = EMOTION_ON_ENTER.get(nearest)
+        # if trigger:
+        #     trigger()
 
     def get_current_emotion():
         """Return the current stable emotion state (hysteresis-filtered)."""
@@ -132,7 +131,7 @@ init python:
         valence = max(0, valence - (6/60 * time_minutes))
         arousal = max(0, arousal - (6/60 * time_minutes))
 
-        emotion_fsm_step()
+        emotion_step()
 
         update_motivation_and_progress()  # Ensure motivation is updated based on current stats
         
