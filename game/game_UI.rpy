@@ -11,7 +11,7 @@ screen main_stats():
             xalign 0.05
             yalign 0.05
             xsize 280
-            ysize 660
+            ysize 690
             background "#2c3e50cc"
             padding (15, 15)
             
@@ -59,14 +59,17 @@ screen main_stats():
 
                 frame:
                     xsize 250
-                    ysize 50
+                    ysize 60
                     background emotion_info["color"]
                     padding (10, 10)
-                    
+
                     vbox:
                         spacing 3
                         text "Emosi" size 12 color "#ffffff"
-                        text "[current_emotion.upper()]" size 16 color "#ffffff" bold True
+                        hbox:
+                            spacing 8
+                            text "[current_emotion.upper()]" size 16 color "#ffffff" bold True yalign 0.5
+                            text "x[emotion_info['score_multiplier']]" size 13 color "#ffffffcc" yalign 0.5
                         #text "[emotion_info['description']]" size 11 color "#ffffff"
         
                 null height 1
@@ -88,6 +91,18 @@ screen main_stats():
                         spacing 8
                         text "Kesadaran:" size 13 color "#bdc3c7" yalign 0.5
                         text "[_aw_label]" size 14 color _aw_color bold True yalign 0.5
+                        text "(x[sleep_stat_multiplier()])" size 12 color "#bdc3c7" yalign 0.5
+
+                # Combined multiplier effect
+                $ _total_mult = round(emotion_info["score_multiplier"] * sleep_stat_multiplier(), 2)
+                frame:
+                    xsize 250
+                    background "#1a252f"
+                    padding (8, 6)
+                    vbox:
+                        spacing 2
+                        text "Efek XP & Progres Skripsi:" size 11 color "#bdc3c7"
+                        text "x[_total_mult]" size 18 color "#f39c12" bold True
 
                 null height 1
                 # Score display
@@ -314,7 +329,7 @@ screen detailed_stats_window():
                 xalign 0.5
                 yalign 0.2
                 xsize 700
-                ysize 650
+                ysize 750
                 background "#34495e"
                 padding (25, 25)
                 
@@ -384,12 +399,16 @@ screen detailed_stats_window():
                                 "crashed":   ("Ambruk",   "#e74c3c"),
                             }.get(sleep_get_state(), ("Normal", "#3498db"))
                             text "Kesadaran: [_alertness_label[0]]" size 13 color _alertness_label[1] bold True
+                            text "Efek XP & Progres Skripsi: x[sleep_stat_multiplier()]" size 12 color _alertness_label[1]
                     
-                    null height 15
+                    #null height 15
                     
                     # Emotional State
                     text "Status Emosional" size 22 color "#e91e63" bold True
-                    
+
+                    $ _det_emotion = get_current_emotion()
+                    $ _det_emotion_info = get_emotion_info(_det_emotion)
+
                     hbox:
                         spacing 20
                         vbox:
@@ -403,9 +422,22 @@ screen detailed_stats_window():
                             text "Arousal (Intensitas)" size 16 color "#ffffff"
                             bar value arousal range max_stat xsize 200 ysize 18 left_bar "#ffd93d" right_bar "#2c3e50"
                             text "[arousal:.02f]/[max_stat]" size 14 color "#bdc3c7"
-                    
+
+                    $ _em_mult = _det_emotion_info["score_multiplier"] if _det_emotion_info else 1.0
+                    text "Efek XP & Progres Skripsi (Emosi): x[_em_mult]" size 14 color "#ff6b9d" bold True
+
+                    $ _det_total_mult = round(_em_mult * sleep_stat_multiplier(), 2)
+                    frame:
+                        background "#1a252f"
+                        xsize 550
+                        padding (8, 6)
+                        hbox:
+                            spacing 8
+                            text "Efek Total XP & Progres Skripsi:" size 14 color "#bdc3c7" yalign 0.5
+                            text "x[_det_total_mult]" size 18 color "#f39c12" bold True yalign 0.5
+
                     null height 15
-                    
+
                     # Skills
                     text "Kemampuan" size 22 color "#27ae60" bold True
                     
