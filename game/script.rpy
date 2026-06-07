@@ -404,9 +404,10 @@ label activity_kos_kasur:
     $ activity = None
     $ time_stop = True
     $ _m_tidur = get_activity_motivation("tidur")
+    $ _l_tidur = get_activity_motivation_label("tidur")
     menu:
         "Mau Ngapain?"
-        "Tidur (Motivasi: [_m_tidur]/[max_stat])":
+        "Tidur (Motivasi: [_m_tidur]/[max_stat] - [_l_tidur])":
             $ activity = "tidur"
         "Batal":
             jump kos
@@ -422,9 +423,14 @@ label activity_kos_laptop:
     $ _m_jurnal     = get_activity_motivation("cari_jurnal")
     $ _m_chat_online = get_activity_motivation("chat_online")
     $ _m_main_game = get_activity_motivation("main_game")
+    $ _l_thesis          = get_activity_motivation_label("skripsi")
+    $ _l_belajar_mandiri = get_activity_motivation_label("belajar_mandiri")
+    $ _l_jurnal          = get_activity_motivation_label("cari_jurnal")
+    $ _l_chat_online     = get_activity_motivation_label("chat_online")
+    $ _l_main_game       = get_activity_motivation_label("main_game")
     menu:
         "Mau Ngapain?"
-        "Kerjakan Skripsi (Motivasi: [_m_thesis]/[max_stat])":
+        "Kerjakan Skripsi (Motivasi: [_m_thesis]/[max_stat] - [_l_thesis])":
             if not thesis_can_write():
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
                 jump kos
@@ -449,7 +455,7 @@ label activity_kos_laptop:
                 "Kamu telah mendaftar ke workshop."
                 "Kamu dapat menghadiri workshop pada menu aktivitas di kos."
                 jump kos
-        "Belajar Mandiri (Motivasi [_m_belajar_mandiri]/[max_stat])":
+        "Belajar Mandiri (Motivasi [_m_belajar_mandiri]/[max_stat] - [_l_belajar_mandiri])":
             $ activity = "belajar_mandiri"
         "Ajukan Bimbingan Dengan Dosen":
             if not thesis_has_topic():
@@ -473,11 +479,11 @@ label activity_kos_laptop:
                 "Kamu telah mengajukan jadwal bimbingan dengan dosen."
                 "Kamu dapat melakukan bimbingan pada menu aktivitas di kos."
                 jump kos
-        "Cari Jurnal (Motivasi [_m_jurnal]/[max_stat])":
+        "Cari Jurnal (Motivasi [_m_jurnal]/[max_stat] - [_l_jurnal])":
             $ activity = "cari_jurnal"
-        "Chat Online (Motivasi [_m_chat_online]/[max_stat])":
+        "Chat Online (Motivasi [_m_chat_online]/[max_stat] - [_l_chat_online])":
             $ activity = "chat_online"
-        "Main Game (Motivasi [_m_main_game]/[max_stat])":
+        "Main Game (Motivasi [_m_main_game]/[max_stat] - [_l_main_game])":
             $ activity = "main_game"
         "Batal":
             jump kos
@@ -495,13 +501,18 @@ label activity_kos:
     #$ _m_bimbingan  = get_activity_motivation("bimbingan")
     $ _m_sosialisasi  = get_activity_motivation("sosialisasi")
     $ _m_meditasi = get_activity_motivation("meditasi")
+    $ _l_olahraga_ringan = get_activity_motivation_label("olahraga_ringan")
+    $ _l_olahraga_sedang = get_activity_motivation_label("olahraga_sedang")
+    $ _l_olahraga_berat  = get_activity_motivation_label("olahraga_berat")
+    $ _l_sosialisasi     = get_activity_motivation_label("sosialisasi")
+    $ _l_meditasi        = get_activity_motivation_label("meditasi")
     menu:
         "Mau Ngapain?"
-        "Olahraga Ringan (Motivasi [_m_olahraga_ringan]/[max_stat])":
+        "Olahraga Ringan (Motivasi [_m_olahraga_ringan]/[max_stat] - [_l_olahraga_ringan])":
             $ activity = "olahraga_ringan"
-        "Olahraga Sedang (Motivasi [_m_olahraga_sedang]/[max_stat])":
+        "Olahraga Sedang (Motivasi [_m_olahraga_sedang]/[max_stat] - [_l_olahraga_sedang])":
             $ activity = "olahraga_sedang"
-        "Olahraga Berat (Motivasi [_m_olahraga_berat]/[max_stat])":
+        "Olahraga Berat (Motivasi [_m_olahraga_berat]/[max_stat] - [_l_olahraga_berat])":
             $ activity = "olahraga_berat"
         "Bimbingan dengan dosen" if appt_is_booked("bimbingan"):
             $ _time_diff = appt_get_time_diff("bimbingan")
@@ -586,11 +597,11 @@ label activity_kos:
                 "Kamu merasa sedikit tertinggal dari materi workshop."
             $ appt_dismiss("workshop")
             $ activity = "workshop"
-        "Sosialisasi dengan teman (Motivasi [_m_sosialisasi]/[max_stat])":
+        "Sosialisasi dengan teman (Motivasi [_m_sosialisasi]/[max_stat] - [_l_sosialisasi])":
             $ activity = "sosialisasi"
         # "Just rest and do nothing":
         #     $ activity = "rest"
-        "Meditasi (Motivasi [_m_meditasi]/[max_stat])":
+        "Meditasi (Motivasi [_m_meditasi]/[max_stat] - [_l_meditasi])":
             $ activity = "meditasi"
         "Skip time":
             $ activity = "skip"
@@ -606,13 +617,16 @@ label activity_dapur:
     $ _m_bergizi = get_activity_motivation("makan_bergizi")
     $ _m_enak    = get_activity_motivation("makan_enak")
     $ _m_kopi    = get_activity_motivation("minum_kopi")
+    $ _l_bergizi = get_activity_motivation_label("makan_bergizi")
+    $ _l_enak    = get_activity_motivation_label("makan_enak")
+    $ _l_kopi    = get_activity_motivation_label("minum_kopi")
     menu:
         "Mau ngapain?"
-        "Makan Bergizi (Motivasi [_m_bergizi]/[max_stat])":
+        "Makan Bergizi (Motivasi [_m_bergizi]/[max_stat] - [_l_bergizi])":
             $ activity = "makan_bergizi"
-        "Makan Enak Sembarangan (Motivasi [_m_enak]/[max_stat])":
+        "Makan Enak Sembarangan (Motivasi [_m_enak]/[max_stat] - [_l_enak])":
             $ activity = "makan_enak"
-        "Minum Kopi (Motivasi [_m_kopi]/[max_stat])":
+        "Minum Kopi (Motivasi [_m_kopi]/[max_stat] - [_l_kopi])":
             $ activity = "minum_kopi"
         "Ga jadi":
             jump dapur
@@ -627,13 +641,9 @@ label process_activity:
     $ def_h = activity_data["default_duration_hours"]
     $ def_m = activity_data["default_duration_minutes"]
     $ current_motivation_value = get_activity_motivation(activity)
-    if current_motivation_value < 20:
+    if current_motivation_value <= 20:
         "Kamu tidak termotivasi untuk melakukan aktivitas ini."
         return
-    elif current_motivation_value < 50:
-        if renpy.random.random() < 0.2:
-            "Kamu tidak termotivasi untuk melakukan aktivitas ini."
-            return
 
     if min_dur == max_dur:
         if activity == "workshop":
@@ -683,6 +693,10 @@ label process_activity:
             activity_fsm_tick()
             if minutes_activity % delay_batch == 0:
                 renpy.pause(delay=delay)
+                if current_motivation_value <= 60:
+                    if renpy.random.random() < (0.6 - current_motivation_value / 100.0) / 10.0:
+                        interrupted = True
+                        break
         activity_fsm_stop()
 
     # Show completion messages

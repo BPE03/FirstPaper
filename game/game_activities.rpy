@@ -427,6 +427,15 @@ init python:
         result = base_motivation + total_modifier
         return round(max(0.0, min(100, result)), 2)
 
+    def get_activity_motivation_label(activity_name):
+        value = get_activity_motivation(activity_name)
+        if value <= 20:
+            return "tidak termotivasi"
+        elif value <= 60:
+            return "parsial"
+        else:
+            return "termotivasi"
+
 default activity_fsm_state = "idle"
 
 init python:
