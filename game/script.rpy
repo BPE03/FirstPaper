@@ -562,19 +562,23 @@ label post_sempro:
     p "Sekarang, tinggal skripsinya."
     "Masih panjang. Tapi setidaknya kini Paijo tahu dia bisa."
 
+    $ score = 0
+    $ thesis_progress = 0
     $ valence = 50
     $ arousal = 50
     $ physical_activity = 80
     $ nutrition = 30
     $ autonomy = 80
+    $ process_s = 0.05
     $ competence = 80
     $ relatedness = 80
-    $ process_s = 0.05
+    $ current_day = 22
+    $ current_month = 5
     $ current_hour = 9
     $ current_minute = 0
     $ wake_time_in_minute = current_hour * 60 + current_minute
     $ total_daily_time    = current_hour * 60 + current_minute
-
+    $ set_cutscene_mode(False)
     jump kos
 
 label sidang_akhir:
@@ -833,6 +837,19 @@ label activity_dapur:
             jump dapur
 
     call process_activity
+    jump dapur
+
+label activity_dapur_cheat:
+    python:
+        store.thesis_progress = min(100, store.thesis_progress + 100)
+        _activity_skripsi()
+
+        _thesis_on_writing_tick()
+
+        if store.thesis_progress >= 100:
+            renpy.say(None, "Kamu sudah menyelesaikan semua yang bisa kamu kerjakan untuk proposalmu.")
+            renpy.say(None, "Kamu bisa langsung melewati waktu ke hari deadline proposal untuk lanjut ke seminar proposal.")
+            renpy.say(None, "Atau kamu bisa tetap melakukan aktivitas lain untuk meningkatkan skill praktis dan menulismu.")
     jump dapur
 
 label process_activity:
