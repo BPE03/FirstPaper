@@ -81,6 +81,7 @@ init python:
         _dl = store.calendar_events.get("proposal_deadline")
         if _dl and (current_year, current_month, current_day) >= (_dl["year"], _dl["month"], _dl["day"]) and \
         store.thesis_fsm_state not in ("post_sempro", "done"):
+            set_cutscene_mode(True)
             renpy.jump("sempro")
 
     def get_total_game_minutes():

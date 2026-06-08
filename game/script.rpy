@@ -324,10 +324,14 @@ label tutorial_scene:
     return
 
 label sempro:
-    "Hari seminar proposal pun tiba."
-    "Paijo merasa sangat gugup dan tidak percaya diri karena dia belum menyelesaikan proposalnya."
-    "Namun, dia tahu bahwa dia harus menghadapi kenyataan dan melakukan yang terbaik dalam seminar proposalnya."
     scene black with fade
+    "Deadline mengumpulkan seminar proposal pun tiba."
+    "Paijo mengumpulkan proposalnya dan kini menunggu hari yang dijadwalkan untuk sidang proposalnya."
+    "Rabu, 21 Januari 2026."
+    "Hari sidang proposal pun tiba."
+    scene kos_morning with fade
+    p ""
+    "Fah."
     if thesis_progress >= 100 or score > 40000:
         call sempro_a
     else:
@@ -350,39 +354,236 @@ label sempro:
 
 label sempro_e:
     $ thesis_advance_to(THESIS_SEMPRO_FAILED)
+    scene kelas with fade
+    "Ruangan seminar proposal terasa sangat sunyi."
+    "Paijo berdiri di depan layar presentasinya — sebuah slide yang bahkan tidak bisa dia jelaskan sendiri."
+    "Ketiga dosen penguji di hadapannya menatap dengan ekspresi yang sulit dibaca."
+    "\"Silakan mulai, Mas.\""
+    p "Ba... baik."
+    p "Selamat pagi, perkenalkan saya Paijo dengan topik..."
+    p "...topik..."
+    "Paijo menelan ludah."
+    "\"Lanjutkan, Mas.\""
+    p "Topik penelitian saya adalah... tentang... sistem yang..."
+    "Lima belas menit kemudian, sesi presentasi yang terlalu singkat selesai."
+    "Kemudian datang sesi tanya jawab."
+    "\"Apa problem statement dari penelitian Anda?\""
+    p "Problem statement-nya adalah... ehm..."
+    "\"Apa novelty dari penelitian Anda dibanding paper yang sudah ada?\""
+    p "..."
+    "\"Metode apa yang Anda rencanakan?\""
+    p "..."
+    "Dosen ketua penguji akhirnya menutup kertas revisinya."
+    "\"Mas, kami mohon Anda menunggu di luar sebentar.\""
+    "Paijo keluar dengan kaki yang terasa berat."
+    "Dari balik pintu, dia bisa mendengar bisikan dan suara ketukan pena."
+    "Sepuluh menit berlalu."
+    "\"Silakan masuk, Mas.\""
+    "\"Dengan berat hati, kami tidak bisa meluluskan proposal ini.\""
+    "\"Proposal Anda masih memerlukan perbaikan yang sangat mendasar — dari problem statement, tinjauan pustaka, hingga metodologi.\""
+    "\"Kami harap Mas bisa berkonsultasi lebih intensif dengan dosen pembimbing dan mempersiapkan diri lebih baik untuk sempro berikutnya.\""
+    p "..."
+    p "Baik, Bu. Terima kasih atas masukannya."
+    "Paijo keluar dari ruang seminar."
+    "Langit di luar tetap biru seperti biasa."
+    "Tapi rasanya hari ini jauh lebih berat dari seharusnya."
+    return
+
 label sempro_d:
     $ thesis_advance_to(THESIS_SEMPRO_FAILED)
+    scene kelas with fade
+    "Paijo masuk ke ruang seminar dengan napas yang tidak karuan."
+    "Proposalnya ada. Slidenya ada. Tapi entah mengapa, semuanya terasa tidak cukup."
+    "Dan memang tidak cukup."
+    "Presentasi berjalan cukup lancar di awal, tapi saat sesi tanya jawab dimulai, retakan mulai terlihat."
+    "\"Kalau menggunakan metode ini, bagaimana cara Anda memvalidasi hasilnya?\""
+    p "Validasinya... ehm... menggunakan dataset yang tersedia?"
+    "\"Dataset apa? Dari mana? Berapa besar?\""
+    p "..."
+    "\"Apa kontribusi spesifik penelitian ini terhadap literatur yang sudah ada?\""
+    p "Kontribusinya adalah... penelitian ini belum pernah dilakukan sebelumnya?"
+    "\"Sudah ada setidaknya tiga paper dengan topik serupa yang kami tahu. Anda sudah membaca ketiganya?\""
+    p "..."
+    p "Belum, Bu."
+    "Dosen kedua mencatat sesuatu."
+    "Banyak sekali sesuatu."
+    "\"Proposalnya masih perlu banyak perbaikan. Tinjauan pustakanya kurang mendalam, metodologinya masih kabur, dan justifikasinya belum kuat.\""
+    "\"Kami tidak bisa meluluskan dalam kondisi ini.\""
+    p "Baik, Pak. Terima kasih atas masukannya."
+    "Paijo keluar dari ruangan."
+    "Jantungnya masih berdegup kencang."
+    "Setidaknya sekarang dia tahu dengan pasti apa yang harus diperbaiki."
+    return
+
 label sempro_c:
     "Paijo mendapatkan nilai C untuk seminar proposalnya."
+    scene kelas with fade
+    "Sesi tanya jawab tadi cukup berat."
+    "Tapi Paijo berhasil menjawab sebagian pertanyaan — meskipun beberapa jawabannya masih tidak memuaskan."
+    "\"Kami memutuskan meluluskan proposal ini dengan beberapa catatan revisi yang signifikan.\""
+    "\"Tinjauan pustakanya perlu diperluas. Metodologinya perlu diperinci. Dan latar belakang masalahnya perlu diperkuat.\""
+    "\"Kami harap revisi ini diselesaikan sebelum Mas mulai mengerjakan penelitiannya.\""
+    p "Baik, Bu. Terima kasih atas masukannya."
+    "Paijo keluar dengan formulir revisi setebal hampir sepuluh halaman di tangannya."
+    p "..."
+    p "Setidaknya lulus."
+    return
 
 label sempro_bc:
     "Paijo mendapatkan nilai BC untuk seminar proposalnya."
+    scene kelas with fade
+    "Presentasi berjalan cukup baik."
+    "Paijo bisa menjawab sebagian besar pertanyaan dengan cukup memuaskan, meskipun beberapa masih kurang tajam."
+    "\"Proposalnya sudah cukup baik. Ada beberapa hal yang perlu direvisi — terutama di bagian metodologi dan kerangka teori.\""
+    "\"Tapi secara keseluruhan, arahnya sudah jelas.\""
+    p "Terima kasih, Pak. Akan saya revisi sesuai catatan."
+    "Paijo keluar dengan senyum tipis."
+    "Tidak sempurna, tapi cukup."
+    return
 
 label sempro_b:
     "Paijo mendapatkan nilai B untuk seminar proposalnya."
+    scene kelas with fade
+    "Presentasi berjalan dengan baik."
+    "Paijo menjawab semua pertanyaan dengan lancar, hanya ada satu atau dua yang perlu elaborasi tambahan."
+    "\"Proposalnya sudah bagus. Ada beberapa catatan minor — penulisan di bagian metodologi bisa lebih sistematis, dan referensinya bisa ditambah yang lebih baru.\""
+    "\"Tapi secara keseluruhan, kami puas dengan kesiapan Mas.\""
+    p "Terima kasih banyak, Bu. Akan saya perbaiki."
+    "Paijo keluar dengan langkah yang lebih ringan dari saat dia masuk."
+    return
 
 label sempro_ab:
     "Paijo mendapatkan nilai AB untuk seminar proposalnya."
+    scene kelas with fade
+    "Presentasi berjalan dengan sangat baik."
+    "Paijo tampak percaya diri dan bisa menjawab semua pertanyaan dengan detail dan meyakinkan."
+    "\"Proposalnya sangat baik. Tinjauan pustakanya komprehensif, metodologinya terstruktur, dan problem statement-nya jelas.\""
+    "\"Hanya ada beberapa catatan kecil yang lebih bersifat penyempurnaan.\""
+    p "Terima kasih, Pak. Saya akan segera memperbaikinya."
+    "\"Kami nantikan hasil penelitiannya.\""
+    "Paijo keluar ruangan dengan kepala tegak."
+    "Kerja kerasnya terbayar."
+    return
 
 label sempro_a:
     "Paijo mendapatkan nilai A untuk seminar proposalnya."
     "Dia merasa sangat senang dan bangga karena dia berhasil mendapatkan nilai yang sangat baik untuk seminar proposalnya."
-    jump post_sempro
+    scene kelas with fade
+    "Presentasi tadi... berjalan luar biasa."
+    "Paijo menjawab setiap pertanyaan dengan tepat dan percaya diri."
+    "Bahkan dosen penguji yang biasanya paling kritis pun terlihat mengangguk-angguk puas."
+    "\"Ini proposal yang sangat matang. Tinjauan pustakanya mendalam, metodologinya solid, dan kontribusi penelitiannya jelas.\""
+    "\"Hampir tidak ada yang perlu direvisi. Kami sangat terkesan.\""
+    p "..."
+    p "Terima kasih banyak, Bu. Pak."
+    "\"Kami tunggu hasil penelitiannya.\""
+    "Paijo keluar ruangan."
+    "Dia berdiri sejenak di depan pintu, memastikan bahwa semua ini nyata."
+    p "..."
+    p "Gua... lulus sempro dengan nilai A."
+    "Senyum pelan-pelan merekah di wajahnya."
+    return
 
 label sempro_gagal:
-    "Paijo"
+    hide screen main_stats
+    hide screen detailed_stats_window
+    hide screen calendar_now
+    hide screen calendar_window
+    hide screen game_maps
+    scene kos_afternoon with fade
+    p "..."
+    "Paijo duduk di tepi kasurnya, menatap lantai."
+    "Formulir evaluasi sempro tergeletak di mejanya."
+    "Di situ, dengan tulisan yang sangat jelas, tertera: TIDAK LULUS."
+    p "..."
+    p "Gua gagal sempro."
+    "Kata-kata itu terasa berat di benaknya."
+    "Selama ini dia sudah menunda, dan sekarang dia harus membayar harganya."
+    "Notif.sfx"
+    j "\"Jo, gimana sempro-nya?\""
+    p "..."
+    j "\"Jo?\""
+    p "\"Ga lulus Jok.\""
+    "Hening sejenak di sisi lain."
+    j "\"Lu serius?\""
+    p "\"Iya.\""
+    j "\"Aduh Jo... Sori gua denger itu.\""
+    j "\"Tapi... ya udah. Bukan akhir dari segalanya.\""
+    p "\"Gampang ngomongnya lu.\""
+    j "\"Iya gua tau. Tapi serius — ini bukan akhir. Banyak yang pernah di posisi lu dan akhirnya lulus juga.\""
+    j "\"Yang penting sekarang, lu tau apa yang harus diperbaiki kan?\""
+    p "..."
+    p "\"Iya, dosen udah kasih banyak catatan.\""
+    j "\"Nah, itu modal lu. Sekarang tinggal lu kerjain.\""
+    j "\"Lu bukan ga bisa, Jo. Lu cuma kurang waktu dan persiapan kemarin.\""
+    p "\"Hmmm.\""
+    j "\"Ayo, jangan mager. Semester depan lu pasti bisa.\""
+    "Paijo menaruh handphone-nya."
+    "Dia menatap langit-langit kamarnya dalam keheningan yang panjang."
+    scene kos_night with fade
+    "Malam itu, Paijo tidak membuka laptopnya."
+    "Bukan karena menyerah."
+    "Tapi karena dia tahu — semester ini sudah selesai."
+    "Seminar proposal yang gagal berarti satu hal: dia harus mengulang di semester depan."
+    "Satu semester yang terbuang bukan karena tidak mampu, tapi karena menunda."
+    p "..."
+    p "Semester depan."
+    p "Gua harus mulai dari awal lagi."
+    "Paijo menutup mata."
+    "Di balik kegelapan, dia sudah mulai menyusun rencana."
+    scene black with fade
+    centered "{size=48}AKHIR{/size}\n\n{size=24}Paijo gagal seminar proposal.\nIa harus mengulang di semester berikutnya.{/size}"
+    $ renpy.pause(3.0, hard=True)
+    centered "{size=20}{i}Terkadang, pelajaran terbesar datang dari kegagalan yang bisa kita hindari.{/i}{/size}"
+    $ renpy.pause(3.0, hard=True)
+    scene black with fade
+    return
 
 label post_sempro:
     "Setelah seminar proposal, Paijo merasa sangat lega dan senang karena dia berhasil melalui seminar proposal dengan baik."
+    scene kos_afternoon with fade
+    "Formulir revisi di tangannya tidak seberat yang dia bayangkan."
+    "Yang penting, dia sudah melewati gerbang pertama."
+    p "Akhirnya..."
+    "Notif.sfx"
+    j "\"Jo! Gimana sempro-nya?\""
+    p "\"Lulus Jok.\""
+    j "\"SERIUSAN?! Mantap kali lu Jo!\""
+    p "\"Hehehe. Masih ada revisi sih.\""
+    j "\"Ya iyalah, sempro mana yang ga ada revisi. Yang penting lulus dulu!\""
+    j "\"Selamat ya Jo! Lu emang bisa kalo mau.\""
+    p "\"Thanks Jok. Gua juga ga nyangka sih.\""
+    j "\"Udah, sekarang istirahatin diri lu dulu. Besok baru lanjut revisi.\""
+    p "\"Oke-oke.\""
+    "Paijo menaruh handphone-nya dan merebahkan diri di kasur."
+    "Langit-langit kamarnya terlihat sama seperti biasa."
+    "Tapi entah mengapa, terasa lebih menyenangkan dari sebelumnya."
+    p "..."
+    p "Sekarang, tinggal skripsinya."
+    "Masih panjang. Tapi setidaknya kini Paijo tahu dia bisa."
+
+    $ valence = 50
+    $ arousal = 50
+    $ physical_activity = 80
+    $ nutrition = 30
+    $ autonomy = 80
+    $ competence = 80
+    $ relatedness = 80
+    $ process_s = 0.05
+    $ current_hour = 9
+    $ current_minute = 0
+    $ wake_time_in_minute = current_hour * 60 + current_minute
+    $ total_daily_time    = current_hour * 60 + current_minute
 
     jump kos
 
 label sidang_akhir:
     "Hari sidang akhir pun tiba."
-    $ thesis_advance_to(THESIS_DONE)
+    jump post_sidang_akhir
 
 label post_sidang_akhir:
     "Setelah sidang akhir, Paijo merasa sangat lega dan senang karena dia berhasil menyelesaikan sidang akhir dengan baik."
+    return
 
 label kos:
     $ current_location = "kos"
