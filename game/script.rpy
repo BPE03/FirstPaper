@@ -354,34 +354,34 @@ label sempro:
 
 label sempro_e:
     $ thesis_advance_to(THESIS_SEMPRO_FAILED)
-    scene kelas with fade
+    scene expression selected_bidang.lower() + "_sidang" with fade
     "Ruangan seminar proposal terasa sangat sunyi."
     "Paijo berdiri di depan layar presentasinya — sebuah slide yang bahkan tidak bisa dia jelaskan sendiri."
     "Ketiga dosen penguji di hadapannya menatap dengan ekspresi yang sulit dibaca."
-    "\"Silakan mulai, Mas.\""
+    d_uji "Silakan mulai, Mas."
     p "Ba... baik."
     p "Selamat pagi, perkenalkan saya Paijo dengan topik..."
     p "...topik..."
     "Paijo menelan ludah."
-    "\"Lanjutkan, Mas.\""
+    d_uji "Lanjutkan, Mas."
     p "Topik penelitian saya adalah... tentang... sistem yang..."
     "Lima belas menit kemudian, sesi presentasi yang terlalu singkat selesai."
     "Kemudian datang sesi tanya jawab."
-    "\"Apa problem statement dari penelitian Anda?\""
+    d_uji "Apa problem statement dari penelitian Anda?"
     p "Problem statement-nya adalah... ehm..."
-    "\"Apa novelty dari penelitian Anda dibanding paper yang sudah ada?\""
+    d_uji "Apa novelty dari penelitian Anda dibanding paper yang sudah ada?"
     p "..."
-    "\"Metode apa yang Anda rencanakan?\""
+    d_uji "Metode apa yang Anda rencanakan?"
     p "..."
     "Dosen ketua penguji akhirnya menutup kertas revisinya."
-    "\"Mas, kami mohon Anda menunggu di luar sebentar.\""
+    d_uji "Mas, kami mohon Anda menunggu di luar sebentar."
     "Paijo keluar dengan kaki yang terasa berat."
     "Dari balik pintu, dia bisa mendengar bisikan dan suara ketukan pena."
     "Sepuluh menit berlalu."
-    "\"Silakan masuk, Mas.\""
-    "\"Dengan berat hati, kami tidak bisa meluluskan proposal ini.\""
-    "\"Proposal Anda masih memerlukan perbaikan yang sangat mendasar — dari problem statement, tinjauan pustaka, hingga metodologi.\""
-    "\"Kami harap Mas bisa berkonsultasi lebih intensif dengan dosen pembimbing dan mempersiapkan diri lebih baik untuk sempro berikutnya.\""
+    d_uji "Silakan masuk, Mas."
+    d_uji "Dengan berat hati, kami tidak bisa meluluskan proposal ini."
+    d_uji "Proposal Anda masih memerlukan perbaikan yang sangat mendasar — dari problem statement, tinjauan pustaka, hingga metodologi."
+    d_uji "Kami harap Mas bisa berkonsultasi lebih intensif dengan dosen pembimbing dan mempersiapkan diri lebih baik untuk sempro berikutnya."
     p "..."
     p "Baik, Bu. Terima kasih atas masukannya."
     "Paijo keluar dari ruang seminar."
@@ -391,24 +391,24 @@ label sempro_e:
 
 label sempro_d:
     $ thesis_advance_to(THESIS_SEMPRO_FAILED)
-    scene kelas with fade
+    scene expression selected_bidang.lower() + "_sidang" with fade
     "Paijo masuk ke ruang seminar dengan napas yang tidak karuan."
     "Proposalnya ada. Slidenya ada. Tapi entah mengapa, semuanya terasa tidak cukup."
     "Dan memang tidak cukup."
     "Presentasi berjalan cukup lancar di awal, tapi saat sesi tanya jawab dimulai, retakan mulai terlihat."
-    "\"Kalau menggunakan metode ini, bagaimana cara Anda memvalidasi hasilnya?\""
+    d_uji "Kalau menggunakan metode ini, bagaimana cara Anda memvalidasi hasilnya?"
     p "Validasinya... ehm... menggunakan dataset yang tersedia?"
-    "\"Dataset apa? Dari mana? Berapa besar?\""
+    d_uji "Dataset apa? Dari mana? Berapa besar?"
     p "..."
-    "\"Apa kontribusi spesifik penelitian ini terhadap literatur yang sudah ada?\""
+    d_uji "Apa kontribusi spesifik penelitian ini terhadap literatur yang sudah ada?"
     p "Kontribusinya adalah... penelitian ini belum pernah dilakukan sebelumnya?"
-    "\"Sudah ada setidaknya tiga paper dengan topik serupa yang kami tahu. Anda sudah membaca ketiganya?\""
+    d_uji "Sudah ada setidaknya tiga paper dengan topik serupa yang kami tahu. Anda sudah membaca ketiganya?"
     p "..."
     p "Belum, Bu."
     "Dosen kedua mencatat sesuatu."
     "Banyak sekali sesuatu."
-    "\"Proposalnya masih perlu banyak perbaikan. Tinjauan pustakanya kurang mendalam, metodologinya masih kabur, dan justifikasinya belum kuat.\""
-    "\"Kami tidak bisa meluluskan dalam kondisi ini.\""
+    d_uji "Proposalnya masih perlu banyak perbaikan. Tinjauan pustakanya kurang mendalam, metodologinya masih kabur, dan justifikasinya belum kuat."
+    d_uji "Kami tidak bisa meluluskan dalam kondisi ini."
     p "Baik, Pak. Terima kasih atas masukannya."
     "Paijo keluar dari ruangan."
     "Jantungnya masih berdegup kencang."
@@ -416,13 +416,13 @@ label sempro_d:
     return
 
 label sempro_c:
+    scene expression selected_bidang.lower() + "_sidang" with fade
     "Paijo mendapatkan nilai C untuk seminar proposalnya."
-    scene kelas with fade
     "Sesi tanya jawab tadi cukup berat."
     "Tapi Paijo berhasil menjawab sebagian pertanyaan — meskipun beberapa jawabannya masih tidak memuaskan."
-    "\"Kami memutuskan meluluskan proposal ini dengan beberapa catatan revisi yang signifikan.\""
-    "\"Tinjauan pustakanya perlu diperluas. Metodologinya perlu diperinci. Dan latar belakang masalahnya perlu diperkuat.\""
-    "\"Kami harap revisi ini diselesaikan sebelum Mas mulai mengerjakan penelitiannya.\""
+    d_uji "Kami memutuskan meluluskan proposal ini dengan beberapa catatan revisi yang signifikan."
+    d_uji "Tinjauan pustakanya perlu diperluas. Metodologinya perlu diperinci. Dan latar belakang masalahnya perlu diperkuat."
+    d_uji "Kami harap revisi ini diselesaikan sebelum Mas mulai mengerjakan penelitiannya."
     p "Baik, Bu. Terima kasih atas masukannya."
     "Paijo keluar dengan formulir revisi setebal hampir sepuluh halaman di tangannya."
     p "..."
@@ -430,53 +430,53 @@ label sempro_c:
     return
 
 label sempro_bc:
+    scene expression selected_bidang.lower() + "_sidang" with fade
     "Paijo mendapatkan nilai BC untuk seminar proposalnya."
-    scene kelas with fade
     "Presentasi berjalan cukup baik."
     "Paijo bisa menjawab sebagian besar pertanyaan dengan cukup memuaskan, meskipun beberapa masih kurang tajam."
-    "\"Proposalnya sudah cukup baik. Ada beberapa hal yang perlu direvisi — terutama di bagian metodologi dan kerangka teori.\""
-    "\"Tapi secara keseluruhan, arahnya sudah jelas.\""
+    d_uji "Proposalnya sudah cukup baik. Ada beberapa hal yang perlu direvisi — terutama di bagian metodologi dan kerangka teori."
+    d_uji "Tapi secara keseluruhan, arahnya sudah jelas."
     p "Terima kasih, Pak. Akan saya revisi sesuai catatan."
     "Paijo keluar dengan senyum tipis."
     "Tidak sempurna, tapi cukup."
     return
 
 label sempro_b:
+    scene expression selected_bidang.lower() + "_sidang" with fade
     "Paijo mendapatkan nilai B untuk seminar proposalnya."
-    scene kelas with fade
     "Presentasi berjalan dengan baik."
     "Paijo menjawab semua pertanyaan dengan lancar, hanya ada satu atau dua yang perlu elaborasi tambahan."
-    "\"Proposalnya sudah bagus. Ada beberapa catatan minor — penulisan di bagian metodologi bisa lebih sistematis, dan referensinya bisa ditambah yang lebih baru.\""
-    "\"Tapi secara keseluruhan, kami puas dengan kesiapan Mas.\""
+    d_uji "Proposalnya sudah bagus. Ada beberapa catatan minor — penulisan di bagian metodologi bisa lebih sistematis, dan referensinya bisa ditambah yang lebih baru."
+    d_uji "Tapi secara keseluruhan, kami puas dengan kesiapan Mas."
     p "Terima kasih banyak, Bu. Akan saya perbaiki."
     "Paijo keluar dengan langkah yang lebih ringan dari saat dia masuk."
     return
 
 label sempro_ab:
+    scene expression selected_bidang.lower() + "_sidang" with fade
     "Paijo mendapatkan nilai AB untuk seminar proposalnya."
-    scene kelas with fade
     "Presentasi berjalan dengan sangat baik."
     "Paijo tampak percaya diri dan bisa menjawab semua pertanyaan dengan detail dan meyakinkan."
-    "\"Proposalnya sangat baik. Tinjauan pustakanya komprehensif, metodologinya terstruktur, dan problem statement-nya jelas.\""
-    "\"Hanya ada beberapa catatan kecil yang lebih bersifat penyempurnaan.\""
+    d_uji "Proposalnya sangat baik. Tinjauan pustakanya komprehensif, metodologinya terstruktur, dan problem statement-nya jelas."
+    d_uji "Hanya ada beberapa catatan kecil yang lebih bersifat penyempurnaan."
     p "Terima kasih, Pak. Saya akan segera memperbaikinya."
-    "\"Kami nantikan hasil penelitiannya.\""
+    d_uji "Kami nantikan hasil penelitiannya."
     "Paijo keluar ruangan dengan kepala tegak."
     "Kerja kerasnya terbayar."
     return
 
 label sempro_a:
+    scene expression selected_bidang.lower() + "_sidang" with fade
     "Paijo mendapatkan nilai A untuk seminar proposalnya."
     "Dia merasa sangat senang dan bangga karena dia berhasil mendapatkan nilai yang sangat baik untuk seminar proposalnya."
-    scene kelas with fade
     "Presentasi tadi... berjalan luar biasa."
     "Paijo menjawab setiap pertanyaan dengan tepat dan percaya diri."
     "Bahkan dosen penguji yang biasanya paling kritis pun terlihat mengangguk-angguk puas."
-    "\"Ini proposal yang sangat matang. Tinjauan pustakanya mendalam, metodologinya solid, dan kontribusi penelitiannya jelas.\""
-    "\"Hampir tidak ada yang perlu direvisi. Kami sangat terkesan.\""
+    d_uji "Ini proposal yang sangat matang. Tinjauan pustakanya mendalam, metodologinya solid, dan kontribusi penelitiannya jelas."
+    d_uji "Hampir tidak ada yang perlu direvisi. Kami sangat terkesan."
     p "..."
     p "Terima kasih banyak, Bu. Pak."
-    "\"Kami tunggu hasil penelitiannya.\""
+    d_uji "Kami tunggu hasil penelitiannya."
     "Paijo keluar ruangan."
     "Dia berdiri sejenak di depan pintu, memastikan bahwa semua ini nyata."
     p "..."

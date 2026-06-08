@@ -1,6 +1,8 @@
 # Define characters
 define p = Character("Paijo", color="#77ff77")
 define j = Character("Joko", color="#c9982f")
+define d_uji = Character("Penguji", color="#ff3d3d")
+define d_bim = Character("Pembimbing", color="#2f72c9")
 define n = Character(None, kind=nvl)
 
 # Variable to track if it's a cutscene or interactive gameplay
