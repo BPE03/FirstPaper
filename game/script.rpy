@@ -296,7 +296,7 @@ label tutorial_scene:
     n "Aktivitas fisik adalah kebutuhan untuk melakukan aktivitas fisik yang cukup."
     n "Aktivitas fisik dapat dipenuhi dengan berolahraga."
     n "Tidur adalah kebutuhan untuk mendapatkan tidur yang cukup."
-    n "Namun, mekanik tidur di dalam game ini tidak hanya sekadar mendapatkan tidur yang cukup, tetapi juga mendapatkan tidur yang berkualitas dengan memperhatikan faktor-faktor seperti siklus sirkadian."
+    n "Namun, mekanik tidur di dalam game ini tidak hanya sekadar mendapatkan tidur yang cukup, tetapi juga mendapatkan tidur yang berkualitas dengan memperhatikan ritme sirkadian."
     n "Secara umum, untuk mendapatkan tidur yang berkualitas, pemain perlu tidur di malam hari."
     nvl clear
 
@@ -312,6 +312,26 @@ label tutorial_scene:
     n "Namun faktor keberhasilanmu untuk mendapatkan topik proposal yang dapat kamu pahami dipengaruhi oleh kemampuan praktismu."
     n "Semakin tinggi kemampuan praktismu, semakin besar peluangmu untuk mendapatkan topik proposal yang dapat kamu pahami."
     n "Kamu bisa mulai mengerjakan skripsimu ketika kamu sudah mendapatkan topik."
+    nvl clear
+
+    n "Kemampuan"
+    n "Game ini memiliki 2 tipe kemampuan, yaitu praktis dan menulis."
+    n "Kemampuan praktis adalah pengetahuanmu terhadap bidang ilmu."
+    n "Meningkatkan kemampuan ini dapat meningkatkan skor yang didapatkan dalam satu sesi menulis skripsi."
+    n "Kemampuan menulis adalah pengetahuanmu terhadap cara menulis skripsi."
+    n "Meningkatkan kemampuan ini dapat memperbanyak progress yang dihasilkan dalam satu sesi menulis skripsi."
+    nvl clear
+
+    n "Bonus progress skripsi, skor, dan xp yang didapatkan."
+    n "Emosi dan tingkat kesadaran karakter dapat mempengaruhi progress skripsi, skor, dan xp yang didapatkan."
+    n "Emosi yang positif dapat memberikan dampak yang positif, sedangkan emosi negatif akan memberikan dampak yang negatif pula."
+    n "Selanjutnya tingkat kesadaran karakter dipengaruhi oleh beberapa hal."
+    n "Pemenuhan kebutuhan tidur, dan ritme sirkadian."
+    n "Secara umum, karakter akan lebih berenergi di pagi dan siang hari."
+    n "Pemain juga bisa memberikan kesadaran lebih dengan minum kopi."
+    n "Namun semakin sering minum kopi, karakter akan semakin toleran dan efek kesadaran dari kopi akan semakin lemah."
+    n "Selain itu, minum kopi sebelum tidur juga akan mengganggu kualitas tidur."
+    nvl clear
 
     "Apakah kamu ingin mengulang penjelasan tadi?"
     menu:
@@ -1039,10 +1059,12 @@ label activity_kos:
                     "Tidak":
                         jump kos
                 "Kamu menunggu [_wait_str] hingga waktu bimbingan tiba..."
+                scene expression selected_bidang.lower() + "_sidang" with fade
                 python:
                     advance_time(-_time_diff)
                     decrease_stats(-_time_diff)
             elif _time_diff >= 60:
+                scene expression selected_bidang.lower() + "_sidang" with fade
                 python:
                     _late_h = _time_diff // 60
                     _late_m = _time_diff % 60
@@ -1055,6 +1077,7 @@ label activity_kos:
                 $ appt_dismiss("bimbingan")
                 jump kos
             elif _time_diff > 0:
+                scene expression selected_bidang.lower() + "_sidang" with fade
                 python:
                     _late_h = _time_diff // 60
                     _late_m = _time_diff % 60
@@ -1084,10 +1107,12 @@ label activity_kos:
                     "Tidak":
                         jump kos
                 "Kamu menunggu [_wait_str] hingga waktu workshop tiba..."
+                scene kelas with fade
                 python:
                     advance_time(-_time_diff)
                     decrease_stats(-_time_diff)
             elif _time_diff > 0:
+                scene kelas with fade
                 python:
                     _late_h = _time_diff // 60
                     _late_m = _time_diff % 60
@@ -1225,6 +1250,7 @@ label process_activity:
                 renpy.pause(delay=delay)
             if current_motivation_value <= 60:
                 if renpy.random.random() < (1 - current_motivation_value / 100.0) / 20.0:
+                    renpy.say(None, "Kamu merasa sudah cukup melakukan aktivitas ini.")
                     interrupted = True
                     break
         activity_fsm_stop()

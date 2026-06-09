@@ -12,3 +12,4 @@ errors.txt
 # Misc files
 .vscode
 .claude
+FP_Related/*
