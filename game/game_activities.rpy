@@ -525,7 +525,16 @@ init python:
             total_chance = min(0.9, total_chance) / 10
             if renpy.random.random() < total_chance:
                 thesis_advance_to(THESIS_SUPERVISED)
-                renpy.say(None, "Dosen menyetujui topik proposalmu! Kamu bisa mulai mengerjakan skripsimu sekarang.")
+                renpy.say(d_bim, "Mas, setelah saya pelajari, topik ini menarik dan layak untuk dilanjutkan.")
+                renpy.say(d_bim, "Fondasi teorinya ada, dan ada celah penelitian yang bisa Mas isi di sini.")
+                renpy.say(d_bim, "Saya setuju untuk membimbing proposal ini. Silakan mulai mengerjakan drafnya.")
+                renpy.say(p, "Serius, Pak? Alhamdulillah...")
+                renpy.say(p, "Terima kasih banyak, Pak. Saya akan langsung mulai.")
+                renpy.say(d_bim, "Yang terpenting mengerjakan BAB 3 Metodologi Penelitian dahulu.")
+                renpy.say(d_bim, "Karena BAB 3 ini menjelaskan apa yang mau kamu lakukan, apa yang mau kamu riset.")
+                renpy.say(d_bim, "Kalau BAB 3 udah bagus, nanti BAB 1 dan BAB 2 nya juga jadi jelas mau ditulis apa.")
+                renpy.say(d_bim, "Ingat, bimbingan rutin itu penting. Jangan menunggu drafnya sempurna dulu baru ke saya.")
+                renpy.say(p, "Baik, Pak. Terima kasih banyak.")
         _activity_bimbingan()
 
     # ACTIVITY_TICK extends ACTIVITY_DISPATCH with special-case overrides
