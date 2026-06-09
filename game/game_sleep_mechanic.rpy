@@ -77,7 +77,10 @@ init python:
         S_WEIGHT           = 0.80
         C_WEIGHT           = 0.20
         circadian_pressure = 1.0 - sleep_get_process_c()
-        effective_s        = process_s * 10 / 8 * S_WEIGHT  # above 0.8 is sleep deprivation
+        # effective_s is around 0.1 - 0.8
+        effective_s        = (process_s - 0.1) / (0.8 - 0.1)
+        effective_s        = max(0.0, min(1.0, effective_s))
+        weighted_s         = effective_s * S_WEIGHT
         raw                = 1 - (effective_s + circadian_pressure * C_WEIGHT)
         if caffeine_plasma_level > 0.0:
             mask = caffeine_get_effect() * 0.4  # max 40% suppression

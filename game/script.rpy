@@ -907,6 +907,10 @@ label activity_dapur:
 
 label activity_dapur_cheat:
     python:
+        if thesis_fsm_state in (THESIS_EXPLORING, THESIS_SUPERVISED, THESIS_PROPOSAL_WRITING):
+            thesis_advance_to(THESIS_SEMPRO_READY)
+        elif thesis_fsm_state in (THESIS_POST_SEMPRO, THESIS_WRITING):
+            thesis_advance_to(THESIS_DONE)
         store.thesis_progress = min(100, store.thesis_progress + 100)
         _activity_skripsi()
 
@@ -977,10 +981,10 @@ label process_activity:
             activity_fsm_tick()
             if minutes_activity % delay_batch == 0:
                 renpy.pause(delay=delay)
-                if current_motivation_value <= 60:
-                    if renpy.random.random() < (0.6 - current_motivation_value / 100.0) / 10.0:
-                        interrupted = True
-                        break
+            if current_motivation_value <= 60:
+                if renpy.random.random() < (1 - current_motivation_value / 100.0) / 20.0:
+                    interrupted = True
+                    break
         activity_fsm_stop()
 
     # Show completion messages
