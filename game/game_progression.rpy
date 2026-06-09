@@ -50,7 +50,7 @@ init python:
 
     def thesis_can_write():
         """True when player has a topic and can work on the thesis."""
-        return thesis_fsm_state not in (THESIS_EXPLORING, THESIS_DONE)
+        return thesis_fsm_state not in (THESIS_EXPLORING)
 
     def thesis_has_topic():
         """True when player has found a topic candidate."""
@@ -77,6 +77,18 @@ init python:
             thesis_advance_to(THESIS_WRITING)
         elif thesis_fsm_state == THESIS_WRITING and store.thesis_progress >= 100:
             thesis_advance_to(THESIS_DONE)
+
+    def thesis_check_completion():
+        if store.thesis_progress >= 100 and thesis_fsm_state == THESIS_SEMPRO_READY:
+            renpy.say(None, "Kamu sudah menyelesaikan semua yang bisa kamu kerjakan untuk proposalmu.")
+            renpy.say(None, "Kamu bisa langsung melewati waktu ke hari deadline proposal untuk lanjut ke seminar proposal.")
+            renpy.say(None, "Atau kamu bisa tetap melakukan aktivitas lain untuk meningkatkan skill praktis dan menulismu.")
+            return True
+        elif store.thesis_progress >= 100 and thesis_fsm_state == THESIS_DONE:
+            renpy.say(None, "Kamu sudah menyelesaikan semua yang bisa kamu kerjakan untuk skripsimu.")
+            renpy.say(None, "Kamu bisa langsung melewati waktu ke hari deadline skripsi untuk lanjut ke sidang akhir.")
+            return True
+        return False
 
     BIMBINGAN_BONUS_MULT = 1.5
 

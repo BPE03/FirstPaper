@@ -325,15 +325,16 @@ label tutorial_scene:
 
 label sempro:
     scene black with fade
-    "Deadline mengumpulkan seminar proposal pun tiba."
+    "Deadline mengumpulkan proposal pun tiba."
     if thesis_fsm_state not in (THESIS_PROPOSAL_WRITING, THESIS_SEMPRO_READY):
         jump sempro_tidak_mengerjakan
     "Paijo mengumpulkan proposalnya dan kini menunggu hari yang dijadwalkan untuk sidang proposalnya."
     "Rabu, 21 Januari 2026."
     "Hari sidang proposal pun tiba."
     scene kos_morning with fade
-    p ""
-    "Fah."
+    p "....."
+    p "Udah waktunya sidang proposal."
+    p "Bisa lah ya, lulus lah ya."
     if thesis_progress >= 100 or score > 40000:
         call sempro_a
     else:
@@ -428,7 +429,7 @@ label sempro_e:
     "Kemudian datang sesi tanya jawab."
     d_uji "Apa problem statement dari penelitian Anda?"
     p "Problem statement-nya adalah... ehm..."
-    d_uji "Apa novelty dari penelitian Anda dibanding paper yang sudah ada?"
+    d_uji "Apa kebaruan dari penelitian Anda dibanding paper yang sudah ada?"
     p "..."
     d_uji "Metode apa yang Anda rencanakan?"
     p "..."
@@ -641,11 +642,252 @@ label post_sempro:
     jump kos
 
 label sidang_akhir:
+    scene black with fade
+    "Deadline mengumpulkan skripsi pun tiba."
+    "Paijo mengumpulkan skripsinya dan kini menunggu hari yang dijadwalkan untuk sidang akhirnya."
+    "Rabu, 10 Juli 2026."
     "Hari sidang akhir pun tiba."
+    scene kos_morning with fade
+    p "....."
+    p "Udah waktunya sidang akhir."
+    p "....."
+    if thesis_progress >= 100 or score > 40000:
+        call sidang_akhir_a
+    else:
+        if score >= 36000:
+            call sidang_akhir_ab
+        elif score >= 32000:
+            call sidang_akhir_b
+        elif score >= 28000:
+            call sidang_akhir_bc
+        elif score >= 24000:
+            call sidang_akhir_c
+        elif score >= 20000:
+            call sidang_akhir_d
+        else:
+            call sidang_akhir_e
+    if thesis_fsm_state == THESIS_FAILED:
+        jump sidang_akhir_gagal
     jump post_sidang_akhir
 
+label sidang_akhir_a:
+    scene expression selected_bidang.lower() + "_sidang" with fade
+    "Presentasi tadi berjalan sempurna."
+    "Paijo menjawab setiap pertanyaan dengan percaya diri, tepat, dan terstruktur."
+    "Dosen pembimbing tersenyum tipis dari kursinya."
+    "Para penguji terlihat terkesan, bukan hanya dengan hasilnya, tapi dengan cara Paijo memahami penelitiannya sendiri."
+    d_uji "Penelitiannya solid. Kontribusinya jelas. Dan Anda bisa menjelaskannya dengan sangat baik."
+    d_uji "Hampir tidak ada yang perlu kami tanyakan lebih lanjut."
+    d_bim "Saya bangga dengan perkembangan Mas Paijo. Ini hasil yang luar biasa."
+    d_uji "Kami sepakat memberikan nilai A."
+    d_uji "Selamat, Sarjana."
+    p "..."
+    p "Terima kasih banyak, Pak. Bu."
+    "Paijo keluar ruangan."
+    "Tangannya masih sedikit gemetar."
+    "Bukan karena gugup, tapi karena baru saja menyadari bahwa semuanya sudah selesai."
+    return
+
+label sidang_akhir_ab:
+    scene expression selected_bidang.lower() + "_sidang" with fade
+    "Presentasi berjalan sangat baik."
+    "Paijo menjawab semua pertanyaan dengan lancar dan menunjukkan pemahaman yang mendalam terhadap topiknya."
+    d_uji "Skripsinya sangat baik. Metodologinya kuat, analisisnya tajam."
+    d_uji "Ada beberapa hal kecil yang bisa diperkuat di versi finalnya, terutama di bagian diskusi dan kesimpulan."
+    d_uji "Tapi secara keseluruhan, kami sangat puas."
+    d_bim "Kerja bagus, Mas. Saya yakin revisi minornya bisa diselesaikan cepat."
+    p "Terima kasih, Pak. Bu. Akan saya perbaiki segera."
+    d_uji "Selamat, Sarjana."
+    "Paijo keluar dengan dada yang terasa lapang."
+    return
+
+label sidang_akhir_b:
+    scene expression selected_bidang.lower() + "_sidang" with fade
+    "Presentasi berjalan dengan baik."
+    "Ada beberapa pertanyaan yang membuat Paijo berpikir lebih keras, tapi semuanya berhasil dijawab."
+    d_uji "Skripsinya bagus. Beberapa bagian perlu diperkuat, analisisnya bisa lebih dalam, dan ada inkonsistensi kecil di bab tiga."
+    d_uji "Kami juga ingin Anda memperluas pembahasan limitasi penelitian."
+    p "Baik, Pak. Saya catat semuanya."
+    d_bim "Revisinya tidak banyak, Mas. Fokus ke poin-poin yang disebutkan, selesaikan dalam dua minggu."
+    d_uji "Setuju. Kami meluluskan dengan nilai B. Selamat, Sarjana."
+    p "Terima kasih banyak."
+    "Paijo keluar dengan formulir revisi yang tidak terlalu tebal."
+    "Cukup untuk dikerjakan. Cukup untuk diselesaikan."
+    return
+
+label sidang_akhir_bc:
+    scene expression selected_bidang.lower() + "_sidang" with fade
+    "Presentasi berjalan cukup baik, tapi ada momen-momen di sesi tanya jawab yang membuat Paijo terpaksa menjawab lebih hati-hati."
+    d_uji "Secara keseluruhan, skripsinya cukup. Tapi ada beberapa revisi yang cukup signifikan."
+    d_uji "Bab dua perlu direstrukturisasi. Validasi hasilnya perlu diperkuat dengan data tambahan. Dan kesimpulannya terlalu umum."
+    p "Baik, saya pahami. Akan saya perbaiki."
+    d_bim "Mas Paijo, revisinya memang cukup banyak. Tapi saya yakin Anda bisa. Hubungi saya jika butuh arahan."
+    d_uji "Kami meluluskan dengan nilai BC. Selamat, Sarjana. Selesaikan revisinya dengan baik."
+    "Paijo keluar dengan catatan revisi yang cukup panjang di tangannya."
+    "Tapi dia lulus."
+    "Itu yang penting sekarang."
+    return
+
+label sidang_akhir_c:
+    scene expression selected_bidang.lower() + "_sidang" with fade
+    "Sesi tanya jawab tadi berat."
+    "Beberapa pertanyaan membuat Paijo terdiam cukup lama sebelum akhirnya menjawab, sebagian memuaskan, sebagian tidak."
+    d_uji "Kami berdiskusi cukup lama untuk kasus ini."
+    d_uji "Skripsinya memenuhi syarat minimal kelulusan, tapi masih banyak yang harus diperbaiki."
+    d_uji "Metodologinya perlu direvisi ulang. Analisis datanya kurang mendalam. Dan tinjauan pustakanya sudah usang."
+    d_uji "Kami memutuskan meluluskan dengan nilai C, dengan catatan revisi yang harus diselesaikan sebelum yudisium."
+    d_bim "Mas Paijo, ini menjadi pelajaran berharga. Mari kita jadwalkan bimbingan intensif untuk menyelesaikan revisinya."
+    p "Baik, Bu. Pak. Terima kasih atas kesempatannya."
+    "Paijo keluar dengan tangan penuh catatan."
+    "Lulus, tapi dengan banyak pekerjaan rumah yang masih menunggu."
+    return
+
+label sidang_akhir_d:
+    $ thesis_advance_to(THESIS_FAILED)
+    scene expression selected_bidang.lower() + "_sidang" with fade
+    "Sesi tanya jawab berjalan sangat sulit."
+    "Paijo tidak bisa menjawab beberapa pertanyaan fundamental tentang penelitiannya."
+    d_uji "Saya ingin memahami logika di balik metode yang Anda pilih. Bisa dijelaskan?"
+    p "Metodenya... dipilih karena paling umum digunakan untuk kasus seperti ini."
+    d_uji "Apa kriteria 'paling umum' itu? Anda sudah membandingkan dengan alternatif lainnya?"
+    p "..."
+    d_uji "Bagaimana Anda memvalidasi bahwa hasil Anda tidak bias?"
+    p "..."
+    "Para penguji saling bertukar pandang."
+    "Dosen pembimbing menunduk."
+    d_uji "Mas, kami mohon Anda menunggu di luar."
+    "Lima belas menit berlalu dengan sangat panjang."
+    d_uji "Kami tidak bisa meluluskan skripsi ini dalam kondisi saat ini."
+    d_uji "Fondasi metodologisnya terlalu lemah. Ini bukan soal perbaikan minor, ini membutuhkan revisi substansial."
+    d_bim "Mas Paijo, saya minta maaf. Kita harus bimbingan lebih intensif lagi. Saya akan bantu Anda melalui ini."
+    p "..."
+    p "Baik. Terima kasih."
+    "Paijo keluar dari ruangan."
+    return
+
+label sidang_akhir_e:
+    $ thesis_advance_to(THESIS_FAILED)
+    scene expression selected_bidang.lower() + "_sidang" with fade
+    "Dari menit pertama, semuanya sudah terasa tidak berjalan dengan baik."
+    "Paijo tidak bisa menjawab pertanyaan pertama dari penguji."
+    d_uji "Apa research gap yang Anda isi dengan penelitian ini?"
+    p "Research gap-nya adalah... bahwa penelitian ini belum pernah dilakukan sebelumnya."
+    d_uji "Berdasarkan apa? Anda sudah melakukan systematic literature review?"
+    p "..."
+    d_uji "Di halaman empat puluh dua, Anda menyebutkan metode X menghasilkan akurasi 87\%. Dari mana angka ini?"
+    p "Dari... eksperimen yang saya jalankan."
+    d_uji "Dataset-nya apa? Bagaimana Anda memastikan tidak ada data leakage?"
+    p "..."
+    "Dosen penguji kedua meletakkan skripsinya di meja."
+    d_uji "Mas, jujur, apakah Anda benar-benar memahami apa yang Anda tulis di sini?"
+    p "..."
+    "Hening."
+    "Hening yang sangat panjang."
+    d_bim "..."
+    d_uji "Kami sudahi sesi ini. Harap menunggu di luar."
+    "Sepuluh menit kemudian."
+    d_uji "Kami tidak bisa meluluskan. Skripsi ini membutuhkan perbaikan menyeluruh, bukan hanya revisi, tapi hampir penulisan ulang."
+    d_uji "Kami harap Mas bisa memulai ulang dengan bimbingan yang lebih intensif."
+    p "Baik. Terima kasih."
+    "Paijo keluar."
+    "Kakinya terasa sangat berat."
+    return
+
+label sidang_akhir_gagal:
+    hide screen main_stats
+    hide screen detailed_stats_window
+    hide screen calendar_now
+    hide screen calendar_window
+    hide screen game_maps
+    scene kos_afternoon with fade
+    "Paijo duduk di kosnya, menatap layar laptop yang menyala."
+    "Skripsinya terbuka di sana, ratusan halaman hasil kerja berbulan-bulan."
+    "Dan hari ini, semuanya dinyatakan tidak cukup."
+    p "..."
+    p "Gua gagal sidang."
+    "Bukan proposal. Bukan ujian tengah semester."
+    "Sidang akhir."
+    "Notif.sfx"
+    j "\"Jo, gimana sidangnya?!\""
+    p "..."
+    j "\"Jo? Kok diem?\""
+    p "\"Ga lulus Jok.\""
+    "Hening cukup lama."
+    j "\"...serius?\""
+    p "\"Iya.\""
+    j "\"Jo, gua minta maaf banget denger itu.\""
+    j "\"Lu udah kerja keras banget selama ini.\""
+    p "\"Kayaknya emang kurang keras.\""
+    j "\"Bukan gitu. Lu udah jauh banget dari awal. Inget waktu lu ga tau mau ngapain sama skripsi lu?\""
+    p "\"Iya.\""
+    j "\"Sekarang lu udah punya ratusan halaman. Itu bukan hal kecil.\""
+    j "\"Revisinya pasti berat. Tapi lu bukan orang yang ga bisa nyelesain ini.\""
+    p "..."
+    p "\"Iya Jok. Makasih.\""
+    "Paijo menutup handphone-nya."
+    "Dia membuka skripsinya lagi."
+    "Bukan untuk dibaca."
+    "Hanya untuk mengingatkan dirinya bahwa ini bisa diselesaikan."
+    scene kos_night with fade
+    "Malam itu, Paijo tidak tidur lebih awal."
+    "Dia membaca catatan revisi dari para penguji, satu per satu."
+    "Panjang. Berat. Tapi ada logikanya."
+    p "Oke."
+    p "Gua tau harus mulai dari mana."
+    scene black with fade
+    centered "{size=48}AKHIR{/size}\n\n{size=24}Paijo gagal sidang akhir.\nRevisi menanti. Wisuda harus ditunda.{/size}"
+    $ renpy.pause(3.0, hard=True)
+    centered "{size=20}{i}Kegagalan bukan lawan dari keberhasilan,\nkegagalan adalah bagian dari perjalanannya.{/i}{/size}"
+    $ renpy.pause(3.0, hard=True)
+    scene black with fade
+    return
+
 label post_sidang_akhir:
-    "Setelah sidang akhir, Paijo merasa sangat lega dan senang karena dia berhasil menyelesaikan sidang akhir dengan baik."
+    $ thesis_advance_to(THESIS_DONE)
+    hide screen main_stats
+    hide screen detailed_stats_window
+    hide screen calendar_now
+    hide screen calendar_window
+    hide screen game_maps
+    scene kos_morning with fade
+    "Paijo berdiri di depan cermin."
+    "Kemeja putih. Jas almamater. Dasi yang baru pertama kali dia pakai."
+    p "..."
+    p "Ini nyata."
+    "Hari ini adalah hari wisuda."
+    "Hari di mana semua yang dimulai dari malam itu, malam saat Joko mengingatkannya soal deadline sempro, akhirnya sampai ke titik ini."
+    scene black with fade
+    "Beberapa jam kemudian."
+    "Di atas panggung, rektor menyebutkan namanya."
+    "Paijo melangkah maju."
+    "Toga di kepalanya. Ijazah di tangannya."
+    p "..."
+    "Satu langkah sederhana yang terasa seperti ujung dari perjalanan panjang."
+    "Dan awal dari perjalanan yang baru."
+    scene kos_afternoon with fade
+    "Setelah acara, Paijo duduk di teras kos untuk terakhir kalinya."
+    "Barang-barangnya sudah hampir semua terpak."
+    "Notif.sfx"
+    j "\"Jo! Selamat ya, S.Kom!\""
+    p "\"Lu juga Jok. Kita lulus bareng.\""
+    j "\"Gila ya. Dari yang lu panik ga ada topik, sampe sekarang.\""
+    p "\"Haha. Iya. Ga nyangka juga.\""
+    j "\"Lu tuh bukti kalo mau bisa.\""
+    p "\"Asal ga nunda-nunda lagi.\""
+    j "\"Wkwkwk. Iya dah. Oke Jo, see you di dunia nyata!\""
+    p "\"See you Jok.\""
+    "Paijo meletakkan handphone-nya."
+    "Dia menatap langit-langit kamarnya untuk terakhir kali."
+    "Tidak ada keajaiban. Tidak ada jalan pintas."
+    "Hanya hari demi hari yang dikerjakan, satu per satu, sampai selesai."
+    p "..."
+    p "Makasih ya."
+    scene black with fade
+    centered "{color=#f5c518}{size=52}SELAMAT{/size}{/color}\n\n{size=28}Paijo Sarjana Komputer{/size}"
+    $ renpy.pause(4.0, hard=True)
+    centered "{size=20}Terima kasih sudah bermain {b}First Paper{/b}.\n\nSemoga perjalanan Paijo menginspirasi perjalananmu sendiri.{/size}"
+    $ renpy.pause(4.0, hard=True)
+    scene black with fade
     return
 
 label kos:
@@ -706,10 +948,7 @@ label activity_kos_laptop:
             if not thesis_can_write():
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
                 jump kos
-            elif thesis_fsm_state == THESIS_SEMPRO_READY:
-                "Kamu sudah menyelesaikan semua yang bisa kamu kerjakan untuk proposalmu."
-                "Kamu bisa langsung melewati waktu ke hari deadline proposal untuk lanjut ke seminar proposal."
-                "Atau kamu bisa tetap melakukan aktivitas lain untuk meningkatkan skill praktis dan menulismu."
+            elif thesis_check_completion():
                 jump kos
             $ activity = "skripsi"
         "Daftarkan Workshop":
@@ -916,10 +1155,13 @@ label activity_dapur_cheat:
 
         _thesis_on_writing_tick()
 
-        if store.thesis_progress >= 100:
+        if store.thesis_progress >= 100 and thesis_fsm_state == THESIS_SEMPRO_READY:
             renpy.say(None, "Kamu sudah menyelesaikan semua yang bisa kamu kerjakan untuk proposalmu.")
             renpy.say(None, "Kamu bisa langsung melewati waktu ke hari deadline proposal untuk lanjut ke seminar proposal.")
             renpy.say(None, "Atau kamu bisa tetap melakukan aktivitas lain untuk meningkatkan skill praktis dan menulismu.")
+        elif store.thesis_progress >= 100 and thesis_fsm_state == THESIS_DONE:
+            renpy.say(None, "Kamu sudah menyelesaikan semua yang bisa kamu kerjakan untuk skripsimu.")
+            renpy.say(None, "Kamu bisa langsung melewati waktu ke hari deadline skripsi untuk lanjut ke sidang akhir.")
     jump dapur
 
 label process_activity:

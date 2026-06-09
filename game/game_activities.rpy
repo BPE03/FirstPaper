@@ -504,11 +504,8 @@ init python:
 
         _thesis_on_writing_tick()
 
-        if store.thesis_progress >= 100:
+        if thesis_check_completion():
             store.interrupted = True
-            renpy.say(None, "Kamu sudah menyelesaikan semua yang bisa kamu kerjakan untuk proposalmu.")
-            renpy.say(None, "Kamu bisa langsung melewati waktu ke hari deadline proposal untuk lanjut ke seminar proposal.")
-            renpy.say(None, "Atau kamu bisa tetap melakukan aktivitas lain untuk meningkatkan skill praktis dan menulismu.")
 
     def _activity_tick_cari_jurnal():
         if thesis_fsm_state == THESIS_EXPLORING:
