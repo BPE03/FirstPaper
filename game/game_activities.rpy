@@ -1,4 +1,5 @@
 default interrupted = False
+default pending_jump = None
 default appt_bimbingan_state = "unscheduled"
 default appt_bimbingan_day   = 0
 default appt_bimbingan_month = 0
@@ -450,7 +451,7 @@ init python:
 
     def _on_enter_bimbingan():
         in_writing_phase = store.thesis_fsm_state in (
-            THESIS_SUPERVISED, THESIS_WRITING, THESIS_SEMPRO_READY, THESIS_POST_SEMPRO
+            THESIS_SUPERVISED, THESIS_PROPOSAL_WRITING, THESIS_SEMPRO_READY, THESIS_POST_SEMPRO, THESIS_WRITING
         )
         if store.bimbingan_count > 0 and in_writing_phase:
             progress_diff = store.thesis_progress - store.bimbingan_last_thesis_progress

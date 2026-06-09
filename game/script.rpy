@@ -326,6 +326,8 @@ label tutorial_scene:
 label sempro:
     scene black with fade
     "Deadline mengumpulkan seminar proposal pun tiba."
+    if thesis_fsm_state not in (THESIS_PROPOSAL_WRITING, THESIS_SEMPRO_READY):
+        jump sempro_tidak_mengerjakan
     "Paijo mengumpulkan proposalnya dan kini menunggu hari yang dijadwalkan untuk sidang proposalnya."
     "Rabu, 21 Januari 2026."
     "Hari sidang proposal pun tiba."
@@ -352,11 +354,68 @@ label sempro:
     $ thesis_advance_to(THESIS_POST_SEMPRO)
     jump post_sempro
 
+label sempro_tidak_mengerjakan:
+    hide screen main_stats
+    hide screen detailed_stats_window
+    hide screen calendar_now
+    hide screen calendar_window
+    hide screen game_maps
+    scene kos_morning with fade
+    "Hari sidang proposal."
+    "Paijo duduk di tepi kasurnya, menatap layar laptop yang menyala."
+    "Dokumen proposalnya terbuka."
+    "Kosong."
+    p "..."
+    "Bukan kosong sepenuhnya, hanya ada nama dan NRP yang dia ketik tiga minggu lalu."
+    "Tapi itu saja."
+    "Tidak ada latar belakang. Tidak ada tinjauan pustaka. Tidak ada metodologi."
+    "Hanya dua baris teks di atas halaman putih yang membentang panjang."
+    p "..."
+    p "Gua ga bisa ikut sempro hari ini."
+    "Bukan pertanyaan. Bukan kepanikan."
+    "Hanya sebuah kenyataan yang diucapkan dengan tenang, karena Paijo sudah tahu jawabannya sejak berminggu-minggu lalu."
+    "Dia hanya tidak mau mengakuinya."
+    "Notif.sfx"
+    j "\"Jo, lo udah di jalan belum? Sempro lo kan jam 9.\""
+    p "..."
+    j "\"Jo?\""
+    p "\"Jok, gua ga bisa ikut.\""
+    j "\"Hah? Kenapa? Lo sakit?\""
+    p "\"Bukan.\""
+    p "\"Proposalnya... belum ada apa-apa.\""
+    "Hening panjang di sisi lain."
+    j "\"...serius?\""
+    p "\"Iya.\""
+    j "\"Jo...\""
+    p "\"Gua tau.\""
+    "Paijo menutup laptopnya."
+    "Di luar, matahari sudah naik. Hari berjalan seperti biasa."
+    "Hanya untuk Paijo, hari ini terasa seperti sebuah pintu yang menutup."
+    scene kos_night with fade
+    "Sore itu, koordinator mata kuliah mengirim pesan."
+    "Paijo tidak menghadiri sempro. Nilainya E."
+    "Proposal harus diulang di semester depan."
+    p "..."
+    p "Satu semester."
+    p "Gua buang satu semester."
+    "Tidak ada tangisan. Tidak ada amarah."
+    "Hanya sunyi yang berat, dan kesadaran penuh bahwa semua ini adalah hasil dari pilihan-pilihannya sendiri."
+    "Pilihan untuk menunda."
+    "Pilihan untuk 'nanti'."
+    "Pilihan untuk percaya bahwa masih ada waktu, sampai tiba-tiba tidak ada lagi."
+    scene black with fade
+    centered "{size=48}AKHIR{/size}\n\n{size=24}Paijo tidak mengumpulkan proposal.\nIa harus mengulang di semester berikutnya.{/size}"
+    $ renpy.pause(3.0, hard=True)
+    centered "{size=20}{i}Waktu yang terbuang tidak bisa dikembalikan.\nTapi hari esok masih bisa diisi dengan lebih baik.{/i}{/size}"
+    $ renpy.pause(3.0, hard=True)
+    scene black with fade
+    return
+
 label sempro_e:
     $ thesis_advance_to(THESIS_SEMPRO_FAILED)
     scene expression selected_bidang.lower() + "_sidang" with fade
     "Ruangan seminar proposal terasa sangat sunyi."
-    "Paijo berdiri di depan layar presentasinya — sebuah slide yang bahkan tidak bisa dia jelaskan sendiri."
+    "Paijo berdiri di depan layar presentasinya, sebuah slide yang bahkan tidak bisa dia jelaskan sendiri."
     "Ketiga dosen penguji di hadapannya menatap dengan ekspresi yang sulit dibaca."
     d_uji "Silakan mulai, Mas."
     p "Ba... baik."
@@ -380,7 +439,7 @@ label sempro_e:
     "Sepuluh menit berlalu."
     d_uji "Silakan masuk, Mas."
     d_uji "Dengan berat hati, kami tidak bisa meluluskan proposal ini."
-    d_uji "Proposal Anda masih memerlukan perbaikan yang sangat mendasar — dari problem statement, tinjauan pustaka, hingga metodologi."
+    d_uji "Proposal Anda masih memerlukan perbaikan yang sangat mendasar, dari problem statement, tinjauan pustaka, hingga metodologi."
     d_uji "Kami harap Mas bisa berkonsultasi lebih intensif dengan dosen pembimbing dan mempersiapkan diri lebih baik untuk sempro berikutnya."
     p "..."
     p "Baik, Bu. Terima kasih atas masukannya."
@@ -419,7 +478,7 @@ label sempro_c:
     scene expression selected_bidang.lower() + "_sidang" with fade
     "Paijo mendapatkan nilai C untuk seminar proposalnya."
     "Sesi tanya jawab tadi cukup berat."
-    "Tapi Paijo berhasil menjawab sebagian pertanyaan — meskipun beberapa jawabannya masih tidak memuaskan."
+    "Tapi Paijo berhasil menjawab sebagian pertanyaan, meskipun beberapa jawabannya masih tidak memuaskan."
     d_uji "Kami memutuskan meluluskan proposal ini dengan beberapa catatan revisi yang signifikan."
     d_uji "Tinjauan pustakanya perlu diperluas. Metodologinya perlu diperinci. Dan latar belakang masalahnya perlu diperkuat."
     d_uji "Kami harap revisi ini diselesaikan sebelum Mas mulai mengerjakan penelitiannya."
@@ -434,7 +493,7 @@ label sempro_bc:
     "Paijo mendapatkan nilai BC untuk seminar proposalnya."
     "Presentasi berjalan cukup baik."
     "Paijo bisa menjawab sebagian besar pertanyaan dengan cukup memuaskan, meskipun beberapa masih kurang tajam."
-    d_uji "Proposalnya sudah cukup baik. Ada beberapa hal yang perlu direvisi — terutama di bagian metodologi dan kerangka teori."
+    d_uji "Proposalnya sudah cukup baik. Ada beberapa hal yang perlu direvisi, terutama di bagian metodologi dan kerangka teori."
     d_uji "Tapi secara keseluruhan, arahnya sudah jelas."
     p "Terima kasih, Pak. Akan saya revisi sesuai catatan."
     "Paijo keluar dengan senyum tipis."
@@ -446,7 +505,7 @@ label sempro_b:
     "Paijo mendapatkan nilai B untuk seminar proposalnya."
     "Presentasi berjalan dengan baik."
     "Paijo menjawab semua pertanyaan dengan lancar, hanya ada satu atau dua yang perlu elaborasi tambahan."
-    d_uji "Proposalnya sudah bagus. Ada beberapa catatan minor — penulisan di bagian metodologi bisa lebih sistematis, dan referensinya bisa ditambah yang lebih baru."
+    d_uji "Proposalnya sudah bagus. Ada beberapa catatan minor, penulisan di bagian metodologi bisa lebih sistematis, dan referensinya bisa ditambah yang lebih baru."
     d_uji "Tapi secara keseluruhan, kami puas dengan kesiapan Mas."
     p "Terima kasih banyak, Bu. Akan saya perbaiki."
     "Paijo keluar dengan langkah yang lebih ringan dari saat dia masuk."
@@ -510,7 +569,7 @@ label sempro_gagal:
     j "\"Aduh Jo... Sori gua denger itu.\""
     j "\"Tapi... ya udah. Bukan akhir dari segalanya.\""
     p "\"Gampang ngomongnya lu.\""
-    j "\"Iya gua tau. Tapi serius — ini bukan akhir. Banyak yang pernah di posisi lu dan akhirnya lulus juga.\""
+    j "\"Iya gua tau. Tapi serius, ini bukan akhir. Banyak yang pernah di posisi lu dan akhirnya lulus juga.\""
     j "\"Yang penting sekarang, lu tau apa yang harus diperbaiki kan?\""
     p "..."
     p "\"Iya, dosen udah kasih banyak catatan.\""
@@ -523,7 +582,7 @@ label sempro_gagal:
     scene kos_night with fade
     "Malam itu, Paijo tidak membuka laptopnya."
     "Bukan karena menyerah."
-    "Tapi karena dia tahu — semester ini sudah selesai."
+    "Tapi karena dia tahu, semester ini sudah selesai."
     "Seminar proposal yang gagal berarti satu hal: dia harus mengulang di semester depan."
     "Satu semester yang terbuang bukan karena tidak mampu, tapi karena menunda."
     p "..."
@@ -590,6 +649,10 @@ label post_sidang_akhir:
     return
 
 label kos:
+    if pending_jump:
+        $ _pj = pending_jump
+        $ pending_jump = None
+        jump expression _pj
     $ current_location = "kos"
     $ cg = current_location + "_" + time_of_day_state
     scene expression cg with fade
@@ -598,6 +661,10 @@ label kos:
     call screen interactive_kos
 
 label dapur:
+    if pending_jump:
+        $ _pj = pending_jump
+        $ pending_jump = None
+        jump expression _pj
     $ current_location = "dapur"
     $ cg = current_location + "_" + time_of_day_state
     scene expression cg with fade
@@ -696,7 +763,6 @@ label activity_kos_laptop:
     call process_activity
     jump kos
 
-# Main gameplay loop
 label activity_kos:
     $ activity = None
     $ time_stop = True
@@ -980,83 +1046,3 @@ label process_activity:
     
 #     $ set_cutscene_mode(False)  # Exit cutscene mode after event
 #     return
-
-# # Burnout ending
-# label burnout:
-#     hide screen main_stats
-#     hide screen detailed_stats_window
-#     hide screen interactive_kos
-#     hide screen calendar_now
-#     hide screen calendar_window
-    
-#     scene black with dissolve
-    
-#     centered "{color=#e74c3c}{size=40}BURNOUT{/size}{/color}\n\nYou've experienced burnout and need to take a break from your thesis."
-#     centered "Remember: Taking care of your wellbeing is essential for academic success!"
-    
-#     menu:
-#         "Try again?"
-        
-#         "Yes, restart":
-#             $ motivation = 100
-#             $ thesis_progress = 0
-#             $ autonomy = 100
-#             $ competence = 100
-#             $ relatedness = 100
-#             $ nutrition = 100
-#             $ physical_activity = 100
-#             $ valence = 100
-#             $ arousal = 100
-#             $ practical_xp = 0
-#             $ writing_xp = 0
-#             $ practical_level = 1
-#             $ writing_level = 1
-#             $ score = 0
-#             jump start
-        
-#         "No, quit":
-#             "Thanks for playing!"
-#             return
-
-# # Thesis completion ending
-# label thesis_complete:
-#     hide screen main_stats
-#     hide screen detailed_stats_window
-#     hide screen interactive_kos
-#     hide screen calendar_now
-#     hide screen calendar_window
-    
-#     scene bg graduation with dissolve
-    
-#     centered "{color=#2ecc71}{size=50}CONGRATULATIONS!{/size}{/color}\n\nYou've completed your thesis!"
-#     centered "Through managing your wellbeing and developing your skills,\nyou've achieved your academic goal!"
-    
-#     "Final Stats:"
-#     "Practical Skill Level: [practical_level]"
-#     "Writing Skill Level: [writing_level]"
-#     "Final Motivation: [motivation]"
-#     "Final Score: [score]"
-    
-#     menu:
-#         "Play again?"
-        
-#         "Yes":
-#             $ motivation = 100
-#             $ thesis_progress = 0
-#             $ autonomy = 100
-#             $ competence = 100
-#             $ relatedness = 100
-#             $ nutrition = 100
-#             $ physical_activity = 100
-#             $ valence = 50
-#             $ arousal = 50
-#             $ practical_xp = 0
-#             $ writing_xp = 0
-#             $ practical_level = 1
-#             $ writing_level = 1
-#             $ score = 0
-#             jump start
-        
-#         "No":
-#             "Thanks for playing!"
-#             return

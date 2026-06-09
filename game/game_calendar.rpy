@@ -80,9 +80,16 @@ init python:
 
         _dl = store.calendar_events.get("proposal_deadline")
         if _dl and (current_year, current_month, current_day) >= (_dl["year"], _dl["month"], _dl["day"]) and \
-        store.thesis_fsm_state not in ("post_sempro", "done"):
+        store.thesis_fsm_state not in ("post_sempro", "writing", "done"):
+            store.interrupted = True
+            store.pending_jump = "sempro"
             set_cutscene_mode(True)
-            renpy.jump("sempro")
+
+        _dl = store.calendar_events.get("skripsi_deadline")
+        if _dl and (current_year, current_month, current_day) >= (_dl["year"], _dl["month"], _dl["day"]):
+            store.interrupted = True
+            store.pending_jump = "sidang_akhir"
+            set_cutscene_mode(True)
 
     def get_total_game_minutes():
         """Returns total elapsed game-minutes from a fixed reference (2025-01-01)."""

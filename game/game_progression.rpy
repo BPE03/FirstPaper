@@ -36,10 +36,11 @@ init python:
     THESIS_EXPLORING    = "exploring"
     THESIS_TOPIC_FOUND  = "topic_found"
     THESIS_SUPERVISED   = "supervised"
-    THESIS_WRITING      = "writing"
+    THESIS_PROPOSAL_WRITING      = "proposal_writing"
     THESIS_SEMPRO_READY = "sempro_ready"
     THESIS_SEMPRO_FAILED = "sempro_failed"
     THESIS_POST_SEMPRO  = "post_sempro"
+    THESIS_WRITING      = "writing"
     THESIS_DONE         = "done"
     THESIS_FAILED       = "failed"
 
@@ -58,8 +59,8 @@ init python:
     def thesis_advisor_approved():
         """True when advisor has approved the topic."""
         return thesis_fsm_state in (
-            THESIS_SUPERVISED, THESIS_WRITING, THESIS_SEMPRO_READY,
-            THESIS_POST_SEMPRO, THESIS_DONE,
+            THESIS_SUPERVISED, THESIS_PROPOSAL_WRITING, THESIS_SEMPRO_READY,
+            THESIS_POST_SEMPRO, THESIS_WRITING, THESIS_DONE,
         )
 
     def thesis_get_phase():
@@ -69,10 +70,12 @@ init python:
     def _thesis_on_writing_tick():
         """Auto-advance writing sub-states; called each skripsi tick."""
         if thesis_fsm_state == THESIS_SUPERVISED and store.thesis_progress > 0:
+            thesis_advance_to(THESIS_PROPOSAL_WRITING)
+        elif thesis_fsm_state == THESIS_PROPOSAL_WRITING and store.thesis_progress >= 100:
+            thesis_advance_to(THESIS_SEMPRO_READY)
+        elif thesis_fsm_state == THESIS_POST_SEMPRO and store.thesis_progress > 0:
             thesis_advance_to(THESIS_WRITING)
         elif thesis_fsm_state == THESIS_WRITING and store.thesis_progress >= 100:
-            thesis_advance_to(THESIS_SEMPRO_READY)
-        elif thesis_fsm_state == THESIS_POST_SEMPRO and store.thesis_progress >= 100:
             thesis_advance_to(THESIS_DONE)
 
     BIMBINGAN_BONUS_MULT = 1.5
