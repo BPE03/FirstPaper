@@ -1028,6 +1028,7 @@ label activity_kos:
     $ _m_olahraga_ringan   = get_activity_motivation("olahraga_ringan")
     $ _m_olahraga_sedang   = get_activity_motivation("olahraga_sedang")
     $ _m_olahraga_berat    = get_activity_motivation("olahraga_berat")
+    $ _m_prokrastinasi     = get_activity_motivation("prokrastinasi")
     #$ _m_bimbingan  = get_activity_motivation("bimbingan")
     $ _m_sosialisasi  = get_activity_motivation("sosialisasi")
     $ _m_meditasi = get_activity_motivation("meditasi")
@@ -1036,6 +1037,7 @@ label activity_kos:
     $ _l_olahraga_berat  = get_activity_motivation_label("olahraga_berat")
     $ _l_sosialisasi     = get_activity_motivation_label("sosialisasi")
     $ _l_meditasi        = get_activity_motivation_label("meditasi")
+    $ _l_prokrastinasi   = get_activity_motivation_label("prokrastinasi")
     menu:
         "Mau Ngapain?"
         "Olahraga Ringan (Motivasi [_m_olahraga_ringan]/[max_stat] - [_l_olahraga_ringan])":
@@ -1138,8 +1140,8 @@ label activity_kos:
         #     $ activity = "rest"
         "Meditasi (Motivasi [_m_meditasi]/[max_stat] - [_l_meditasi])":
             $ activity = "meditasi"
-        "Skip time":
-            $ activity = "skip"
+        "Prokrastinasi (Motivasi [_m_prokrastinasi]/[max_stat] - [_l_prokrastinasi])":
+            $ activity = "prokrastinasi"
         "Batal":
             jump kos
     

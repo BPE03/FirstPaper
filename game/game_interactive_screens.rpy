@@ -64,6 +64,7 @@ screen interactive_dapur():
         # Define clickable hotspots (x, y, width, height)
         # Adjust these coordinates to match your background image
         hotspot (0, 610, 1220, 470) action Jump("activity_dapur") sensitive not (show_detailed_stats or show_calendar or show_map)
+        # Cheat to skip thesis progress
         hotspot (1529, 459, 117, 98) action Jump("activity_dapur_cheat") sensitive not (show_detailed_stats or show_calendar or show_map)
 
     imagebutton:

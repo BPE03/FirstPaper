@@ -107,13 +107,13 @@ define activities = {
         "max_duration": 1440,
         "completion_message": "Kamu beristirahat selama {minutes} menit."
     },
-    "skip": {
+    "prokrastinasi": {
         "name": "Skip time",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
         "max_duration": 144000,
-        "completion_message": "Kamu melewatkan {minutes} menit."
+        "completion_message": "Kamu prokrastinasi selama {minutes} menit."
     },
     "chat_online": {
         "name": "Chat Online dengan Teman",
@@ -305,6 +305,12 @@ init python:
         global arousal
         arousal = max(0, arousal - 15/10)
 
+    def _activity_prokrastinasi():
+        global valence, arousal, autonomy
+        autonomy = min(max_stat, autonomy + 5/60)
+        valence = min(max_stat, valence + 10/60)
+        arousal = min(max_stat, arousal + 10/60)
+
     ACTIVITY_DISPATCH = {
         "skripsi":        _activity_skripsi,
         "makan_bergizi":  _activity_makan_bergizi,
@@ -323,6 +329,7 @@ init python:
         "chat_online":    _activity_chat_online,
         "main_game":      _activity_main_game,
         "meditasi":      _activity_meditasi,
+        "prokrastinasi":  _activity_prokrastinasi
     }
 
     ACTIVITY_MOTIVATION_CURVES = {
@@ -404,6 +411,14 @@ init python:
         },
         "meditasi": {
             "arousal": [(0, -1.0), (50, 1.0)]
+        },
+        "prokrastinasi": {
+            "autonomy":    [(0.0, 0.5), (100, -0.05)],
+            "competence":  [(0.0, 0.5), (100, -0.05)],
+            "relatedness": [(0.0, 0.5), (100, -0.05)],
+            "nutrition":   [(0, -2), (35, 0.5), (100, -0.05)],
+            "physical_activity":  [(0.0, 0.5), (100, -0.05)],
+            "sleep":       [(0, -1), (35, 0.5), (1, -0.05)]
         }
     }
 
