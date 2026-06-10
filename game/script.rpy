@@ -992,7 +992,7 @@ label activity_kos_laptop:
             if not thesis_has_topic():
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa bimbingan."
                 jump kos
-            if not appt_is_booked("bimbingan"):
+            if not appt_is_booked("bimbingan") and not thesis_check_completion():
                 "Kamu belum mengajukan jadwal bimbingan dengan dosen."
                 menu:
                     "Apakah kamu yakin ingin mengajukan jadwal bimbingan?"

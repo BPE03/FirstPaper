@@ -485,14 +485,17 @@ init python:
 
     def _on_enter_bimbingan():
         in_writing_phase = store.thesis_fsm_state in (
-            THESIS_SUPERVISED, THESIS_PROPOSAL_WRITING, THESIS_SEMPRO_READY, THESIS_POST_SEMPRO, THESIS_WRITING
+            THESIS_SUPERVISED, THESIS_PROPOSAL_WRITING, THESIS_POST_SEMPRO, THESIS_WRITING
         )
         if store.bimbingan_count > 0 and in_writing_phase:
             progress_diff = store.thesis_progress - store.bimbingan_last_thesis_progress
             if progress_diff <= 5:
                 store.competence = max(0, store.competence - 20)
-                store.valence    = max(0, store.valence - 20)
-                store.arousal    = min(store.max_stat, store.arousal + 25)
+                store.valence    = max(0, store.valence - 10)
+                store.arousal    = min(store.max_stat, store.arousal + 10)
+                renpy.say(None, "Dosen pembimbing melihat bahwa kamu masih belum ada kemajuan di skripsimu.")
+                renpy.say(None, "Kamu merasa tertekan atas ketidak adanya kemajuan dalam skripsimu.")
+                renpy.say(None, "Dosen pembimbingmu perlahan menjelaskan kembali apa yang harus kamu revisi.")
 
     ACTIVITY_ON_ENTER = {
         "tidur":     _on_enter_tidur,
