@@ -258,10 +258,10 @@ label pilih_bidang:
     n "[bidang_ilmu[selected_bidang]['nama']]"
     n "Laboratorium ini menawarkan bidang keahlian yang ditekankan pada kemampuan lulusan dalam [bidang_ilmu[selected_bidang]['deskripsi']]"
     n "Mata kuliah pada bidang ilmu ini adalah [bidang_ilmu[selected_bidang]['mata_kuliah']]."
-    n "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
+    n "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah latar saat sidang nanti.)"
     nvl clear
     menu:
-        "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah siapa dosen pembimbingmu dan peristiwa saat sidang nanti.)"
+        "Yakin ingin fokus ke bidang ilmu ini? (Memilih bidang ilmu hanya mengubah latar saat sidang nanti.)"
         "Ya":
             scene kos_morning with fade
             return
