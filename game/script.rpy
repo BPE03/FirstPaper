@@ -355,9 +355,13 @@ label sempro:
     p "....."
     p "Udah waktunya sidang proposal."
     p "Bisa lah ya, lulus lah ya."
+    "Skor yang kamu dapatkan saat mengerjakan skripsi adalah {b}[score]{/b}."
     if thesis_progress >= 100 or score > 40000:
+        "Namun kamu memastikan bahwa tidak ada yang dapat diperbaiki di skripsimu."
+        "Sehingga nilaimu adalah..."
         call sempro_a
     else:
+        "Sehingga nilaimu adalah..."
         if score >= 36000:
             call sempro_ab
         elif score >= 32000:
@@ -671,9 +675,13 @@ label sidang_akhir:
     p "....."
     p "Udah waktunya sidang akhir."
     p "....."
+    "Skor yang kamu dapatkan saat mengerjakan skripsi adalah {b}[score]{/b}."
     if thesis_progress >= 100 or score > 40000:
+        "Namun kamu memastikan bahwa sudah tidak ada yang dapat diperbaiki di skripsimu."
+        "Sehingga nilaimu adalah...."
         call sidang_akhir_a
     else:
+        "Sehingga nilaimu adalah...."
         if score >= 36000:
             call sidang_akhir_ab
         elif score >= 32000:
