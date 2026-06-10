@@ -10,8 +10,10 @@ screen interactive_kos():
         
         # Define clickable hotspots (x, y, width, height)
         # Adjust these coordinates to match your background image
-        hotspot (0, 0, 900, 1080) action Jump("activity_kos_kasur") sensitive not (show_detailed_stats or show_calendar or show_map)
-        hotspot (1050, 500, 450, 300) action Jump("activity_kos_laptop") sensitive not (show_detailed_stats or show_calendar or show_map)
+        hotspot (0, 0, 900, 1080) action Jump("activity_kos_kasur") sensitive not (show_calendar or show_map)
+        hotspot (1050, 500, 450, 300) action Jump("activity_kos_laptop") sensitive not (show_calendar or show_map)
+        # hotspot (0, 0, 900, 1080) action Jump("activity_kos_kasur") sensitive not (show_detailed_stats or show_calendar or show_map)
+        # hotspot (1050, 500, 450, 300) action Jump("activity_kos_laptop") sensitive not (show_detailed_stats or show_calendar or show_map)
     
     # Optional: Show a button overlay if you want a visible button
     # You can remove this if you want just invisible hotspots
@@ -29,7 +31,7 @@ screen interactive_kos():
         xsize 200
         ysize 60
         text_size 22
-        sensitive not (show_detailed_stats or show_calendar)
+        sensitive not (show_calendar)
         action Jump("activity_kos")
         background Frame("#1a1a1acc", 8, 8)
         hover_background Frame("#3a3a3aee", 8, 8)
@@ -63,9 +65,12 @@ screen interactive_dapur():
         
         # Define clickable hotspots (x, y, width, height)
         # Adjust these coordinates to match your background image
-        hotspot (0, 610, 1220, 470) action Jump("activity_dapur") sensitive not (show_detailed_stats or show_calendar or show_map)
+        # hotspot (0, 610, 1220, 470) action Jump("activity_dapur") sensitive not (show_detailed_stats or show_calendar or show_map)
+        # # Cheat to skip thesis progress
+        # hotspot (1529, 459, 117, 98) action Jump("activity_dapur_cheat") sensitive not (show_detailed_stats or show_calendar or show_map)
+        hotspot (0, 610, 1220, 470) action Jump("activity_dapur") sensitive not (show_calendar or show_map)
         # Cheat to skip thesis progress
-        hotspot (1529, 459, 117, 98) action Jump("activity_dapur_cheat") sensitive not (show_detailed_stats or show_calendar or show_map)
+        # hotspot (1529, 459, 117, 98) action Jump("activity_dapur_cheat") sensitive not (show_calendar or show_map)
 
     imagebutton:
         xalign 0.75

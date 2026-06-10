@@ -119,6 +119,165 @@ screen main_stats():
                 Function(decrease_stats, 1), 
             ]
 
+# Detailed stats window (shown when button is pressed)
+screen detailed_stats_window():
+    showif show_detailed_stats:
+        # # Modal background
+        # frame:
+        #     background "#000000aa"
+        #     xfill True
+        #     yfill True
+            
+            # Stats window
+            frame:
+                xalign 0.05
+                yalign 0.05
+                xsize 700
+                ysize 750
+                background "#34495e"
+                padding (25, 25)
+                
+                vbox:
+                    spacing 10
+                    
+                    hbox:
+                        spacing 400
+                        text "Detil Statistik" size 28 color "#ecf0f1" bold True
+                        textbutton "✕ Tutup" action SetVariable("show_detailed_stats", False) text_size 20
+                    
+                    null height 10
+                    
+                    # Psychological Needs
+                    text "Kebutuhan Psikologis" size 22 color "#3498db" bold True
+                    
+                    hbox:
+                        spacing 20
+                        vbox:
+                            spacing 5
+                            text "Otonomi" size 16 color "#ffffff"
+                            bar value autonomy range max_stat xsize 200 ysize 18 left_bar "#9b59b6" right_bar "#2c3e50"
+                            text "[autonomy:.02f]/[max_stat]" size 14 color "#bdc3c7"
+                        
+                        vbox:
+                            spacing 5
+                            text "Kompetensi" size 16 color "#ffffff"
+                            bar value competence range max_stat xsize 200 ysize 18 left_bar "#3498db" right_bar "#2c3e50"
+                            text "[competence:.02f]/[max_stat]" size 14 color "#bdc3c7"
+                        
+                        vbox:
+                            spacing 5
+                            text "Keterhubungan" size 16 color "#ffffff"
+                            bar value relatedness range max_stat xsize 200 ysize 18 left_bar "#1abc9c" right_bar "#2c3e50"
+                            text "[relatedness:.02f]/[max_stat]" size 14 color "#bdc3c7"
+                    
+                    null height 15
+                    
+                    # Physical Wellbeing
+                    text "Kesehatan Fisik" size 22 color "#e67e22" bold True
+                    
+                    hbox:
+                        spacing 20
+                        vbox:
+                            spacing 5
+                            text "Nutrisi" size 16 color "#ffffff"
+                            bar value nutrition range max_stat xsize 200 ysize 18 left_bar "#f39c12" right_bar "#2c3e50"
+                            text "[nutrition:.02f]/[max_stat]" size 14 color "#bdc3c7"
+                        
+                        vbox:
+                            spacing 5
+                            text "Aktivitas Fisik" size 16 color "#ffffff"
+                            bar value physical_activity range max_stat xsize 200 ysize 18 left_bar "#e74c3c" right_bar "#2c3e50"
+                            text "[physical_activity:.02f]/[max_stat]" size 14 color "#bdc3c7"
+                            
+                        vbox:
+                            spacing 5
+                            text "Tidur" size 16 color "#ffffff"
+                            bar value sleep range max_stat xsize 200 ysize 18 left_bar "#687279" right_bar "#2c3e50"
+                            text "[sleep:.02f]/[max_stat]" size 14 color "#bdc3c7"
+                            $ _alertness_label = {
+                                "sleeping":  ("Tidur",     "#687279"),
+                                "peak":      ("Puncak",    "#2ecc71"),
+                                "normal":    ("Normal",    "#3498db"),
+                                "fatigued":  ("Lelah",     "#f39c12"),
+                                "exhausted": ("Kelelahan", "#e67e22"),
+                                "crashed":   ("Ambruk",   "#e74c3c"),
+                            }.get(sleep_get_state(), ("Normal", "#3498db"))
+                            text "Kesadaran: [_alertness_label[0]]" size 13 color _alertness_label[1] bold True
+                            text "Efek XP & Progres Skripsi: x[sleep_stat_multiplier()]" size 12 color _alertness_label[1]
+                    
+                    #null height 15
+                    
+                    # Emotional State
+                    text "Status Emosional" size 22 color "#e91e63" bold True
+
+                    $ _det_emotion = get_current_emotion()
+                    $ _det_emotion_info = get_emotion_info(_det_emotion)
+
+                    hbox:
+                        spacing 20
+                        vbox:
+                            spacing 5
+                            text "Valence (Kesenangan)" size 16 color "#ffffff"
+                            bar value valence range max_stat xsize 200 ysize 18 left_bar "#ff6b9d" right_bar "#2c3e50"
+                            text "[valence:.02f]/[max_stat]" size 14 color "#bdc3c7"
+
+                        vbox:
+                            spacing 5
+                            text "Arousal (Intensitas)" size 16 color "#ffffff"
+                            bar value arousal range max_stat xsize 200 ysize 18 left_bar "#ffd93d" right_bar "#2c3e50"
+                            text "[arousal:.02f]/[max_stat]" size 14 color "#bdc3c7"
+
+                        frame:
+                            xsize 140
+                            ysize 55
+                            background _det_emotion_info["color"]
+                            padding (8, 6)
+                            vbox:
+                                spacing 2
+                                text "Emosi" size 11 color "#ffffff"
+                                text "[_det_emotion.upper()]" size 14 color "#ffffff" bold True
+                                text "x[_det_emotion_info['score_multiplier']]" size 12 color "#ffffffcc"
+
+                    $ _em_mult = _det_emotion_info["score_multiplier"] if _det_emotion_info else 1.0
+                    text "Efek XP & Progres Skripsi (Emosi): x[_em_mult]" size 14 color "#ff6b9d" bold True
+
+                    $ _det_total_mult = round(_em_mult * sleep_stat_multiplier(), 2)
+                    frame:
+                        background "#1a252f"
+                        xsize 550
+                        padding (8, 6)
+                        hbox:
+                            spacing 8
+                            text "Efek Total XP & Progres Skripsi:" size 14 color "#bdc3c7" yalign 0.5
+                            text "x[_det_total_mult]" size 18 color "#f39c12" bold True yalign 0.5
+
+                    null height 15
+
+                    # Skills
+                    text "Kemampuan" size 22 color "#27ae60" bold True
+                    
+                    hbox:
+                        spacing 20
+                        vbox:
+                            spacing 5
+                            $ practical_level = get_level_from_xp(practical_xp)
+                            $ xp_in_level = get_xp_in_level(practical_xp, practical_level)
+                            $ required = get_required_for_level(practical_level)
+                            text "Praktis" size 16 color "#ffffff"
+                            text "Level [practical_level]" size 16 color "#ffffff"
+                            bar value xp_in_level range required xsize 200 ysize 18 left_bar "#16a085" right_bar "#2c3e50"
+                            text "[xp_in_level:.02f]/[required] XP" size 14 color "#bdc3c7"
+                        
+                        vbox:
+                            spacing 5
+                            $ writing_level = get_level_from_xp(writing_xp)
+                            $ xp_in_level = get_xp_in_level(writing_xp, writing_level)
+                            $ required = get_required_for_level(writing_level)
+                            text "Menulis" size 16 color "#ffffff"
+                            text "Level [writing_level]" size 16 color "#ffffff"
+                            bar value xp_in_level range required xsize 200 ysize 18 left_bar "#27ae60" right_bar "#2c3e50"
+                            text "[xp_in_level:.02f]/[required] XP" size 14 color "#bdc3c7"
+
 screen calendar_now():
     showif not in_cutscene:  # Hide during cutscenes, show during interactive gameplay
         frame:
@@ -314,151 +473,3 @@ screen calendar_window():
                                 text "[selected_calendar_event['description']]" size 16 color "#bdc3c7" text_align 0.0
                                 null height 8
                                 textbutton "Tutup Detail Acara" action [SetVariable("show_event_details", False), SetVariable("selected_calendar_event", None)] xalign 0.0 text_size 18
-
-# Detailed stats window (shown when button is pressed)
-screen detailed_stats_window():
-    showif show_detailed_stats:
-        # Modal background
-        frame:
-            background "#000000aa"
-            xfill True
-            yfill True
-            
-            # Stats window
-            frame:
-                xalign 0.5
-                yalign 0.2
-                xsize 700
-                ysize 750
-                background "#34495e"
-                padding (25, 25)
-                
-                vbox:
-                    spacing 10
-                    
-                    hbox:
-                        spacing 400
-                        text "Detil Statistik" size 28 color "#ecf0f1" bold True
-                        textbutton "✕ Tutup" action SetVariable("show_detailed_stats", False) text_size 20
-                    
-                    null height 10
-                    
-                    # Psychological Needs
-                    text "Kebutuhan Psikologis" size 22 color "#3498db" bold True
-                    
-                    hbox:
-                        spacing 20
-                        vbox:
-                            spacing 5
-                            text "Otonomi" size 16 color "#ffffff"
-                            bar value autonomy range max_stat xsize 200 ysize 18 left_bar "#9b59b6" right_bar "#2c3e50"
-                            text "[autonomy:.02f]/[max_stat]" size 14 color "#bdc3c7"
-                        
-                        vbox:
-                            spacing 5
-                            text "Kompetensi" size 16 color "#ffffff"
-                            bar value competence range max_stat xsize 200 ysize 18 left_bar "#3498db" right_bar "#2c3e50"
-                            text "[competence:.02f]/[max_stat]" size 14 color "#bdc3c7"
-                        
-                        vbox:
-                            spacing 5
-                            text "Keterhubungan" size 16 color "#ffffff"
-                            bar value relatedness range max_stat xsize 200 ysize 18 left_bar "#1abc9c" right_bar "#2c3e50"
-                            text "[relatedness:.02f]/[max_stat]" size 14 color "#bdc3c7"
-                    
-                    null height 15
-                    
-                    # Physical Wellbeing
-                    text "Kesehatan Fisik" size 22 color "#e67e22" bold True
-                    
-                    hbox:
-                        spacing 20
-                        vbox:
-                            spacing 5
-                            text "Nutrisi" size 16 color "#ffffff"
-                            bar value nutrition range max_stat xsize 200 ysize 18 left_bar "#f39c12" right_bar "#2c3e50"
-                            text "[nutrition:.02f]/[max_stat]" size 14 color "#bdc3c7"
-                        
-                        vbox:
-                            spacing 5
-                            text "Aktivitas Fisik" size 16 color "#ffffff"
-                            bar value physical_activity range max_stat xsize 200 ysize 18 left_bar "#e74c3c" right_bar "#2c3e50"
-                            text "[physical_activity:.02f]/[max_stat]" size 14 color "#bdc3c7"
-                            
-                        vbox:
-                            spacing 5
-                            text "Tidur" size 16 color "#ffffff"
-                            bar value sleep range max_stat xsize 200 ysize 18 left_bar "#687279" right_bar "#2c3e50"
-                            text "[sleep:.02f]/[max_stat]" size 14 color "#bdc3c7"
-                            $ _alertness_label = {
-                                "sleeping":  ("Tidur",     "#687279"),
-                                "peak":      ("Puncak",    "#2ecc71"),
-                                "normal":    ("Normal",    "#3498db"),
-                                "fatigued":  ("Lelah",     "#f39c12"),
-                                "exhausted": ("Kelelahan", "#e67e22"),
-                                "crashed":   ("Ambruk",   "#e74c3c"),
-                            }.get(sleep_get_state(), ("Normal", "#3498db"))
-                            text "Kesadaran: [_alertness_label[0]]" size 13 color _alertness_label[1] bold True
-                            text "Efek XP & Progres Skripsi: x[sleep_stat_multiplier()]" size 12 color _alertness_label[1]
-                    
-                    #null height 15
-                    
-                    # Emotional State
-                    text "Status Emosional" size 22 color "#e91e63" bold True
-
-                    $ _det_emotion = get_current_emotion()
-                    $ _det_emotion_info = get_emotion_info(_det_emotion)
-
-                    hbox:
-                        spacing 20
-                        vbox:
-                            spacing 5
-                            text "Valence (Kesenangan)" size 16 color "#ffffff"
-                            bar value valence range max_stat xsize 200 ysize 18 left_bar "#ff6b9d" right_bar "#2c3e50"
-                            text "[valence:.02f]/[max_stat]" size 14 color "#bdc3c7"
-                        
-                        vbox:
-                            spacing 5
-                            text "Arousal (Intensitas)" size 16 color "#ffffff"
-                            bar value arousal range max_stat xsize 200 ysize 18 left_bar "#ffd93d" right_bar "#2c3e50"
-                            text "[arousal:.02f]/[max_stat]" size 14 color "#bdc3c7"
-
-                    $ _em_mult = _det_emotion_info["score_multiplier"] if _det_emotion_info else 1.0
-                    text "Efek XP & Progres Skripsi (Emosi): x[_em_mult]" size 14 color "#ff6b9d" bold True
-
-                    $ _det_total_mult = round(_em_mult * sleep_stat_multiplier(), 2)
-                    frame:
-                        background "#1a252f"
-                        xsize 550
-                        padding (8, 6)
-                        hbox:
-                            spacing 8
-                            text "Efek Total XP & Progres Skripsi:" size 14 color "#bdc3c7" yalign 0.5
-                            text "x[_det_total_mult]" size 18 color "#f39c12" bold True yalign 0.5
-
-                    null height 15
-
-                    # Skills
-                    text "Kemampuan" size 22 color "#27ae60" bold True
-                    
-                    hbox:
-                        spacing 20
-                        vbox:
-                            spacing 5
-                            $ practical_level = get_level_from_xp(practical_xp)
-                            $ xp_in_level = get_xp_in_level(practical_xp, practical_level)
-                            $ required = get_required_for_level(practical_level)
-                            text "Praktis" size 16 color "#ffffff"
-                            text "Level [practical_level]" size 16 color "#ffffff"
-                            bar value xp_in_level range required xsize 200 ysize 18 left_bar "#16a085" right_bar "#2c3e50"
-                            text "[xp_in_level:.02f]/[required] XP" size 14 color "#bdc3c7"
-                        
-                        vbox:
-                            spacing 5
-                            $ writing_level = get_level_from_xp(writing_xp)
-                            $ xp_in_level = get_xp_in_level(writing_xp, writing_level)
-                            $ required = get_required_for_level(writing_level)
-                            text "Menulis" size 16 color "#ffffff"
-                            text "Level [writing_level]" size 16 color "#ffffff"
-                            bar value xp_in_level range required xsize 200 ysize 18 left_bar "#27ae60" right_bar "#2c3e50"
-                            text "[xp_in_level:.02f]/[required] XP" size 14 color "#bdc3c7"
