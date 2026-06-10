@@ -1232,6 +1232,9 @@ label process_activity:
             $ time_minutes = max(min_dur, min(max_dur, time_minutes))
 
     if activity not in ["bimbingan", "workshop"]:
+        $ _stats_msg = activity_data.get("stats_affected_message", "")
+        if _stats_msg:
+            "[_stats_msg]"
         "Yakin mau melakukan aktivitas ini?"
         menu:
             "Yakin mau melakukan aktivitas ini?"
@@ -1243,6 +1246,19 @@ label process_activity:
     $ delay_batch = max(1, time_minutes // 30)
 
     python:
+        _snap_before = {
+            "valence":           store.valence,
+            "arousal":           store.arousal,
+            "autonomy":          store.autonomy,
+            "competence":        store.competence,
+            "relatedness":       store.relatedness,
+            "nutrition":         store.nutrition,
+            "physical_activity": store.physical_activity,
+            "sleep":             store.sleep,
+            "practical_xp":      store.practical_xp,
+            "writing_xp":        store.writing_xp,
+            "thesis_progress":   store.thesis_progress,
+        }
         activity_fsm_start(activity)
         for minutes_activity in range(time_minutes + 1):
             if interrupted:
@@ -1256,6 +1272,44 @@ label process_activity:
                     interrupted = True
                     break
         activity_fsm_stop()
+
+    python:
+        _STAT_LABELS = [
+            ("valence",           "Valence"),
+            ("arousal",           "Arousal"),
+            ("autonomy",          "Otonomi"),
+            ("competence",        "Kompetensi"),
+            ("relatedness",       "Keterhubungan"),
+            ("nutrition",         "Nutrisi"),
+            ("physical_activity", "Aktivitas Fisik"),
+            ("sleep",             "Tidur"),
+            ("practical_xp",      "XP Praktis"),
+            ("writing_xp",        "XP Menulis"),
+            ("thesis_progress",   "Progress Skripsi"),
+        ]
+        _snap_after = {
+            "valence":           store.valence,
+            "arousal":           store.arousal,
+            "autonomy":          store.autonomy,
+            "competence":        store.competence,
+            "relatedness":       store.relatedness,
+            "nutrition":         store.nutrition,
+            "physical_activity": store.physical_activity,
+            "sleep":             store.sleep,
+            "practical_xp":      store.practical_xp,
+            "writing_xp":        store.writing_xp,
+            "thesis_progress":   store.thesis_progress,
+        }
+        _change_parts = []
+        for _k, _lbl in _STAT_LABELS:
+            _diff = _snap_after[_k] - _snap_before[_k]
+            if abs(_diff) >= 0.5:
+                if _diff >= 0:
+                    _change_parts.append("{{color=#4caf50}}{}: +{:.1f}{{/color}}".format(_lbl, _diff))
+                else:
+                    _change_parts.append("{{color=#f44336}}{}: {:.1f}{{/color}}".format(_lbl, _diff))
+        _stat_changes_display = "  |  ".join(_change_parts) if _change_parts else "Tidak ada perubahan signifikan."
+    "[_stat_changes_display]"
 
     # Show completion messages
     if activity == "skripsi":

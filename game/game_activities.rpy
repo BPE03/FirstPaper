@@ -19,14 +19,16 @@ define activities = {
         "min_duration": 60,
         "default_duration_hours": 4,
         "default_duration_minutes": 0,
-        "max_duration": 240
+        "max_duration": 240,
+        "stats_affected_message": "Efek: Progress Skripsi {color=#4caf50}↑{/color}, XP Menulis {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}  |  Valence {color=#f44336}↓{/color}, Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}"
     },
     "cari_jurnal": {
         "name": "Cari dan baca jurnal",
         "min_duration": 60,
         "default_duration_hours": 4,
         "default_duration_minutes": 0,
-        "max_duration": 240
+        "max_duration": 240,
+        "stats_affected_message": "Efek: XP Menulis {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}  |  Valence {color=#f44336}↓{/color}, Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}  |  (Peluang menemukan topik)"
     },
     "olahraga_ringan": {
         "name": "Olahraga ringan",
@@ -34,7 +36,8 @@ define activities = {
         "default_duration_hours": 2,
         "default_duration_minutes": 0,
         "max_duration": 240,
-        "completion_message": "Kamu olahraga ringan selama {minutes} menit. Kamu merasa lebih segar!"
+        "completion_message": "Kamu olahraga ringan selama {minutes} menit. Kamu merasa lebih segar!",
+        "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}  |  Nutrisi {color=#f44336}↓{/color}"
     },
     "olahraga_sedang": {
         "name": "Olahraga Sedang",
@@ -42,7 +45,8 @@ define activities = {
         "default_duration_hours": 1,
         "default_duration_minutes": 30,
         "max_duration": 240,
-        "completion_message": "Kamu olahraga sedang selama {minutes} menit. Kamu merasa lebih segar!"
+        "completion_message": "Kamu olahraga sedang selama {minutes} menit. Kamu merasa lebih segar!",
+        "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}  |  Nutrisi {color=#f44336}↓{/color}"
     },
     "olahraga_berat": {
         "name": "Olahraga Berat",
@@ -50,14 +54,16 @@ define activities = {
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
         "max_duration": 240,
-        "completion_message": "Kamu olahraga berat selama {minutes} menit. Kamu merasa lebih segar!"
+        "completion_message": "Kamu olahraga berat selama {minutes} menit. Kamu merasa lebih segar!",
+        "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑↑↑{/color}, Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}  |  Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}, Nutrisi {color=#f44336}↓↓{/color}"
     },
     "bimbingan": {
         "name": "Bimbingan dengan dosen",
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
-        "max_duration": 60
+        "max_duration": 60,
+        "stats_affected_message": "Efek: Kompetensi {color=#4caf50}↑{/color}, Keterhubungan {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}, XP Menulis {color=#4caf50}↑{/color}, XP Praktis {color=#4caf50}↑{/color}"
     },
     "sosialisasi": {
         "name": "Sosialisasi dengan teman",
@@ -65,7 +71,8 @@ define activities = {
         "default_duration_hours": 3,
         "default_duration_minutes": 0,
         "max_duration": 360,
-        "completion_message": "Kamu menghabiskan waktu dengan teman-teman untuk {minutes} menit. Kamu merasa terhubung dan bahagia!"
+        "completion_message": "Kamu menghabiskan waktu dengan teman-teman untuk {minutes} menit. Kamu merasa terhubung dan bahagia!",
+        "stats_affected_message": "Efek: Keterhubungan {color=#4caf50}↑↑{/color}, Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}, Otonomi {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}"
     },
     "nap": {
         "name": "Take a nap",
@@ -73,7 +80,8 @@ define activities = {
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
         "max_duration": 1440,
-        "completion_message": "Kamu tidur siang selama {minutes} menit. Kamu merasa lebih waspada sekarang!"
+        "completion_message": "Kamu tidur siang selama {minutes} menit. Kamu merasa lebih waspada sekarang!",
+        "stats_affected_message": "Efek: Arousal {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}"
     },
     "tidur": {
         "name": "Tidur",
@@ -81,7 +89,8 @@ define activities = {
         "default_duration_hours": 8,
         "default_duration_minutes": 0,
         "max_duration": 720,
-        "completion_message": "Kamu tidur selama {minutes} menit."
+        "completion_message": "Kamu tidur selama {minutes} menit.",
+        "stats_affected_message": "Efek: Tidur {color=#4caf50}↑↑{/color}  |  memulihkan stamina harian"
     },
     "workshop": {
         "name": "Attend a workshop",
@@ -89,7 +98,8 @@ define activities = {
         "default_duration_hours": 2,
         "default_duration_minutes": 0,
         "max_duration": 120,
-        "completion_message": "Kamu menghadiri sebuah workshop selama {minutes} menit. Kemampuanmu meningkat!"
+        "completion_message": "Kamu menghadiri sebuah workshop selama {minutes} menit. Kemampuanmu meningkat!",
+        "stats_affected_message": "Efek: XP Praktis {color=#4caf50}↑↑{/color}, XP Menulis {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}  |  Arousal {color=#f44336}↓{/color}"
     },
     "belajar_mandiri": {
         "name": "Belajar dan Praktek secara mandiri",
@@ -97,7 +107,8 @@ define activities = {
         "default_duration_hours": 4,
         "default_duration_minutes": 0,
         "max_duration": 240,
-        "completion_message": "Kamu belajar secara mandiri selama {minutes} menit. Kamu merasa lebih punya kendali!"
+        "completion_message": "Kamu belajar secara mandiri selama {minutes} menit. Kamu merasa lebih punya kendali!",
+        "stats_affected_message": "Efek: XP Praktis {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}  |  Valence {color=#f44336}↓{/color}"
     },
     "rest": {
         "name": "Just rest and do nothing",
@@ -105,7 +116,8 @@ define activities = {
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
         "max_duration": 1440,
-        "completion_message": "Kamu beristirahat selama {minutes} menit."
+        "completion_message": "Kamu beristirahat selama {minutes} menit.",
+        "stats_affected_message": "Efek: Arousal {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}"
     },
     "prokrastinasi": {
         "name": "Skip time",
@@ -113,7 +125,8 @@ define activities = {
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
         "max_duration": 144000,
-        "completion_message": "Kamu prokrastinasi selama {minutes} menit."
+        "completion_message": "Kamu prokrastinasi selama {minutes} menit.",
+        "stats_affected_message": "Efek: Otonomi {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}"
     },
     "chat_online": {
         "name": "Chat Online dengan Teman",
@@ -121,7 +134,8 @@ define activities = {
         "default_duration_hours": 3,
         "default_duration_minutes": 0,
         "max_duration": 360,
-        "completion_message": "Kamu mengobrol dengan teman-teman secara online selama {minutes} menit. Kamu merasa lebih terhubung!"
+        "completion_message": "Kamu mengobrol dengan teman-teman secara online selama {minutes} menit. Kamu merasa lebih terhubung!",
+        "stats_affected_message": "Efek: Keterhubungan {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}"
     },
     "main_game": {
         "name": "Main Game",
@@ -129,7 +143,8 @@ define activities = {
         "default_duration_hours": 2,
         "default_duration_minutes": 0,
         "max_duration": 360,
-        "completion_message": "Kamu bermain game selama {minutes} menit. Kamu merasa lebih santai dan terhibur!"
+        "completion_message": "Kamu bermain game selama {minutes} menit. Kamu merasa lebih santai dan terhibur!",
+        "stats_affected_message": "Efek: Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}, Otonomi {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}"
     },
 
     "makan_bergizi": {
@@ -138,7 +153,8 @@ define activities = {
         "default_duration_hours": 0,
         "default_duration_minutes": 20,
         "max_duration": 20,
-        "completion_message": "Kamu makan makanan bergizi selama {minutes} menit. Nutrisimu meningkat!"
+        "completion_message": "Kamu makan makanan bergizi selama {minutes} menit. Nutrisimu meningkat!",
+        "stats_affected_message": "Efek: Nutrisi {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑{/color}  |  Otonomi {color=#f44336}↓{/color}"
     },
     "makan_enak": {
         "name": "Makan Enak Sembarangan",
@@ -146,7 +162,8 @@ define activities = {
         "default_duration_hours": 0,
         "default_duration_minutes": 20,
         "max_duration": 20,
-        "completion_message": "Kamu menikmati makanan enak selama {minutes} menit. Mood kamu meningkat, namun kamu mendapatkan kalori lebih banyak."
+        "completion_message": "Kamu menikmati makanan enak selama {minutes} menit. Mood kamu meningkat, namun kamu mendapatkan kalori lebih banyak.",
+        "stats_affected_message": "Efek: Nutrisi {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}  |  Aktivitas Fisik {color=#f44336}↓{/color}"
     },
     "minum_kopi": {
         "name": "Minum Kopi",
@@ -154,7 +171,8 @@ define activities = {
         "default_duration_hours": 0,
         "default_duration_minutes": 15,
         "max_duration": 15,
-        "completion_message": "Kamu menikmati kopi selama {minutes} menit. Tingkat kafein dan kewaspadaan kamu meningkat!"
+        "completion_message": "Kamu menikmati kopi selama {minutes} menit. Tingkat kafein dan kewaspadaan kamu meningkat!",
+        "stats_affected_message": "Efek: Kafein {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}"
     },
     "meditasi": {
         "name": "Meditasi",
@@ -162,7 +180,8 @@ define activities = {
         "default_duration_hours": 0,
         "default_duration_minutes": 10,
         "max_duration": 60,
-        "completion_message": "Kamu bermeditasi selama {minutes} menit. Kamu merasa lebih tenang dan fokus!"
+        "completion_message": "Kamu bermeditasi selama {minutes} menit. Kamu merasa lebih tenang dan fokus!",
+        "stats_affected_message": "Efek: Arousal {color=#f44336}↓↓{/color}"
     }
 }
 
@@ -290,7 +309,7 @@ init python:
         relatedness = min(max_stat, relatedness + 20/60)
         competence = min(max_stat, competence + 1/60)
         valence = min(max_stat, valence + 20/60)
-        arousal = min(max_stat, arousal + 20/60)
+        arousal = min(max_stat, arousal + 15/60)
 
     def _activity_main_game():
         global autonomy, competence, relatedness, physical_activity, arousal, valence
@@ -299,7 +318,7 @@ init python:
         relatedness = min(max_stat, relatedness + 1/60)
         physical_activity = max(0, physical_activity - 5/60)
         valence = min(max_stat, valence + 15/60)
-        arousal = min(max_stat, arousal + 15/60)
+        arousal = min(max_stat, arousal + 10/60)
 
     def _activity_meditasi():
         global arousal
