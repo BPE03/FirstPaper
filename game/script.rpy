@@ -6,20 +6,32 @@ label start:
     p "Huft, akhirnya kelar juga EAS terakhir ini."
     p "Mana susah-susah lagi, moga lulus semua aja dah."
     p "Si Joko gimana tuh EAS-nya kira-kira?"
-    show joko with fade
+    show joko_netral with dissolve
     p "Oi Jok!"
+    hide joko_netral
+    show joko_ketawa
     j "Lah, Paijo. EAS lu gimana?"
     p "....."
+    hide joko_ketawa
+    show joko_netral
     p "Kita balas di semester depan bos."
+    hide joko_netral
+    show joko_kaget
     j "Walah wkwkwk yang bener aja jo."
     p "Yaudah lah yah, moga nilai tugas-tugas yang lain bisa bantu angkat lah."
     p "Lu gimana?"
+    hide joko_kaget
+    show joko_netral
     j "Gua positif aman sih, cuma ada beberapa soal yang gua ragu-ragu, tapi ya semoga bisa dapet A lah."
     p "Amiin.. mantap-mantap."
     j "Lu habis ini ada rencana apa?"
     p "Ga ada sih, paling pulang terus tidur, capek banget."
+    hide joko_netral
+    show joko_ketawa
     j "Wkwkwk, gua juga sih, paling pulang terus main game, capek banget."
     p "Wkwkwk, yaudah lah ya. Gua balik duluan yak."
+    hide joko_ketawa
+    show joko_netral
     j "Oke oke, tiati di jalan Jo."
     p "Yoi."
     scene black with fade
@@ -54,6 +66,7 @@ label start:
     "Namun dia tidak tahu apa itu."
     "Perasaan itu selalu mengganjal di Paijo tetapi dia tidak terlalu memikirkannya."
     "Namun notifikasi yang datang itu akhirnya menjelaskan sesuatu yang mengganjal tersebut."
+    show joko_netral_holo with dissolve
     j "\"Jo, proposal lu gimana? udah sebulan lagi seminar proposal nih.\""
     p "....."
     p "....."
@@ -62,11 +75,15 @@ label start:
     "Tentu saja."
     "Proposal merupakan mata kuliah di semester ini, sehingga deadline seminar proposal seharusnya tidak jauh dari setelah EAS."
     p "\"Ahh... proposal mah gampang, tinggal sat set diacc dosen kelar.\""
+    hide joko_netral_holo
+    show joko_kaget_holo
     j "\"Hah, seriusan lu?\""
     j "\"Lu tau kan ini udah tinggal sebulan lagi seminar proposal, berarti tinggal sebulan lagi buat ngerjain proposalnya?\""
     p "....."
     "Paijo tidak bisa berkata-kata."
     "Ia membayangkan dirinya yang harus mengerjakan proposal dalam waktu sebulan ke depan, dan itu membuatnya merasa sangat tertekan."
+    hide joko_kaget_holo
+    show joko_netral_holo
     j "\"Apalagi lu belum ada topik yang jelas, yakin ada topik langsung acc?\""
     j "\"Mending langsung lu kerjain dah.\""
     p "....."
@@ -77,10 +94,13 @@ label start:
     "Bro berpikir dia karakter utama."
     "Tentu saja kemewahan itu tidak bisa berlangsung selamanya."
     p "\"Aman lah, masih lama kok.\""
+    hide joko_netral_holo
+    show joko_kaget_holo
     j "\"Lahh... serah lu dah.\""
     j "\"Awas aja lu sampe ga sempro bulan depan.\""
     j "\"Lama-lama dosen juga sungkem duluan sama lu.\""
     p "\"Iya dah gua kerjain nih.\""
+    hide joko_kaget_holo with dissolve
     "Setelah itu juga Paijo tidak bisa menunda lagi."
     "Dia bergegas membuka laptopnya dan mulai mencari-cari referensi untuk digunakan sebagai topik proposalnya."
     "Namun, dia merasa sangat kesulitan untuk menemukan topik yang menarik dan sesuai dengan minatnya."
@@ -156,19 +176,27 @@ label prologue_lanjut:
     p "...."
     "notif.sfx"
     p "Notif apalagi nih."
+    show joko_netral_holo with dissolve
     j "\"Jo, gimana skripsi lu? udah ngerjain kah?\""
     p "\"Belum Jok, masih bingung cari topik euy.\""
     j "\"Bingung gimana? cari topik yang sesuai sama apa yang lu suka aja.\""
     j "\"Ga mungkin kalo ga ada. Banyak kok yang bisa lu jadikan topik riset.\""
     p "\"Nah itu masalahnya, gua ga tau apa yang gua suka.\""
+    hide joko_netral_holo
+    show joko_kaget_holo
     j "\"Yee elu sih kupu-kupu, jadi bingung kan.\""
+    hide joko_kaget_holo
+    show joko_netral_holo
     j "\"Hmmm... mungkin kalo gua jadi lu sih gua coba main-main di beberapa bidang ilmu dulu deh.\""
     j "\"Di Informatika kan topik skripsinya harus ngikut lab yang ada.\""
     j "\"Cobain satu-satu lu bikin program kek, atau belajar yang berhubungan sama lab itu dah.\""
     j "\"Sumpah lu ginian udah telat banget Jo, tapi kalo lu mau lulus ya cuma itu caranya.\""
     p "Hmmm... pelajari tiap bidang ilmu ya...."
     p "\"Oke Jok, saran yang mantap.\""
+    hide joko_netral_holo
+    show joko_kaget_holo
     j "\"Buruan jangan nunda-nunda lagi lu.\""
+    hide joko_kaget_holo with dissolve
 
     p "Hmm, bidang ilmu ya."
     p "Okelah gua cari deh satu-satu."
@@ -401,19 +429,25 @@ label sempro_tidak_mengerjakan:
     "Hanya sebuah kenyataan yang diucapkan dengan tenang, karena Paijo sudah tahu jawabannya sejak berminggu-minggu lalu."
     "Dia hanya tidak mau mengakuinya."
     "Notif.sfx"
+    show joko_netral_holo with dissolve
     j "\"Jo, lo udah di jalan belum? Sempro lo kan jam 9.\""
     p "..."
     j "\"Jo?\""
     p "\"Jok, gua ga bisa ikut.\""
+    hide joko_netral_holo
+    show joko_kaget_holo
     j "\"Hah? Kenapa? Lo sakit?\""
     p "\"Bukan.\""
     p "\"Proposalnya... belum ada apa-apa.\""
     "Hening panjang di sisi lain."
     j "\"...serius?\""
     p "\"Iya.\""
+    hide joko_kaget_holo
+    show joko_netral_holo
     j "\"Jo...\""
     p "\"Gua tau.\""
     "Paijo menutup laptopnya."
+    hide joko_netral_holo with dissolve
     "Di luar, matahari sudah naik. Hari berjalan seperti biasa."
     "Hanya untuk Paijo, hari ini terasa seperti sebuah pintu yang menutup."
     scene kos_night with fade
@@ -584,14 +618,19 @@ label sempro_gagal:
     "Kata-kata itu terasa berat di benaknya."
     "Selama ini dia sudah menunda, dan sekarang dia harus membayar harganya."
     "Notif.sfx"
+    show joko_netral_holo with dissolve
     j "\"Jo, gimana sempro-nya?\""
     p "..."
     j "\"Jo?\""
     p "\"Ga lulus Jok.\""
     "Hening sejenak di sisi lain."
+    hide joko_netral_holo
+    show joko_kaget_holo
     j "\"Lu serius?\""
     p "\"Iya.\""
     j "\"Aduh Jo... Sori gua denger itu.\""
+    hide joko_kaget_holo
+    show joko_netral_holo
     j "\"Tapi... ya udah. Bukan akhir dari segalanya.\""
     p "\"Gampang ngomongnya lu.\""
     j "\"Iya gua tau. Tapi serius, ini bukan akhir. Banyak yang pernah di posisi lu dan akhirnya lulus juga.\""
@@ -603,6 +642,7 @@ label sempro_gagal:
     p "\"Hmmm.\""
     j "\"Ayo, jangan mager. Semester depan lu pasti bisa.\""
     "Paijo menaruh handphone-nya."
+    hide joko_netral_holo with dissolve
     "Dia menatap langit-langit kamarnya dalam keheningan yang panjang."
     scene kos_night with fade
     "Malam itu, Paijo tidak membuka laptopnya."
@@ -630,16 +670,26 @@ label post_sempro:
     "Yang penting, dia sudah melewati gerbang pertama."
     p "Akhirnya..."
     "Notif.sfx"
+    show joko_netral_holo with dissolve
     j "\"Jo! Gimana sempro-nya?\""
     p "\"Lulus Jok.\""
+    hide joko_netral_holo
+    show joko_ketawa_holo
     j "\"SERIUSAN?! Mantap kali lu Jo!\""
     p "\"Hehehe. Masih ada revisi sih.\""
+    hide joko_ketawa_holo
+    show joko_netral_holo
     j "\"Ya iyalah, sempro mana yang ga ada revisi. Yang penting lulus dulu!\""
+    hide joko_netral_holo
+    show joko_ketawa_holo
     j "\"Selamat ya Jo! Lu emang bisa kalo mau.\""
     p "\"Thanks Jok. Gua juga ga nyangka sih.\""
+    hide joko_ketawa_holo
+    show joko_netral_holo
     j "\"Udah, sekarang istirahatin diri lu dulu. Besok baru lanjut revisi.\""
     p "\"Oke-oke.\""
     "Paijo menaruh handphone-nya dan merebahkan diri di kasur."
+    hide joko_netral_holo with dissolve
     "Langit-langit kamarnya terlihat sama seperti biasa."
     "Tapi entah mengapa, terasa lebih menyenangkan dari sebelumnya."
     p "..."
@@ -836,13 +886,18 @@ label sidang_akhir_gagal:
     "Bukan proposal. Bukan ujian tengah semester."
     "Sidang akhir."
     "Notif.sfx"
+    show joko_netral_holo with dissolve
     j "\"Jo, gimana sidangnya?!\""
     p "..."
     j "\"Jo? Kok diem?\""
     p "\"Ga lulus Jok.\""
     "Hening cukup lama."
+    hide joko_netral_holo
+    show joko_kaget_holo
     j "\"...serius?\""
     p "\"Iya.\""
+    hide joko_kaget_holo
+    show joko_netral_holo
     j "\"Jo, gua minta maaf banget denger itu.\""
     j "\"Lu udah kerja keras banget selama ini.\""
     p "\"Kayaknya emang kurang keras.\""
@@ -853,6 +908,7 @@ label sidang_akhir_gagal:
     p "..."
     p "\"Iya Jok. Makasih.\""
     "Paijo menutup handphone-nya."
+    hide joko_netral_holo
     "Dia membuka skripsinya lagi."
     "Bukan untuk dibaca."
     "Hanya untuk mengingatkan dirinya bahwa ini bisa diselesaikan."

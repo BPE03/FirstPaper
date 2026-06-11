@@ -35,7 +35,7 @@ define activities = {
         "min_duration": 60,
         "default_duration_hours": 2,
         "default_duration_minutes": 0,
-        "max_duration": 240,
+        "max_duration": 120,
         "completion_message": "Kamu olahraga ringan selama {minutes} menit. Kamu merasa lebih segar!",
         "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}  |  Nutrisi {color=#f44336}↓{/color}"
     },
@@ -44,7 +44,7 @@ define activities = {
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 30,
-        "max_duration": 240,
+        "max_duration": 120,
         "completion_message": "Kamu olahraga sedang selama {minutes} menit. Kamu merasa lebih segar!",
         "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}  |  Nutrisi {color=#f44336}↓{/color}"
     },
@@ -53,7 +53,7 @@ define activities = {
         "min_duration": 60,
         "default_duration_hours": 1,
         "default_duration_minutes": 0,
-        "max_duration": 240,
+        "max_duration": 120,
         "completion_message": "Kamu olahraga berat selama {minutes} menit. Kamu merasa lebih segar!",
         "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑↑↑{/color}, Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}  |  Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}, Nutrisi {color=#f44336}↓↓{/color}"
     },
