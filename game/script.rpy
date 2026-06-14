@@ -119,15 +119,11 @@ label start:
     scene kos_morning with fade
     "...."
     "Eits, bentar dulu."
-    "Apakah kamu sudah paham bagaimana cara memainkan game ini?"
-    menu:
-        "Apakah kamu sudah paham bagaimana cara memainkan game ini?"
-        "Sudah":
-            "Bersiaplah."
-        "Belum":
-            scene black with fade
-            call tutorial_scene
-            scene kos_morning with fade
+    "Sebelum bermain, mari kita pahami dulu kebutuhan manusia agar kamu paham cara bermain game ini."
+    scene black with fade
+    call tutorial_scene
+    scene kos_morning with fade
+    "Bersiaplah."
     "Sekarang."
     # Show all screens
     show screen main_stats
