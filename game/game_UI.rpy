@@ -116,6 +116,38 @@ screen main_stats():
                 # Button to show detailed stats
                 textbutton "Lihat Statistik Detil" action ToggleVariable("show_detailed_stats") xsize 250 ysize 75
         
+        # --- Peringatan status rendah ---
+        $ _warn_stat = get_lowest_stat_info()
+        if _warn_stat is not None:
+            $ _warn_label  = _warn_stat["label"]
+            $ _warn_value  = _warn_stat["value"]
+            $ _warn_advice = _warn_stat["advice"]
+            $ _warn_color  = _warn_stat["color"]
+            frame:
+                xalign 0.5
+                yalign 0.97
+                xsize 620
+                background "#1a252fee"
+                padding (14, 10)
+                hbox:
+                    spacing 12
+                    yalign 0.5
+                    # Ikon peringatan berwarna sesuai stat
+                    frame:
+                        background _warn_color
+                        xsize 46
+                        ysize 46
+                        padding (4, 4)
+                        text "⚠" size 26 color "#ffffff" xalign 0.5 yalign 0.5
+                    vbox:
+                        spacing 4
+                        yalign 0.5
+                        hbox:
+                            spacing 8
+                            text "[_warn_label] Rendah" size 15 color _warn_color bold True yalign 0.5
+                            text "([_warn_value:.0f]/100)" size 13 color "#e74c3c" yalign 0.5
+                        text "[_warn_advice]" size 12 color "#bdc3c7" text_align 0.0
+
         # Timer that affects stats every second
         if not time_stop:
             timer 1.0 repeat True action [

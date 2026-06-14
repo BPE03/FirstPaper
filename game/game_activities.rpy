@@ -357,12 +357,12 @@ init python:
             "competence":  [(0.0, -0.4), (75, 0.0)],
             "relatedness": [(0.0, -0.4), (75, 0.0)],
             "physical_activity":          [(0.0, -0.4), (75, 0.0)],
-            "nutrition":   [(20, -1.0), (60,  0.0)],
+            "nutrition":   [(20, -1.0), (50,  0.0)],
             "sleep":       [(0, -1.0), (30,  0.0)],
         },
         "belajar_mandiri": {
-            "autonomy":    [(0.0, -0.4), (75, 0.0)],
-            "competence":  [(0.0, -0.4), (75, 0.0)],
+            "autonomy":    [(0.0, 0.4), (75, 0.0)],
+            "competence":  [(0.0, 0.4), (75, 0.0)],
             "relatedness": [(0.0, -0.4), (75, 0.0)],
             "physical_activity":          [(0.0, -0.4), (75, 0.0)],
             "nutrition":   [(0, -1.0), (50,  0.0)],
@@ -399,7 +399,7 @@ init python:
             "caffeine_plasma_level": [(0.2, 1), (1.0, 0.0)],
         },
         "olahraga_ringan": {
-            "physical_activity":          [(0.0, 0.5), (50, 0.0), (80, 0), (100, -0.5)],
+            "physical_activity":          [(0.0, 0.8), (50, 0.0), (80, 0), (100, -0.5)],
         },
         "olahraga_sedang": {
             "physical_activity":          [(0.0, -0.2), (50, 0.0), (80, 0), (100, -0.5)],

@@ -150,3 +150,49 @@ init python:
         min_stats = min(all_stats)
         motivation = (min_stats - min_stat_for_no_motivation) / (min_stat_for_max_motivation - min_stat_for_no_motivation) * 100
         motivation = max(0, min(100, motivation))  # Ensure motivation is between 0 and 100
+
+    def get_lowest_stat_info():
+        """Return info tentang stat dengan nilai terendah dari 5 stat kunci.
+        Mengembalikan None jika semua stat di atas WARNING_THRESHOLD."""
+        WARNING_THRESHOLD = 40.0
+        stat_entries = [
+            {
+                "key": "autonomy",
+                "label": "Otonomi",
+                "value": autonomy,
+                "advice": "Lakukan kegiatan yang memberi rasa kendali, seperti menentukan sendiri jadwal belajar atau melakukan hal yang menyenangkan.",
+                "color": "#9b59b6",
+            },
+            {
+                "key": "competence",
+                "label": "Kompetensi",
+                "value": competence,
+                "advice": "Tingkatkan kemampuan dengan menyelesaikan tantangan yang tidak terlalu sulit, seperti belajar, membaca referensi ilmiah, atau bermain game.",
+                "color": "#3498db",
+            },
+            {
+                "key": "relatedness",
+                "label": "Keterhubungan",
+                "value": relatedness,
+                "advice": "Luangkan waktu untuk bersosialisasi—ngobrol dengan teman, kunjungi dosen, atau ikut kegiatan komunitas.",
+                "color": "#1abc9c",
+            },
+            {
+                "key": "nutrition",
+                "label": "Nutrisi",
+                "value": nutrition,
+                "advice": "Tubuhmu butuh energi! Segera makan di dapur.",
+                "color": "#f39c12",
+            },
+            {
+                "key": "physical_activity",
+                "label": "Aktivitas Fisik",
+                "value": physical_activity,
+                "advice": "Gerakkan tubuhmu! Coba olahraga ringan agar badan dan pikiran lebih segar.",
+                "color": "#e74c3c",
+            },
+        ]
+        lowest = min(stat_entries, key=lambda s: s["value"])
+        if lowest["value"] < WARNING_THRESHOLD:
+            return lowest
+        return None
