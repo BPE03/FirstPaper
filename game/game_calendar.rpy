@@ -218,6 +218,6 @@ init python:
             renpy.scene() # Clears the current scene
             cg = current_location + "_" + new_state
             renpy.show(cg)
-            renpy.transition(fade)
+            renpy.transition(dissolve)
             if time_stop:
                 renpy.pause(1.0)

@@ -44,7 +44,10 @@ screen main_stats():
                     ysize 22
                     left_bar "#2ecc71"
                     right_bar "#34495e"
-                text "[thesis_progress:.02f]%" size 14 color "#bdc3c7"
+                hbox:
+                    spacing 70
+                    text "[thesis_progress:.02f]%" size 14 color "#bdc3c7"
+                    text "Skor: [int(score)]" size 18 color "#f39c12" bold True
 
                 if bimbingan_bonus_active:
                     $ _bonus_remaining = max(0.0, 10.0 - (thesis_progress - bimbingan_bonus_start_progress))
@@ -104,10 +107,10 @@ screen main_stats():
                         text "Efek XP & Progres Skripsi:" size 11 color "#bdc3c7"
                         text "x[_total_mult]" size 18 color "#f39c12" bold True
 
-                null height 1
-                # Score display
-                text "Skor" size 18 color "#ffffff"
-                text "[int(score)]" size 18 color "#f39c12" bold True
+                # null height 1
+                # # Score display
+                # text "Skor" size 18 color "#ffffff"
+                # text "[int(score)]" size 18 color "#f39c12" bold True
 
                 #null height 5
                 # Button to show detailed stats
