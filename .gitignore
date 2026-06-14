@@ -8,6 +8,9 @@ errors.txt
 /game/cache
 *.rpyc
 *.rpymc
+*.keystore
+android.json
+progressive_download.txt
 
 # Misc files
 .vscode

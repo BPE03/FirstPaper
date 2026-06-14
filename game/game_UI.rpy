@@ -131,7 +131,7 @@ screen detailed_stats_window():
             # Stats window
             frame:
                 xalign 0.05
-                yalign 0.05
+                yalign 0.95
                 xsize 700
                 ysize 750
                 background "#34495e"

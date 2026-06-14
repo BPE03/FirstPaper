@@ -981,7 +981,7 @@ label kos:
         jump expression _pj
     $ current_location = "kos"
     $ cg = current_location + "_" + time_of_day_state
-    scene expression cg with fade
+    scene expression cg with dissolve
     $ time_stop = False
     # $ renpy.show(cg.lower())
     call screen interactive_kos
@@ -993,7 +993,7 @@ label dapur:
         jump expression _pj
     $ current_location = "dapur"
     $ cg = current_location + "_" + time_of_day_state
-    scene expression cg with fade
+    scene expression cg with dissolve
     $ time_stop = False
     # $ renpy.show(cg.lower())
     call screen interactive_dapur
