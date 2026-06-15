@@ -45,7 +45,7 @@ screen main_stats():
                     left_bar "#2ecc71"
                     right_bar "#34495e"
                 hbox:
-                    spacing 70
+                    spacing 60
                     text "[thesis_progress:.02f]%" size 14 color "#bdc3c7"
                     text "Skor: [int(score)]" size 18 color "#f39c12" bold True
 
