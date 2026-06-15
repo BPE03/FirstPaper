@@ -1029,6 +1029,10 @@ label activity_kos_laptop:
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
                 "Untuk mendapatkan topik skripsi, tingkatkan kemampuan praktismu, lalu carilah jurnal untuk mendapatkan inspirasi topik skripsi."
                 jump kos
+            elif thesis_has_topic():
+                "Kamu sudah mendapatkan topik yang kamu pahami."
+                "Segera bimbingan dengan dosen untuk memastikan apakah topik ini layak untuk dilanjutkan!"
+                jump kos
             elif thesis_check_completion():
                 jump kos
             $ activity = "skripsi"
