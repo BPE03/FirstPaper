@@ -267,7 +267,7 @@ init python:
 
     def _activity_belajar_mandiri():
         global autonomy, competence, relatedness, physical_activity, arousal, valence
-        autonomy = min(max_stat, autonomy + 10/60)
+        autonomy = min(max_stat, autonomy + 5/60)
         competence = min(max_stat, competence + 5/60)
         relatedness_modifier = relatedness * 0.02
         relatedness = max(0, relatedness - relatedness_modifier/60)

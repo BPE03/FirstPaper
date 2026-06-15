@@ -13,8 +13,8 @@ init python:
     S_MIN       = 0.05
     S_MAX       = 1.0
 
-    C_AMPLITUDE = 0.45
-    C_OFFSET    = 0.50
+    # C_AMPLITUDE = 0.45
+    # C_OFFSET    = 0.50
 
     # ── Sleep FSM states ─────────────────────────────────────────────
     SLEEP_SLEEPING  = "sleeping"
