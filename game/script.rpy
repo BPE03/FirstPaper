@@ -1027,6 +1027,7 @@ label activity_kos_laptop:
         "Kerjakan Skripsi (Motivasi: [_m_thesis]/[max_stat] - [_l_thesis])":
             if not thesis_can_write():
                 "Kamu belum mendapatkan topik untuk skripsimu, jadi kamu belum bisa mulai mengerjakan skripsimu."
+                "Untuk mendapatkan topik skripsi, tingkatkan kemampuan praktismu, lalu carilah jurnal untuk mendapatkan inspirasi topik skripsi."
                 jump kos
             elif thesis_check_completion():
                 jump kos
