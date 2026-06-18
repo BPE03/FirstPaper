@@ -163,14 +163,31 @@ init python:
         - mode: The mode for the transition (e.g., 'cutscene', 'normal'), can be used to adjust fade times or volumes based on context
         Example usage: fade_music_transition('songname.ogg', fade_out=2.0, fade_in=1.0)
         """
+        if new_track:
+            renpy.music.set_volume(volume=0.0, delay=fade_out, channel='music')
+            if mode == 'cutscene':
+                renpy.pause(fade_out)
+            renpy.music.stop(channel='music')
+            renpy.music.set_volume(volume=music_volume, delay=fade_in, channel='music')
+            renpy.music.play(new_track, channel='music', fadein=fade_in)
+
+    def fade_stop_music(fade_out=1.0, mode=None):
+        """
+        Fades out current music, stops it, and optionally plays a new track with fade in.
+        
+        Parameters:
+        - new_track: The music track to play after fading out (None to just stop current music)
+        - fade_out: Time in seconds to fade out current music
+        - fade_in: Time in seconds to fade in new music (0 for immediate)
+        - music_volume: Target volume for new music (default 1.0)
+        - mode: The mode for the transition (e.g., 'cutscene', 'normal'), can be used to adjust fade times or volumes based on context
+        Example usage: fade_music_transition('songname.ogg', fade_out=2.0, fade_in=1.0)
+        """
         renpy.music.set_volume(volume=0.0, delay=fade_out, channel='music')
         if mode == 'cutscene':
             renpy.pause(fade_out)
         renpy.music.stop(channel='music')
-        
-        if new_track:
-            renpy.music.set_volume(volume=music_volume, delay=fade_in, channel='music')
-            renpy.music.play(new_track, channel='music', fadein=fade_in)
+        renpy.music.set_volume(volume=1.0, delay=0, channel='music')
 
     # Hide all screens during cutscenes, show during interactive gameplay
     def set_cutscene_mode(is_cutscene):

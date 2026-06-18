@@ -3,6 +3,7 @@
 label start:
     "Jumat, 12 Desember 2025."
     scene kelas with fade
+    $ fade_music_transition("afterclass.mp3", mode="cutscene")
     p "Huft, akhirnya kelar juga EAS terakhir ini."
     p "Mana susah-susah lagi, moga lulus semua aja dah."
     p "Si Joko gimana tuh EAS-nya kira-kira?"
@@ -35,6 +36,9 @@ label start:
     j "Oke oke, tiati di jalan Jo."
     p "Yoi."
     scene black with fade
+    $ renpy.music.set_volume(0.0, delay=1, channel='music')
+    stop music
+    $ renpy.music.set_volume(1.0, delay=0, channel='music')
     "Dengan hati yang lega, Paijo pun balik ke kosnya untuk mendapatkan hadiah dari kerja kerasnya."
     "Kerja keras?"
     "Hadiah?"
@@ -45,6 +49,7 @@ label start:
     p "....."
     p "Ah ga tau lah, paling karena capek aja sih."
     scene kos_afternoon with fade
+    $ fade_music_transition("home.mp3", mode="cutscene")
     p "Hai istana, rajamu telah kembali."
     "Pause"
     p "Habis ngerjain EAS gini emang paling bener langsung tidur sih."
@@ -60,6 +65,7 @@ label start:
     "Hal tersebut tanpa sadar sudah menghabiskan waktu selama 2 jam lamanya."
     p "Wkwkwk lah bisa gitu raut mukanya."
     "Notif.sfx"
+    $ fade_stop_music()
     "Semua kesenangan itu berubah ketika ada notifikasi masuk di handphone Paijo."
     "Semua tawa yang ia keluarkan sebelumnya langsung menghilang seketika."
     "Di dalam benak Paijo, dia tahu telah melupakan sesuatu yang besar."
@@ -70,6 +76,7 @@ label start:
     j "\"Jo, proposal lu gimana? udah sebulan lagi seminar proposal nih.\""
     p "....."
     p "....."
+    $ fade_music_transition("badend.mp3", mode="cutscene")
     "udah sebulan lagi seminar proposal nih."
     "Sebulan?"
     "Tentu saja."
@@ -131,7 +138,7 @@ label start:
     show screen calendar_now
     show screen calendar_window
     show screen game_maps
-    
+    $ fade_music_transition("daytime.mp3", mode="cutscene")
     jump kos
 
 label prologue_lanjut:
@@ -145,6 +152,7 @@ label prologue_lanjut:
     "Keesokan paginya, Paijo merasa sangat lelah dan tidak memiliki energi untuk melanjutkan pencarian referensi untuk proposalnya."
     "Sehingga dengan berat hati, dia memutuskan untuk berhenti dan tidur sebelum kondisi kesehatannya memburuk."
     scene black with fade
+    $ fade_stop_music()
     show text "First Paper"
     $ renpy.pause(5.0, hard=True) # Matches the transition time
     show text "Dikembangkan oleh: Bimantara Putra Ernandra" with fade
@@ -152,6 +160,7 @@ label prologue_lanjut:
     scene black with fade
     "Sabtu, 13 Desember 2025."
     scene kos_morning with fade
+    $ fade_music_transition("afterclass.mp3", mode="cutscene")
     p "...."
     p "Hahh...."
     p "Tidur berapa jam gua?"
@@ -221,6 +230,7 @@ label prologue_lanjut_besok:
     "Tentu saja hal ini tidak membuatnya merasa lebih baik, karena dia tahu bahwa deadline seminar proposal semakin dekat."
     "Namun, dia merasa bahwa dia tidak bisa memaksakan dirinya untuk terus mencari referensi ketika dia sudah sangat lelah."
     scene black with fade
+    $ fade_stop_music()
     show text "First Paper"
     $ renpy.pause(5.0, hard=True) # Matches the transition time
     show text "Dikembangkan oleh: Bimantara Putra Ernandra" with fade
@@ -228,6 +238,7 @@ label prologue_lanjut_besok:
     scene black with fade
     "Sabtu, 13 Desember 2025."
     scene kos_morning with fade
+    $ fade_music_transition("afterclass.mp3", mode="cutscene")
     p "....."
     p "Bangun pagi, ku terus...."
     p "Ngerjain skripsi."
@@ -368,6 +379,7 @@ label tutorial_scene:
     return
 
 label sempro:
+    $ fade_stop_music()
     scene black with fade
     "Deadline mengumpulkan proposal pun tiba."
     if thesis_fsm_state not in (THESIS_PROPOSAL_WRITING, THESIS_SEMPRO_READY):
@@ -376,6 +388,7 @@ label sempro:
     "Rabu, 21 Januari 2026."
     "Hari sidang proposal pun tiba."
     scene kos_morning with fade
+    $ fade_music_transition("afterclass.mp3", mode="cutscene") 
     p "....."
     p "Udah waktunya sidang proposal."
     p "Bisa lah ya, lulus lah ya."
@@ -410,6 +423,7 @@ label sempro_tidak_mengerjakan:
     hide screen calendar_window
     hide screen game_maps
     scene kos_morning with fade
+    $ fade_music_transition("badend.mp3", mode="cutscene")
     "Hari sidang proposal."
     "Paijo duduk di tepi kasurnya, menatap layar laptop yang menyala."
     "Dokumen proposalnya terbuka."
@@ -605,6 +619,7 @@ label sempro_gagal:
     hide screen calendar_window
     hide screen game_maps
     scene kos_afternoon with fade
+    $ fade_music_transition("badend.mp3", mode="cutscene")
     p "..."
     "Paijo duduk di tepi kasurnya, menatap lantai."
     "Formulir evaluasi sempro tergeletak di mejanya."
@@ -660,6 +675,7 @@ label sempro_gagal:
     return
 
 label post_sempro:
+    $ fade_music_transition("goodend.mp3", mode="cutscene")
     "Setelah seminar proposal, Paijo merasa sangat lega dan senang karena dia berhasil melalui seminar proposal dengan baik."
     scene kos_afternoon with fade
     "Formulir revisi di tangannya tidak seberat yang dia bayangkan."
@@ -709,6 +725,7 @@ label post_sempro:
     $ wake_time_in_minute = current_hour * 60 + current_minute
     $ total_daily_time    = current_hour * 60 + current_minute
     $ set_cutscene_mode(False)
+    $ fade_music_transition("daytime.mp3")
     jump kos
 
 label sidang_akhir:

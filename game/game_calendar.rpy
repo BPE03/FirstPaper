@@ -195,9 +195,9 @@ init python:
     TOD_NIGHT     = "night"      # 18:00 – 05:59
 
     TOD_MUSIC = {
-        TOD_MORNING:   "morning_theme.ogg",
-        TOD_AFTERNOON: "afternoon_theme.ogg",
-        TOD_NIGHT:     "night_theme.ogg",
+        TOD_MORNING:   "daytime.mp3",
+        TOD_AFTERNOON: None,
+        TOD_NIGHT:     "nighttime.mp3",
     }
 
     def _tod_from_hour(hour):
