@@ -221,7 +221,7 @@ init python:
         global autonomy, physical_activity, nutrition
         autonomy = min(max_stat, autonomy + 3/60)
         physical_activity = min(max_stat, physical_activity + 8/60)
-        nutrition_modifier = nutrition * 0.18
+        nutrition_modifier = nutrition * 0.09
         nutrition = max(0, nutrition - nutrition_modifier / 60)
 
     def _activity_olahraga_sedang():
@@ -229,7 +229,7 @@ init python:
         physical_activity = min(max_stat, physical_activity + 30/60)
         competence = min(max_stat, competence + 2/60)
 
-        nutrition_modifier = nutrition * 0.2
+        nutrition_modifier = nutrition * 0.1
         nutrition = max(0, nutrition - nutrition_modifier / 60)
         valence = min(max_stat, valence + 20/60)
         arousal = min(max_stat, arousal + 15/60)
@@ -239,7 +239,7 @@ init python:
         autonomy = max(0, autonomy - 6/60)
         physical_activity = min(max_stat, physical_activity + 50/60)
         competence = max(0, competence - 1/60)
-        nutrition_modifier = nutrition * 0.27
+        nutrition_modifier = nutrition * 0.15
         nutrition = max(0, nutrition - nutrition_modifier / 60)
         valence = min(max_stat, valence + 35/60)
         arousal = min(max_stat, arousal + 25/60)

@@ -52,14 +52,14 @@ init python:
         primary_phase   = ((total_daily_time / 60.0 - 5.0) / 24.0) * 2 * math.pi
         primary         = math.sin(primary_phase)
         secondary_phase = ((total_daily_time / 60.0 - 2.0) / 12.0) * 2 * math.pi
-        secondary       = 0.20 * math.sin(secondary_phase)
+        secondary       = 0.50 * math.sin(secondary_phase)
         raw             = primary - secondary
-        c               = (raw + 1.20) / 2.40
-        if circadian_phase != 0.0:
-            phase_correction = circadian_phase / 24.0 * 60 * 2 * math.pi
-            c_shifted = (math.sin(primary_phase + phase_correction)
-                        - 0.20 * math.sin(secondary_phase + phase_correction))
-            c = (c_shifted + 1.20) / 2.40
+        c               = (raw + 1.5) / 3.0
+        # if circadian_phase != 0.0:
+        #     phase_correction = circadian_phase / 24.0 * 60 * 2 * math.pi
+        #     c_shifted = (math.sin(primary_phase + phase_correction)
+        #                 - 0.20 * math.sin(secondary_phase + phase_correction))
+        #     c = (c_shifted + 1.20) / 2.40
         #print("DEBUG: process c={:.3f}".format(c))
         return max(0.0, min(1.0, c))
 
@@ -97,8 +97,7 @@ init python:
 
     def _sleep_fsm_step():
         """Advance the Sleep FSM one minute: update process_s, then evaluate awake transitions."""
-        global sleep_fsm_state, total_daily_time
-        total_daily_time = current_hour * 60 + current_minute
+        global sleep_fsm_state
         if sleep_fsm_state == SLEEP_SLEEPING:
             sleep_decay_s()
         else:

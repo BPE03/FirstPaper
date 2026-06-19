@@ -51,7 +51,7 @@ init python:
             return 28
     
     def advance_time(minutes):
-        global current_minute, current_hour, current_day, current_month, current_year
+        global current_minute, current_hour, current_day, current_month, current_year, total_daily_time
         
         current_minute += minutes
         
@@ -64,6 +64,8 @@ init python:
         if current_hour >= 24:
             current_day += current_hour // 24
             current_hour = current_hour % 24
+
+        total_daily_time = current_hour * 60 + current_minute
         
         # Handle day overflow
         days_in_month = get_days_in_month(current_month, current_year)
