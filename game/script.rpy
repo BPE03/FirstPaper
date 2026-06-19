@@ -1095,6 +1095,9 @@ label activity_kos_laptop:
             $ activity = "chat_online"
         "Main Game (Motivasi [_m_main_game]/[max_stat] - [_l_main_game])":
             $ activity = "main_game"
+        "Lihat Tutorial":
+            call tutorial_scene
+            jump kos
         "Batal":
             jump kos
 
