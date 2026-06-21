@@ -55,12 +55,6 @@ init python:
         secondary       = 0.50 * math.sin(secondary_phase)
         raw             = primary - secondary
         c               = (raw + 1.5) / 3.0
-        # if circadian_phase != 0.0:
-        #     phase_correction = circadian_phase / 24.0 * 60 * 2 * math.pi
-        #     c_shifted = (math.sin(primary_phase + phase_correction)
-        #                 - 0.20 * math.sin(secondary_phase + phase_correction))
-        #     c = (c_shifted + 1.20) / 2.40
-        #print("DEBUG: process c={:.3f}".format(c))
         return max(0.0, min(1.0, c))
 
     # ── Alertness & derived quantities ───────────────────────────────
@@ -85,7 +79,7 @@ init python:
         if caffeine_plasma_level > 0.0:
             mask = caffeine_get_effect() * 0.4  # max 40% suppression
             raw  = max(0.0, raw + mask)
-        return round(min(100.0, max(0.0, raw * 100)), 2)
+        return min(100.0, max(0.0, raw * 100))
 
     # ── FSM internals ────────────────────────────────────────────────
     def _sleep_alertness_to_state(a):
