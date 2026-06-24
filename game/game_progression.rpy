@@ -65,7 +65,7 @@ init python:
 
     def thesis_get_phase():
         """Returns 1 (proposal) or 2 (full thesis) for progress-rate calculation."""
-        return 2 if thesis_fsm_state in (THESIS_POST_SEMPRO, THESIS_DONE) else 1
+        return 2 if thesis_fsm_state in (THESIS_POST_SEMPRO, THESIS_WRITING, THESIS_DONE) else 1
 
     def _thesis_on_writing_tick():
         """Auto-advance writing sub-states; called each skripsi tick."""
@@ -103,7 +103,6 @@ init python:
 
         level_mult = 1.0 + (writing_level - 1) * 0.20 + (practical_level - 1) * 0.1
         base_progress_per_hour = 1
-        # Minimum progress rate = 1 * 1 * 0.4 * 0.4 = 0.16 progress/hour, or 0.0027 progress/minute
         progress_rate = base_progress_per_hour * level_mult * sleep_stat_multiplier() * emotion_multiplier
 
         if bimbingan_bonus_active:
@@ -118,24 +117,10 @@ init python:
         """Calculate score gained when writing thesis based on emotion, progress done, levels, and bimbingan bonus."""
         global score, valence, arousal, practical_level, writing_level
         
-        # Level bonuses
         level_bonus = (practical_level * 1) + (writing_level * 0.5)
-        
-        # Base score per minute of work
         base_score = 1
-
-        # Per progress rate bonus
         progress_rate_bonus = get_thesis_progress_rate() * 60
-        
-        # Calculate final score
-        # Minimum score = (1 + 1.5) * 0.16 = 0.256, or about 1 point every 4 minutes at the very start, scaling up with levels, emotion, and alertness
-        # 0.256 * 625 * 60
         final_score = (base_score + level_bonus) * progress_rate_bonus
-        
-        # Ensure minimum score of 1
-        #final_score = max(1, final_score)
-        
-        # Add to total score
         score += final_score
         
         return final_score

@@ -20,7 +20,15 @@ define activities = {
         "default_duration_hours": 4,
         "default_duration_minutes": 0,
         "max_duration": 240,
-        "stats_affected_message": "Efek: Progress Skripsi {color=#4caf50}↑{/color}, XP Menulis {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}  |  Valence {color=#f44336}↓{/color}, Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}"
+        "stats_affected_message": "Efek: Progress Skripsi {color=#4caf50}↑{/color}, XP Menulis {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}  |  Valence {color=#f44336}↓{/color}, Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}",
+        "motivation_curves": {
+            "autonomy":    [(0.0, -0.4), (75, 0.0)],
+            "competence":  [(0.0, -0.4), (75, 0.0)],
+            "relatedness": [(0.0, -0.4), (75, 0.0)],
+            "physical_activity":          [(0.0, -0.4), (75, 0.0)],
+            "nutrition":   [(20, -1.0), (50,  0.0)],
+            "sleep":       [(0, -1.0), (30,  0.0)],
+        }
     },
     "cari_jurnal": {
         "name": "Cari dan baca jurnal",
@@ -28,7 +36,15 @@ define activities = {
         "default_duration_hours": 4,
         "default_duration_minutes": 0,
         "max_duration": 240,
-        "stats_affected_message": "Efek: XP Menulis {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}  |  Valence {color=#f44336}↓{/color}, Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}  |  (Peluang menemukan topik)"
+        "stats_affected_message": "Efek: XP Menulis {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}  |  Valence {color=#f44336}↓{/color}, Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}  |  (Peluang menemukan topik)",
+        "motivation_curves": {
+            "autonomy":    [(0.0, -0.4), (75, 0.0)],
+            "competence":  [(0.0, -0.4), (75, 0.0)],
+            "relatedness": [(0.0, -0.4), (75, 0.0)],
+            "physical_activity":          [(0.0, -0.4), (75, 0.0)],
+            "nutrition":   [(0, -1.0), (50,  0.0)],
+            "sleep":       [(0, -1.0), (30,  0.0)],
+        }
     },
     "olahraga_ringan": {
         "name": "Olahraga ringan",
@@ -37,7 +53,10 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 120,
         "completion_message": "Kamu olahraga ringan selama {minutes} menit. Kamu merasa lebih segar!",
-        "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}  |  Nutrisi {color=#f44336}↓{/color}"
+        "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}  |  Nutrisi {color=#f44336}↓{/color}",
+        "motivation_curves": {
+            "physical_activity":          [(0.0, 0.8), (50, 0.0), (80, 0), (100, -0.5)],
+        }
     },
     "olahraga_sedang": {
         "name": "Olahraga Sedang",
@@ -46,7 +65,10 @@ define activities = {
         "default_duration_minutes": 30,
         "max_duration": 120,
         "completion_message": "Kamu olahraga sedang selama {minutes} menit. Kamu merasa lebih segar!",
-        "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}  |  Nutrisi {color=#f44336}↓{/color}"
+        "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}  |  Nutrisi {color=#f44336}↓{/color}",
+        "motivation_curves": {
+            "physical_activity":          [(0.0, -0.2), (50, 0.0), (80, 0), (100, -0.5)],
+        }
     },
     "olahraga_berat": {
         "name": "Olahraga Berat",
@@ -55,7 +77,10 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 120,
         "completion_message": "Kamu olahraga berat selama {minutes} menit. Kamu merasa lebih segar!",
-        "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑↑↑{/color}, Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}  |  Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}, Nutrisi {color=#f44336}↓↓{/color}"
+        "stats_affected_message": "Efek: Aktivitas Fisik {color=#4caf50}↑↑↑{/color}, Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}  |  Otonomi {color=#f44336}↓{/color}, Kompetensi {color=#f44336}↓{/color}, Nutrisi {color=#f44336}↓↓{/color}",
+        "motivation_curves": {
+            "physical_activity":          [(0.0, -0.7), (50, 0.0), (80, 0), (100, -0.7)],
+        }
     },
     "bimbingan": {
         "name": "Bimbingan dengan dosen",
@@ -72,7 +97,10 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 360,
         "completion_message": "Kamu menghabiskan waktu dengan teman-teman untuk {minutes} menit. Kamu merasa terhubung dan bahagia!",
-        "stats_affected_message": "Efek: Keterhubungan {color=#4caf50}↑↑{/color}, Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}, Otonomi {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}"
+        "stats_affected_message": "Efek: Keterhubungan {color=#4caf50}↑↑{/color}, Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}, Otonomi {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}",
+        "motivation_curves": {
+            "relatedness": [(0.0, 0.5), (100, -0.2)],
+        }
     },
     "nap": {
         "name": "Take a nap",
@@ -90,7 +118,15 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 720,
         "completion_message": "Kamu tidur selama {minutes} menit.",
-        "stats_affected_message": "Efek: Tidur {color=#4caf50}↑↑{/color}  |  memulihkan stamina harian"
+        "stats_affected_message": "Efek: Tidur {color=#4caf50}↑↑{/color}  |  memulihkan stamina harian",
+        "motivation_curves": {
+            "autonomy":    [(0.0, -0.1), (30, 0.0)],
+            "competence":  [(0.0, -0.1), (30, 0.0)],
+            "relatedness": [(0.0, -0.1), (30, 0.0)],
+            "nutrition":   [(0.0, -2.0), (40, 0.0)],
+            "physical_activity": [(0.0, -0.2), (50, 0.0)],
+            "sleep":       [(30, 1.0), (70, -1.0)]
+        }
     },
     "workshop": {
         "name": "Attend a workshop",
@@ -108,7 +144,15 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 240,
         "completion_message": "Kamu belajar secara mandiri selama {minutes} menit. Kamu merasa lebih punya kendali!",
-        "stats_affected_message": "Efek: XP Praktis {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}  |  Valence {color=#f44336}↓{/color}"
+        "stats_affected_message": "Efek: XP Praktis {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}  |  Valence {color=#f44336}↓{/color}",
+        "motivation_curves": {
+            "autonomy":    [(0.0, 0.4), (75, 0.0)],
+            "competence":  [(0.0, 0.4), (75, 0.0)],
+            "relatedness": [(0.0, -0.4), (75, 0.0)],
+            "physical_activity":          [(0.0, -0.4), (75, 0.0)],
+            "nutrition":   [(0, -1.0), (50,  0.0)],
+            "sleep":       [(0, -1.0), (30,  0.0)],
+        }
     },
     "rest": {
         "name": "Just rest and do nothing",
@@ -126,7 +170,15 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 144000,
         "completion_message": "Kamu prokrastinasi selama {minutes} menit.",
-        "stats_affected_message": "Efek: Otonomi {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}"
+        "stats_affected_message": "Efek: Otonomi {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}",
+        "motivation_curves": {
+            "autonomy":    [(0.0, 0.5), (100, -0.05)],
+            "competence":  [(0.0, 0.5), (100, -0.05)],
+            "relatedness": [(0.0, 0.5), (100, -0.05)],
+            "nutrition":   [(0, -2), (35, 0.5), (100, -0.05)],
+            "physical_activity":  [(0.0, 0.5), (100, -0.05)],
+            "sleep":       [(0, -1), (35, 0.5), (100, -0.05)]
+        }
     },
     "chat_online": {
         "name": "Chat Online dengan Teman",
@@ -135,7 +187,13 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 360,
         "completion_message": "Kamu mengobrol dengan teman-teman secara online selama {minutes} menit. Kamu merasa lebih terhubung!",
-        "stats_affected_message": "Efek: Keterhubungan {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}"
+        "stats_affected_message": "Efek: Keterhubungan {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}",
+        "motivation_curves": {
+            "autonomy":    [(0.0, 1), (70, 0.0)],
+            "relatedness": [(0.0, 1), (70, 0.0)],
+            "nutrition":   [(0, -0.5), (40,  0.0)],
+            "sleep":       [(0, -0.5), (40,  0.0)],
+        }
     },
     "main_game": {
         "name": "Main Game",
@@ -144,7 +202,14 @@ define activities = {
         "default_duration_minutes": 0,
         "max_duration": 360,
         "completion_message": "Kamu bermain game selama {minutes} menit. Kamu merasa lebih santai dan terhibur!",
-        "stats_affected_message": "Efek: Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}, Otonomi {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}"
+        "stats_affected_message": "Efek: Valence {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑↑{/color}, Otonomi {color=#4caf50}↑{/color}, Kompetensi {color=#4caf50}↑{/color}",
+        "motivation_curves": {
+            "autonomy":    [(0.0, 0.7), (70, 0.0)],
+            "competence":  [(0.0, 0.7), (70, 0.0)],
+            "relatedness": [(0.0, 0.5), (30, 0.3)],
+            "nutrition":   [(0, -2), (40,  0.0)],
+            "sleep":       [(0, -1), (40,  0.0)],
+        }
     },
 
     "makan_bergizi": {
@@ -154,7 +219,15 @@ define activities = {
         "default_duration_minutes": 20,
         "max_duration": 20,
         "completion_message": "Kamu makan makanan bergizi selama {minutes} menit. Nutrisimu meningkat!",
-        "stats_affected_message": "Efek: Nutrisi {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑{/color}  |  Otonomi {color=#f44336}↓{/color}"
+        "stats_affected_message": "Efek: Nutrisi {color=#4caf50}↑↑{/color}, Arousal {color=#4caf50}↑{/color}  |  Otonomi {color=#f44336}↓{/color}",
+        "motivation_curves": {
+            "autonomy":    [(0.0, 0.1), (50, 0.0)],
+            "competence":   [(0.0, 0.1), (50, 0.0)],
+            "relatedness":  [(0.0, 0.1), (50, 0.0)],
+            "nutrition":    [(50, 1), (60, 0.0), (80, -1)],
+            "physical_activity":          [(0.0, 0.1), (50, 0.0)],
+            "sleep":       [(0.0, 0.2), (30, 0.0)],
+        }
     },
     "makan_enak": {
         "name": "Makan Enak Sembarangan",
@@ -163,7 +236,15 @@ define activities = {
         "default_duration_minutes": 20,
         "max_duration": 20,
         "completion_message": "Kamu menikmati makanan enak selama {minutes} menit. Mood kamu meningkat, namun kamu mendapatkan kalori lebih banyak.",
-        "stats_affected_message": "Efek: Nutrisi {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}  |  Aktivitas Fisik {color=#f44336}↓{/color}"
+        "stats_affected_message": "Efek: Nutrisi {color=#4caf50}↑{/color}, Valence {color=#4caf50}↑{/color}, Otonomi {color=#4caf50}↑{/color}  |  Aktivitas Fisik {color=#f44336}↓{/color}",
+        "motivation_curves": {
+            "autonomy":    [(0.0, 0.2), (50, 0.0)],
+            "competence":   [(0.0, 0.2), (50, 0.0)],
+            "relatedness":  [(0.0, 0.2), (50, 0.0)],
+            "nutrition":    [(50, 1), (60, 0.0), (100, -0.6)],
+            "physical_activity":          [(0.0, 0.2), (50, 0.0)],
+            "sleep":       [(0.0, 0.4), (30, 0.0)],
+        }
     },
     "minum_kopi": {
         "name": "Minum Kopi",
@@ -172,7 +253,10 @@ define activities = {
         "default_duration_minutes": 15,
         "max_duration": 15,
         "completion_message": "Kamu menikmati kopi selama {minutes} menit. Tingkat kafein dan kewaspadaan kamu meningkat!",
-        "stats_affected_message": "Efek: Kafein {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}"
+        "stats_affected_message": "Efek: Kafein {color=#4caf50}↑{/color}, Arousal {color=#4caf50}↑{/color}",
+        "motivation_curves": {
+            "caffeine_plasma_level": [(0.2, 1), (1.0, 0.0)],
+        }
     },
     "meditasi": {
         "name": "Meditasi",
@@ -181,7 +265,10 @@ define activities = {
         "default_duration_minutes": 10,
         "max_duration": 60,
         "completion_message": "Kamu bermeditasi selama {minutes} menit. Kamu merasa lebih tenang dan fokus!",
-        "stats_affected_message": "Efek: Arousal {color=#f44336}↓↓{/color}"
+        "stats_affected_message": "Efek: Arousal {color=#f44336}↓↓{/color}",
+        "motivation_curves": {
+            "arousal": [(0, -1.0), (50, 1.0)]
+        }
     }
 }
 
@@ -221,7 +308,7 @@ init python:
         global autonomy, physical_activity, nutrition
         autonomy = min(max_stat, autonomy + 3/60)
         physical_activity = min(max_stat, physical_activity + 8/60)
-        nutrition_modifier = nutrition * 0.09
+        nutrition_modifier = nutrition * 0.05
         nutrition = max(0, nutrition - nutrition_modifier / 60)
 
     def _activity_olahraga_sedang():
@@ -351,96 +438,6 @@ init python:
         "prokrastinasi":  _activity_prokrastinasi
     }
 
-    ACTIVITY_MOTIVATION_CURVES = {
-        "skripsi": {
-            "autonomy":    [(0.0, -0.4), (75, 0.0)],
-            "competence":  [(0.0, -0.4), (75, 0.0)],
-            "relatedness": [(0.0, -0.4), (75, 0.0)],
-            "physical_activity":          [(0.0, -0.4), (75, 0.0)],
-            "nutrition":   [(20, -1.0), (50,  0.0)],
-            "sleep":       [(0, -1.0), (30,  0.0)],
-        },
-        "belajar_mandiri": {
-            "autonomy":    [(0.0, 0.4), (75, 0.0)],
-            "competence":  [(0.0, 0.4), (75, 0.0)],
-            "relatedness": [(0.0, -0.4), (75, 0.0)],
-            "physical_activity":          [(0.0, -0.4), (75, 0.0)],
-            "nutrition":   [(0, -1.0), (50,  0.0)],
-            "sleep":       [(0, -1.0), (30,  0.0)],
-        },
-        "cari_jurnal": {
-            "autonomy":    [(0.0, -0.4), (75, 0.0)],
-            "competence":  [(0.0, -0.4), (75, 0.0)],
-            "relatedness": [(0.0, -0.4), (75, 0.0)],
-            "physical_activity":          [(0.0, -0.4), (75, 0.0)],
-            "nutrition":   [(0, -1.0), (50,  0.0)],
-            "sleep":       [(0, -1.0), (30,  0.0)],
-        },
-        "sosialisasi": {
-            "relatedness": [(0.0, 0.5), (100, -0.2)],
-        },
-        "makan_bergizi": {
-            "autonomy":    [(0.0, 0.1), (50, 0.0)],
-            "competence":   [(0.0, 0.1), (50, 0.0)],
-            "relatedness":  [(0.0, 0.1), (50, 0.0)],
-            "nutrition":    [(50, 1), (60, 0.0), (80, -1)],
-            "physical_activity":          [(0.0, 0.1), (50, 0.0)],
-            "sleep":       [(0.0, 0.2), (30, 0.0)],
-        },
-        "makan_enak": {
-            "autonomy":    [(0.0, 0.2), (50, 0.0)],
-            "competence":   [(0.0, 0.2), (50, 0.0)],
-            "relatedness":  [(0.0, 0.2), (50, 0.0)],
-            "nutrition":    [(50, 1), (60, 0.0), (100, -0.6)],
-            "physical_activity":          [(0.0, 0.2), (50, 0.0)],
-            "sleep":       [(0.0, 0.4), (30, 0.0)],
-        },
-        "minum_kopi": {
-            "caffeine_plasma_level": [(0.2, 1), (1.0, 0.0)],
-        },
-        "olahraga_ringan": {
-            "physical_activity":          [(0.0, 0.8), (50, 0.0), (80, 0), (100, -0.5)],
-        },
-        "olahraga_sedang": {
-            "physical_activity":          [(0.0, -0.2), (50, 0.0), (80, 0), (100, -0.5)],
-        },
-        "olahraga_berat": {
-            "physical_activity":          [(0.0, -0.7), (50, 0.0), (80, 0), (100, -0.7)],
-        },
-        "chat_online": {
-            "autonomy":    [(0.0, 1), (70, 0.0)],
-            "relatedness": [(0.0, 1), (70, 0.0)],
-            "nutrition":   [(0, -0.5), (40,  0.0)],
-            "sleep":       [(0, -0.5), (40,  0.0)],
-        },
-        "main_game": {
-            "autonomy":    [(0.0, 0.7), (70, 0.0)],
-            "competence":  [(0.0, 0.7), (70, 0.0)],
-            "relatedness": [(0.0, 0.5), (30, 0.3)],
-            "nutrition":   [(0, -2), (40,  0.0)],
-            "sleep":       [(0, -1), (40,  0.0)],
-        },
-        "tidur": {
-            "autonomy":    [(0.0, -0.1), (30, 0.0)],
-            "competence":  [(0.0, -0.1), (30, 0.0)],
-            "relatedness": [(0.0, -0.1), (30, 0.0)],
-            "nutrition":   [(0.0, -2.0), (40, 0.0)],
-            "physical_activity": [(0.0, -0.2), (50, 0.0)],
-            "sleep":       [(30, 1.0), (70, -1.0)]
-        },
-        "meditasi": {
-            "arousal": [(0, -1.0), (50, 1.0)]
-        },
-        "prokrastinasi": {
-            "autonomy":    [(0.0, 0.5), (100, -0.05)],
-            "competence":  [(0.0, 0.5), (100, -0.05)],
-            "relatedness": [(0.0, 0.5), (100, -0.05)],
-            "nutrition":   [(0, -2), (35, 0.5), (100, -0.05)],
-            "physical_activity":  [(0.0, 0.5), (100, -0.05)],
-            "sleep":       [(0, -1), (35, 0.5), (100, -0.05)]
-        }
-    }
-
     def get_activity_motivation(activity_name):
         stats = {
             "autonomy":    store.autonomy,
@@ -453,7 +450,8 @@ init python:
             "arousal":     store.arousal,
         }
         base_motivation = store.motivation
-        curves = ACTIVITY_MOTIVATION_CURVES.get(activity_name, {})
+        activity_data = activities.get(activity_name, {})
+        curves = activity_data.get("motivation_curves", {})
         if not curves:
             return 100
         total_modifier = 0.0
